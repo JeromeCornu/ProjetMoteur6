@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 #include <gl/GL.h>
+#include "Camera.h"
 
 int main(int argc, char* argv[])
 {
