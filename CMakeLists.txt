@@ -3,7 +3,7 @@ project(moteur)
 add_executable(moteur main.cpp)
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)
-set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm/include)
+set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm)
 
 add_subdirectory(dep/SDL dep/SDL)
 target_include_directories(moteur PRIVATE ${SDL_INCLUDE_DIR})
