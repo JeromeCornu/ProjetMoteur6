@@ -15,6 +15,11 @@
 #include <vector>
 #include <numeric>
 
+// Include my executables
+#include "Cube.cpp"
+#include "gc_3d_defs.hpp"
+
+
 int main(int argc, char* argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -33,31 +38,60 @@ int main(int argc, char* argv[])
 
     auto prevTime = std::chrono::steady_clock::now();
 
+    glViewport(0, 0, 1024, 768);
+
+
     bool appRunning = true;
     while (appRunning)
     {
         SDL_Event curEvent;
+        int width, height;
+        SDL_GetWindowSize(win, &width, &height);
+
+        float ratio = width / (float)height;
+
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+
         while (SDL_PollEvent(&curEvent))
         {
             if (curEvent.type == SDL_QUIT)
             {
                 appRunning = false;
             }
+
+            if (curEvent.window.type == SDL_WINDOWEVENT_RESIZED)
+            {
+                glViewport(0.0, 0.0, width, height);
+            }
         }
 
-        glViewport(0, 0, 1024, 768);
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
 
-        const float radius = 0.5;
+        // Affichage des FPS
+        static unsigned int fps = 0;
+        static clock_t t = clock();
+        if (clock() - t > CLOCKS_PER_SEC)
+        {
+            char str[50] = "";
+            sprintf(str, "Moteur OpenGl - FPS : %u", fps);
+            SDL_SetWindowTitle(win, str);
+            t = clock();
+            fps = 0;
+        }
+        fps++;
+
+
+        const float radius = 3.0;
 
         auto curTime = std::chrono::steady_clock::now();
         std::chrono::duration<float> fTime = curTime - prevTime;
         float camX = glm::sin(fTime.count()) * radius;
         float camZ = glm::cos(fTime.count()) * radius;
 
-        glm::vec3 cameraPos = glm::vec3(camX, 1.0, camZ);
+        glm::vec3 cameraPos = glm::vec3(camX, 1.5, camZ);
         glm::vec3 cameraTarget = glm::vec3(0.0, 0.0, 0.0);
 
         // Creation de la camera
@@ -71,6 +105,9 @@ int main(int argc, char* argv[])
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(&view[0][0]);
 
+        glm::mat4 projection = glm::perspective(70.0F * (3.1416F / 180.0F), ratio, 0.01F, 100.0F);
+        glMatrixMode(GL_PROJECTION);
+        glLoadMatrixf((float*)&projection);
 
 
         // Test de profondeur
@@ -80,25 +117,14 @@ int main(int argc, char* argv[])
         glDepthFunc(GL_LESS);
 
 
-        // Creation d'un triangle
-        glColor4f(0.0, 1.0, 0.0, 1.0);
-        glBegin(GL_TRIANGLES);
-        glVertex3f(-1.0, 0.0, 0.0);
-        glVertex3f(0.0, 1.0, 0.0);
-        glVertex3f(1.0, 0.0, 0.0);
-
-        // Creation d'un autre triangle
-        glColor4f(1.0, 0.0, 0.0, 1.0);
-        glBegin(GL_TRIANGLES);
-        glVertex3f(0.0, 0.0, -1.0);
-        glVertex3f(0.0, 1.0, 0.0);
-        glVertex3f(0.0, 0.0, 1.0);
+        // ---  DRAW HERE  ---  
+        // Cube
+        Cube cube;
+        cube.makeCube();
 
 
-        glEnd();
 
         SDL_GL_SwapWindow(win);
-
     }
 
     printf("Hello World");
