@@ -4,9 +4,14 @@
 #include <windows.h>
 #endif
 
+#include "gc_3d_defs.hpp"
 #include <SDL.h>
 #include <gl/GL.h>
 #include "Camera.h"
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 int main(int argc, char* argv[])
 {

@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+<<<<<<< Updated upstream
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -29,3 +30,17 @@ class Camera
 		view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	}
 };
+=======
+namespace GC_3D
+{
+	Camera::Camera()
+	{
+		vec3 Target = vec3(0,0,0);
+		Position = vec3(0, 0, 3);
+		Direction = normalize(Position - Target);
+
+		view = lookAt(Position, Target, vec3(0, 1, 0));
+
+	}
+}
+>>>>>>> Stashed changes
