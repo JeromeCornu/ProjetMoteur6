@@ -1,6 +1,6 @@
 project(moteur)
 
-add_executable(moteur main.cpp)
+add_executable(moteur main.cpp gc_3d_defs.hpp)
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)
 set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm)

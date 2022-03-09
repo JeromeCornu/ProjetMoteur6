@@ -99,9 +99,6 @@ int main(int argc, char* argv[])
 
         SDL_GL_SwapWindow(win);
 
-
-
-
     }
 
     printf("Hello World");
