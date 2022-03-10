@@ -1,0 +1,34 @@
+Performing C SOURCE FILE Test HAVE_XINPUT_GAMEPAD_EX failed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_89b08 && [1/2] Building C object CMakeFiles\cmTC_89b08.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_89b08.dir/src.c.obj 
+C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1431~1.311\bin\Hostx64\x64\cl.exe  /nologo -DHAVE_XINPUT_GAMEPAD_EX  /DWIN32 /D_WINDOWS /W3  /MDd /Zi /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\cmTC_89b08.dir\src.c.obj /FdCMakeFiles\cmTC_89b08.dir\ /FS -c C:\Users\bapti\source\repos\JeromeCornu\ProjetMoteur6\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c
+C:\Users\bapti\source\repos\JeromeCornu\ProjetMoteur6\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c(4): error C2061: erreur de syntaxe : identificateur 'x1'
+C:\Users\bapti\source\repos\JeromeCornu\ProjetMoteur6\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c(4): error C2059: erreur de syntaxe : ';'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+      #include <windows.h>
+      #include <xinput.h>
+      XINPUT_GAMEPAD_EX x1;
+      int main(int argc, char **argv) { }
+Performing C SOURCE FILE Test HAVE_XINPUT_STATE_EX failed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_e857f && [1/2] Building C object CMakeFiles\cmTC_e857f.dir\src.c.obj
+FAILED: CMakeFiles/cmTC_e857f.dir/src.c.obj 
+C:\PROGRA~1\MIB055~1\2022\COMMUN~1\VC\Tools\MSVC\1431~1.311\bin\Hostx64\x64\cl.exe  /nologo -DHAVE_XINPUT_STATE_EX  /DWIN32 /D_WINDOWS /W3  /MDd /Zi /Ob0 /Od /RTC1 /showIncludes /FoCMakeFiles\cmTC_e857f.dir\src.c.obj /FdCMakeFiles\cmTC_e857f.dir\ /FS -c C:\Users\bapti\source\repos\JeromeCornu\ProjetMoteur6\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c
+C:\Users\bapti\source\repos\JeromeCornu\ProjetMoteur6\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c(4): error C2061: erreur de syntaxe : identificateur 's1'
+C:\Users\bapti\source\repos\JeromeCornu\ProjetMoteur6\out\build\x64-Debug\CMakeFiles\CMakeTmp\src.c(4): error C2059: erreur de syntaxe : ';'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+      #include <windows.h>
+      #include <xinput.h>
+      XINPUT_STATE_EX s1;
+      int main(int argc, char **argv) { }

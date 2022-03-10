@@ -1,0 +1,190 @@
+The system is: Windows - 10.0.22000 - AMD64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.31.31103/bin/Hostx64/x64/cl.exe 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Compilateur d'optimisation Microsoft (R) C/C++ version 19.31.31104 pour x64
+Copyright (C) Microsoft Corporation. Tous droits réservés.
+
+CMakeCCompilerId.c
+Microsoft (R) Incremental Linker Version 14.31.31104.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:CMakeCCompilerId.exe 
+CMakeCCompilerId.obj 
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.exe"
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.obj"
+
+The C compiler identification is MSVC, found in "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/3.22.22022201-MSVC_2/CompilerIdC/CMakeCCompilerId.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.31.31103/bin/Hostx64/x64/cl.exe 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Compilateur d'optimisation Microsoft (R) C/C++ version 19.31.31104 pour x64
+Copyright (C) Microsoft Corporation. Tous droits réservés.
+
+CMakeCXXCompilerId.cpp
+Microsoft (R) Incremental Linker Version 14.31.31104.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:CMakeCXXCompilerId.exe 
+CMakeCXXCompilerId.obj 
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.exe"
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.obj"
+
+The CXX compiler identification is MSVC, found in "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/3.22.22022201-MSVC_2/CompilerIdCXX/CMakeCXXCompilerId.exe"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_f90bb && [1/2] Building C object CMakeFiles\cmTC_f90bb.dir\CMakeCCompilerABI.c.obj
+[2/2] Linking C executable cmTC_f90bb.exe
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_d8060 && [1/2] Building CXX object CMakeFiles\cmTC_d8060.dir\CMakeCXXCompilerABI.cpp.obj
+[2/2] Linking CXX executable cmTC_d8060.exe
+
+
+
+Determining if the include file immintrin.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_4b03b && [1/2] Building C object CMakeFiles\cmTC_4b03b.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_4b03b.exe
+
+
+
+Performing C SOURCE FILE Test HAVE_WIN32_CC succeeded with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_d5595 && [1/2] Building C object CMakeFiles\cmTC_d5595.dir\src.c.obj
+[2/2] Linking C executable cmTC_d5595.exe
+
+
+Source file was:
+
+    #include <windows.h>
+    int main(int argc, char **argv) { }
+Determining if the include file d3d9.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_f94d4 && [1/2] Building C object CMakeFiles\cmTC_f94d4.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_f94d4.exe
+
+
+
+Determining if the include file d3d11_1.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_c44c6 && [1/2] Building C object CMakeFiles\cmTC_c44c6.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_c44c6.exe
+
+
+
+Determining if the include file ddraw.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_0bc46 && [1/2] Building C object CMakeFiles\cmTC_0bc46.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_0bc46.exe
+
+
+
+Determining if the include file dsound.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_eba20 && [1/2] Building C object CMakeFiles\cmTC_eba20.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_eba20.exe
+
+
+
+Determining if the include file dinput.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_013f5 && [1/2] Building C object CMakeFiles\cmTC_013f5.dir\CheckIncludeFile.c.obj
+C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+[2/2] Linking C executable cmTC_013f5.exe
+
+
+
+Determining if the include file dxgi.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_44158 && [1/2] Building C object CMakeFiles\cmTC_44158.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_44158.exe
+
+
+
+Performing C SOURCE FILE Test HAVE_XINPUT_H succeeded with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_f93e4 && [1/2] Building C object CMakeFiles\cmTC_f93e4.dir\src.c.obj
+[2/2] Linking C executable cmTC_f93e4.exe
+
+
+Source file was:
+
+      #include <windows.h>
+      #include <xinput.h>
+      int main(int argc, char **argv) { }
+Performing C SOURCE FILE Test HAVE_WINDOWS_GAMING_INPUT_H succeeded with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_06859 && [1/2] Building C object CMakeFiles\cmTC_06859.dir\src.c.obj
+[2/2] Linking C executable cmTC_06859.exe
+
+
+Source file was:
+
+      #define COBJMACROS
+      #include <windows.gaming.input.h>
+      __x_ABI_CWindows_CGaming_CInput_CIGamepadStatics2 *s2;
+      int main(int argc, char **argv) { }
+Determining if the include file tpcshrd.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_d604f && [1/2] Building C object CMakeFiles\cmTC_d604f.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_d604f.exe
+
+
+
+Determining if the include file mmdeviceapi.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_dbba4 && [1/2] Building C object CMakeFiles\cmTC_dbba4.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_dbba4.exe
+
+
+
+Determining if the include file audioclient.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_d43c6 && [1/2] Building C object CMakeFiles\cmTC_d43c6.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_d43c6.exe
+
+
+
+Determining if the include file sensorsapi.h exists passed with the following output:
+Change Dir: C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_b005c && [1/2] Building C object CMakeFiles\cmTC_b005c.dir\CheckIncludeFile.c.obj
+[2/2] Linking C executable cmTC_b005c.exe
+
+
+

@@ -1,0 +1,285 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"dep/SDL/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2960,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2967,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2974,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 2994,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3002,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3010,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3017,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3032,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"dep/glm/SDL2d.lib"
+			],
+			"targetId" : "SDL2::@7f3aa4775a7b45ed07cf",
+			"targetIndex" : 0,
+			"targetIsImportLibrary" : true,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "bin",
+			"paths" : 
+			[
+				"dep/glm/SDL2d.dll"
+			],
+			"targetId" : "SDL2::@7f3aa4775a7b45ed07cf",
+			"targetIndex" : 0,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"dep/glm/SDL2maind.lib"
+			],
+			"targetId" : "SDL2main::@7f3aa4775a7b45ed07cf",
+			"targetIndex" : 2,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"dep/glm/SDL2-staticd.lib"
+			],
+			"targetId" : "SDL2-static::@7f3aa4775a7b45ed07cf",
+			"targetIndex" : 1,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "cmake",
+			"exportName" : "SDL2Targets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "SDL2::@7f3aa4775a7b45ed07cf",
+					"index" : 0
+				}
+			],
+			"paths" : 
+			[
+				"dep/glm/CMakeFiles/Export/cmake/SDL2Targets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "Unspecified",
+			"destination" : "cmake",
+			"exportName" : "SDL2mainTargets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "SDL2main::@7f3aa4775a7b45ed07cf",
+					"index" : 2
+				}
+			],
+			"paths" : 
+			[
+				"dep/glm/CMakeFiles/Export/cmake/SDL2mainTargets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 6,
+			"component" : "Unspecified",
+			"destination" : "cmake",
+			"exportName" : "SDL2staticTargets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "SDL2-static::@7f3aa4775a7b45ed07cf",
+					"index" : 1
+				}
+			],
+			"paths" : 
+			[
+				"dep/glm/CMakeFiles/Export/cmake/SDL2staticTargets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 7,
+			"component" : "Devel",
+			"destination" : "cmake",
+			"paths" : 
+			[
+				"dep/SDL/SDL2Config.cmake",
+				"out/build/x64-Debug/SDL2ConfigVersion.cmake"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 8,
+			"component" : "Unspecified",
+			"destination" : "include/SDL2",
+			"paths" : 
+			[
+				"dep/SDL/include/SDL.h",
+				"dep/SDL/include/SDL_assert.h",
+				"dep/SDL/include/SDL_atomic.h",
+				"dep/SDL/include/SDL_audio.h",
+				"dep/SDL/include/SDL_bits.h",
+				"dep/SDL/include/SDL_blendmode.h",
+				"dep/SDL/include/SDL_clipboard.h",
+				"dep/SDL/include/SDL_config_android.h",
+				"dep/SDL/include/SDL_config_emscripten.h",
+				"dep/SDL/include/SDL_config_iphoneos.h",
+				"dep/SDL/include/SDL_config_macosx.h",
+				"dep/SDL/include/SDL_config_minimal.h",
+				"dep/SDL/include/SDL_config_os2.h",
+				"dep/SDL/include/SDL_config_pandora.h",
+				"dep/SDL/include/SDL_config_windows.h",
+				"dep/SDL/include/SDL_config_winrt.h",
+				"dep/SDL/include/SDL_copying.h",
+				"dep/SDL/include/SDL_cpuinfo.h",
+				"dep/SDL/include/SDL_egl.h",
+				"dep/SDL/include/SDL_endian.h",
+				"dep/SDL/include/SDL_error.h",
+				"dep/SDL/include/SDL_events.h",
+				"dep/SDL/include/SDL_filesystem.h",
+				"dep/SDL/include/SDL_gamecontroller.h",
+				"dep/SDL/include/SDL_gesture.h",
+				"dep/SDL/include/SDL_haptic.h",
+				"dep/SDL/include/SDL_hidapi.h",
+				"dep/SDL/include/SDL_hints.h",
+				"dep/SDL/include/SDL_joystick.h",
+				"dep/SDL/include/SDL_keyboard.h",
+				"dep/SDL/include/SDL_keycode.h",
+				"dep/SDL/include/SDL_loadso.h",
+				"dep/SDL/include/SDL_locale.h",
+				"dep/SDL/include/SDL_log.h",
+				"dep/SDL/include/SDL_main.h",
+				"dep/SDL/include/SDL_messagebox.h",
+				"dep/SDL/include/SDL_metal.h",
+				"dep/SDL/include/SDL_misc.h",
+				"dep/SDL/include/SDL_mouse.h",
+				"dep/SDL/include/SDL_mutex.h",
+				"dep/SDL/include/SDL_name.h",
+				"dep/SDL/include/SDL_opengl.h",
+				"dep/SDL/include/SDL_opengl_glext.h",
+				"dep/SDL/include/SDL_opengles.h",
+				"dep/SDL/include/SDL_opengles2.h",
+				"dep/SDL/include/SDL_opengles2_gl2.h",
+				"dep/SDL/include/SDL_opengles2_gl2ext.h",
+				"dep/SDL/include/SDL_opengles2_gl2platform.h",
+				"dep/SDL/include/SDL_opengles2_khrplatform.h",
+				"dep/SDL/include/SDL_pixels.h",
+				"dep/SDL/include/SDL_platform.h",
+				"dep/SDL/include/SDL_power.h",
+				"dep/SDL/include/SDL_quit.h",
+				"dep/SDL/include/SDL_rect.h",
+				"dep/SDL/include/SDL_render.h",
+				"dep/SDL/include/SDL_rwops.h",
+				"dep/SDL/include/SDL_scancode.h",
+				"dep/SDL/include/SDL_sensor.h",
+				"dep/SDL/include/SDL_shape.h",
+				"dep/SDL/include/SDL_stdinc.h",
+				"dep/SDL/include/SDL_surface.h",
+				"dep/SDL/include/SDL_system.h",
+				"dep/SDL/include/SDL_syswm.h",
+				"dep/SDL/include/SDL_test.h",
+				"dep/SDL/include/SDL_test_assert.h",
+				"dep/SDL/include/SDL_test_common.h",
+				"dep/SDL/include/SDL_test_compare.h",
+				"dep/SDL/include/SDL_test_crc32.h",
+				"dep/SDL/include/SDL_test_font.h",
+				"dep/SDL/include/SDL_test_fuzzer.h",
+				"dep/SDL/include/SDL_test_harness.h",
+				"dep/SDL/include/SDL_test_images.h",
+				"dep/SDL/include/SDL_test_log.h",
+				"dep/SDL/include/SDL_test_md5.h",
+				"dep/SDL/include/SDL_test_memory.h",
+				"dep/SDL/include/SDL_test_random.h",
+				"dep/SDL/include/SDL_thread.h",
+				"dep/SDL/include/SDL_timer.h",
+				"dep/SDL/include/SDL_touch.h",
+				"dep/SDL/include/SDL_types.h",
+				"dep/SDL/include/SDL_version.h",
+				"dep/SDL/include/SDL_video.h",
+				"dep/SDL/include/SDL_vulkan.h",
+				"dep/SDL/include/begin_code.h",
+				"dep/SDL/include/close_code.h",
+				"out/build/x64-Debug/dep/glm/include/SDL_config.h",
+				"out/build/x64-Debug/dep/glm/include/SDL_revision.h"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "dep/glm",
+		"source" : "dep/SDL"
+	}
+}
