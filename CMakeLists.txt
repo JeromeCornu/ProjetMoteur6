@@ -1,16 +1,14 @@
 project(moteur)
 
-<<<<<<< Updated upstream
-=======
-add_executable(moteur main.cpp gc_3d_defs.hpp Camera.cpp Camera.h)
+add_executable(moteur main.cpp gc_3d_defs.hpp camera.cpp camera.hpp)
 
->>>>>>> Stashed changes
+
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)
 set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm)
 
 add_subdirectory(dep/SDL dep/SDL)
 
-add_executable(moteur main.cpp Camera.h Camera.cpp)
+
 
 target_include_directories(moteur PRIVATE ${SDL_INCLUDE_DIR})
 target_include_directories(moteur PRIVATE ${GLM_INCLUDE_DIR})
