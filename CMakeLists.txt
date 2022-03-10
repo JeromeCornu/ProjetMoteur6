@@ -4,6 +4,8 @@ add_executable(
 	moteur main.cpp
 	Cube.cpp
 	gc_3d_defs.hpp
+	Sphere.cpp
+	Geometry.cpp
 )
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)

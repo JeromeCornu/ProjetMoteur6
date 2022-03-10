@@ -17,8 +17,9 @@
 
 // Include my executables
 #include "Cube.cpp"
+#include "Sphere.cpp"
 #include "gc_3d_defs.hpp"
-
+#include "Geometry.cpp"
 
 int main(int argc, char* argv[])
 {
@@ -119,10 +120,12 @@ int main(int argc, char* argv[])
 
         // ---  DRAW HERE  ---  
         // Cube
-        Cube cube;
-        cube.makeCube();
+        //Cube cube;
+        //cube.makeCube();
 
-
+        Geometry dash;
+        dash.Bind();
+        dash.Draw();
 
         SDL_GL_SwapWindow(win);
     }
