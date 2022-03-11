@@ -18,6 +18,7 @@
 
 using namespace GC_3D;
 using namespace shader;
+using namespace cube;
 
 int main(int argc, char* argv[])
 {
@@ -94,7 +95,7 @@ int main(int argc, char* argv[])
         // Use our shader
         glUseProgram(programID);
 
-
+        /*
         // 1rst attribute buffer : vertices
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -108,8 +109,12 @@ int main(int argc, char* argv[])
         );
         // Draw the triangle !
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(0);*/
 
+
+        // create cube
+        cube::CubeTuto cube;
+        cube.makeCube();
 
 
 
