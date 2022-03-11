@@ -1,25 +1,26 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
+#include "GL/glew.h"
 #include <SDL.h>
-#include <GL/glew.h>
 #include <gl/GL.h>
 #include "dep/glm/glm/glm.hpp"
 #include "dep/glm/glm/ext.hpp"
 
-#include "gc_3d_defs.hpp"
-#include "loadShader.hpp"
-#include "CubeTuto.hpp"
+#include <chrono>
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <numeric>
 
+#include "gc_3d_defs.hpp"
+#include "loadShader.cpp"
+using namespace glm;
 
 using namespace GC_3D;
-using namespace shader;
-using namespace cube;
-
 
 int main(int argc, char* argv[])
 {
@@ -61,7 +62,7 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = shader::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.txt", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.txt");
+    GLuint programID = LoadShaders("C:/Users/bherr/Documents/projetMoteur/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bherr/Documents/projetMoteur/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
 
     bool appRunning = true;
@@ -91,26 +92,29 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+        mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
         // Or, for an ortho camera :
-        //glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
+        //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
         // Camera matrix
-        glm::mat4 View = glm::lookAt(
-            glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-            glm::vec3(0, 0, 0), // and looks at the origin
-            glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+        mat4 View = lookAt(
+            vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+            vec3(0, 0, 0), // and looks at the origin
+            vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
 
         // Model matrix : an identity matrix (model will be at the origin)
-        glm::mat4 Model = glm::mat4(1.0f);
-        //glm::mat4 Move = glm::mat4(10.0f);
-        //glm::mat4 Rotate = glm::mat4(20.0f);
-        //glm::mat4 Resize = glm::mat4(20.0f);
-        //Model = Resize * Rotate * Move * Model;
+        mat4 Model = mat4(1.0f);
+
+        mat4 Translation = translate(mat4(1.0F), vec3(1.0f, 0.0f, 0.0f));
+        mat4 Rotation = rotate(mat4(1.0F), 10.0f, vec3(1.0F, 0.0F, 0.0F));
+        mat4 Scaling = scale(mat4(1.0F), vec3(2.0F, 1.0F, 1.0F));
+
+        Model = ((Scaling * Rotation) * Translation) * Model;
+
         // Our ModelViewProjection : multiplication of our 3 matrices
-        glm::mat4 mvp = Projection * View * Model;
+        mat4 mvp = Projection * View * Model;
 
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
@@ -129,15 +133,56 @@ int main(int argc, char* argv[])
             0,                  // stride
             (void*)0            // array buffer offset
         );
-
         // Draw the triangle !
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
 
+        /*glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+
+        const float radius = 3.0;
+
+        auto curTime = std::chrono::steady_clock::now();
+        std::chrono::duration<float> fTime = curTime - prevTime;
+        float camX = sin(fTime.count()) * radius;
+        float camZ = cos(fTime.count()) * radius;
+
+        vec3 cameraPos = vec3(camX, 1.5, camZ);
+        vec3 cameraTarget = vec3(0.0, 0.0, 0.0);
+
+        // Creation de la camera
+        mat4 view;
+        view = lookAt(
+            cameraPos,                  //Position de la camera
+            cameraTarget,               //Cible Ã  regarder
+            vec3(0.0, 1.0, 0.0)    //position vertical
+        );
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadMatrixf(&view[0][0]);
+
+        mat4 projection = perspective(70.0F * (3.1416F / 180.0F), ratio, 0.01F, 100.0F);
+        glMatrixMode(GL_PROJECTION);
+        glLoadMatrixf((float*)&projection);
+
+
+        // Test de profondeur
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDepthMask(GL_TRUE);
+        glDepthFunc(GL_LESS);
+
+
+        Geometry cube;
+        cube.Bind();
+        cube.Draw();*/
 
         SDL_GL_SwapWindow(win);
+
+
     }
 
-    printf("Hello World");
+    //printf("Hello World");
     return 0;
 }
