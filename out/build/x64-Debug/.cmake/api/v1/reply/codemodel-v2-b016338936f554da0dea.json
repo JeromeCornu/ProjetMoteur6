@@ -1,0 +1,127 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "dep/glm",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-dep.glm-Debug-147242528fef9d17abfe.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "dep/SDL",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						4
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "moteur",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "SDL2",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2::@7f3aa4775a7b45ed07cf",
+					"jsonFile" : "target-SDL2-Debug-e3de738e94b871f5c401.json",
+					"name" : "SDL2",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2-static::@7f3aa4775a7b45ed07cf",
+					"jsonFile" : "target-SDL2-static-Debug-ea663d382c1fd2aefdda.json",
+					"name" : "SDL2-static",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2main::@7f3aa4775a7b45ed07cf",
+					"jsonFile" : "target-SDL2main-Debug-df8a1a4e562bed5fcd43.json",
+					"name" : "SDL2main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "moteur::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-moteur-Debug-a2410c5f7640d27ef755.json",
+					"name" : "moteur",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "uninstall::@7f3aa4775a7b45ed07cf",
+					"jsonFile" : "target-uninstall-Debug-0943864c60c110637686.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/out/build/x64-Debug",
+		"source" : "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -6,8 +6,8 @@
 
 #include <SDL.h>
 #include <gl/GL.h>
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include "dep/glm/glm/glm.hpp"
+#include "dep/glm/glm/ext.hpp"
 
 #include <chrono>
 #include <iostream>
@@ -15,11 +15,9 @@
 #include <vector>
 #include <numeric>
 
-// Include my executables
-#include "Cube.cpp"
-#include "Sphere.cpp"
 #include "gc_3d_defs.hpp"
-#include "Geometry.cpp"
+
+using namespace GC_3D;
 
 int main(int argc, char* argv[])
 {
@@ -71,20 +69,6 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
 
-        // Affichage des FPS
-        static unsigned int fps = 0;
-        static clock_t t = clock();
-        if (clock() - t > CLOCKS_PER_SEC)
-        {
-            char str[50] = "";
-            sprintf(str, "Moteur OpenGl - FPS : %u", fps);
-            SDL_SetWindowTitle(win, str);
-            t = clock();
-            fps = 0;
-        }
-        fps++;
-
-
         const float radius = 3.0;
 
         auto curTime = std::chrono::steady_clock::now();
@@ -99,7 +83,7 @@ int main(int argc, char* argv[])
         glm::mat4 view;
         view = glm::lookAt(
             cameraPos,                  //Position de la camera
-            cameraTarget,               //Cible à regarder
+            cameraTarget,               //Cible Ã  regarder
             glm::vec3(0.0, 1.0, 0.0)    //position vertical
         );
 
@@ -118,16 +102,13 @@ int main(int argc, char* argv[])
         glDepthFunc(GL_LESS);
 
 
-        // ---  DRAW HERE  ---  
-        // Cube
-        //Cube cube;
-        //cube.makeCube();
-
-        Geometry dash;
-        dash.Bind();
-        dash.Draw();
+        Geometry cube;
+        cube.Bind();
+        cube.Draw();
 
         SDL_GL_SwapWindow(win);
+
+
     }
 
     printf("Hello World");
