@@ -79,7 +79,6 @@ GLuint shader::loadShader::LoadShaders(const char* vertex_file_path, const char*
 	}
 
 
-
 	// Link the program
 	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
