@@ -1,26 +1,26 @@
-#include <cstdio>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include "GL/glew.h"
 #include <SDL.h>
+#include <GL/glew.h>
 #include <gl/GL.h>
 #include "dep/glm/glm/glm.hpp"
 #include "dep/glm/glm/ext.hpp"
 
-#include <chrono>
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <numeric>
-
 #include "gc_3d_defs.hpp"
-#include "loadShader.cpp"
-using namespace glm;
+#include "loadShader.hpp"
+#include "CubeTuto.hpp"
 
+using namespace glm;
 using namespace GC_3D;
+using namespace shader;
+using namespace cube;
+
+
 
 int main(int argc, char* argv[])
 {
@@ -62,8 +62,10 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = LoadShaders("C:/Users/bherr/Documents/projetMoteur/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bherr/Documents/projetMoteur/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
+    GLuint programID = shader::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.txt", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.txt");
     glUseProgram(programID);
+
+    auto startTime = Clock::now();
 
     bool appRunning = true;
     while (appRunning)
@@ -97,30 +99,32 @@ int main(int argc, char* argv[])
         // Or, for an ortho camera :
         //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
+        auto curTime = Clock::now();
+
         // Camera matrix
         mat4 View = lookAt(
-            vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+            vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
             vec3(0, 0, 0), // and looks at the origin
             vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
-
+        
         // Model matrix : an identity matrix (model will be at the origin)
         mat4 Model = mat4(1.0f);
-
-        mat4 Translation = translate(mat4(1.0F), vec3(1.0f, 0.0f, 0.0f));
-        mat4 Rotation = rotate(mat4(1.0F), 10.0f, vec3(1.0F, 0.0F, 0.0F));
+       
+        mat4 Translation = translate(mat4(1.0F), vec3(0.0f, 0.0f, 0.0f));
+        mat4 Rotation = rotate(mat4(1.0F), 0.0f, vec3(1.0F, 0.0F, 0.0F));
         mat4 Scaling = scale(mat4(1.0F), vec3(2.0F, 1.0F, 1.0F));
 
-        Model = ((Scaling * Rotation) * Translation) * Model;
+        Model = Translation * Rotation * Scaling * Model;
 
         // Our ModelViewProjection : multiplication of our 3 matrices
-        mat4 mvp = Projection * View * Model;
+        mat4 mvp = Projection* View* Model;
 
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
+/*
         // Send our transformation to the currently bound shader, in the "MVP" uniform
         // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(mvp));
 
 
         glEnableVertexAttribArray(0);
@@ -133,54 +137,18 @@ int main(int argc, char* argv[])
             0,                  // stride
             (void*)0            // array buffer offset
         );
+
         // Draw the triangle !
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
 
-        /*glClearColor(0.0, 0.0, 0.0, 0.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        */
+        // create cube
+        cube::CubeTuto cube;
+        cube.makeCube();
 
-
-        const float radius = 3.0;
-
-        auto curTime = std::chrono::steady_clock::now();
-        std::chrono::duration<float> fTime = curTime - prevTime;
-        float camX = sin(fTime.count()) * radius;
-        float camZ = cos(fTime.count()) * radius;
-
-        vec3 cameraPos = vec3(camX, 1.5, camZ);
-        vec3 cameraTarget = vec3(0.0, 0.0, 0.0);
-
-        // Creation de la camera
-        mat4 view;
-        view = lookAt(
-            cameraPos,                  //Position de la camera
-            cameraTarget,               //Cible Ã  regarder
-            vec3(0.0, 1.0, 0.0)    //position vertical
-        );
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadMatrixf(&view[0][0]);
-
-        mat4 projection = perspective(70.0F * (3.1416F / 180.0F), ratio, 0.01F, 100.0F);
-        glMatrixMode(GL_PROJECTION);
-        glLoadMatrixf((float*)&projection);
-
-
-        // Test de profondeur
-        glEnable(GL_DEPTH_TEST);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDepthMask(GL_TRUE);
-        glDepthFunc(GL_LESS);
-
-
-        Geometry cube;
-        cube.Bind();
-        cube.Draw();*/
 
         SDL_GL_SwapWindow(win);
-
-
     }
 
     //printf("Hello World");
