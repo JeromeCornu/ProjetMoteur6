@@ -16,6 +16,7 @@
 #include <numeric>
 
 #include "gc_3d_defs.hpp"
+#include "Geometry.cpp"
 
 using namespace GC_3D;
 
@@ -69,6 +70,22 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
 
+        // Affichage des FPS
+        static unsigned int fps = 0;
+        static clock_t t = clock();
+        if (clock() - t > CLOCKS_PER_SEC)
+        {
+            char str[50] = "";
+            sprintf(str, "Moteur OpenGl - FPS : %u", fps);
+            SDL_SetWindowTitle(win, str);
+            t = clock();
+            fps = 0;
+        }
+        fps++;
+
+
+
+
         const float radius = 3.0;
 
         auto curTime = std::chrono::steady_clock::now();
@@ -102,13 +119,13 @@ int main(int argc, char* argv[])
         glDepthFunc(GL_LESS);
 
 
+        // Creation du cube
         Geometry cube;
         cube.Bind();
         cube.Draw();
 
+
         SDL_GL_SwapWindow(win);
-
-
     }
 
     printf("Hello World");
