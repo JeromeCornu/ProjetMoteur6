@@ -1,4 +1,4 @@
-#include <cstdio>
+﻿#include <cstdio>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -6,10 +6,19 @@
 
 #include "gc_3d_defs.hpp"
 #include <SDL.h>
+#include "GL/glew.h"
 #include <gl/GL.h>
 #include "camera.hpp"
+#include "loadShader.cpp"
+
 
 using namespace GC_3D;
+
+void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+    printf(message);
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -20,7 +29,7 @@ int main(int argc, char* argv[])
     Positions.push_back(vec3(0, 1, 0));
     Positions.push_back(vec3(1, 0, 0));*/
 
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 
@@ -31,39 +40,107 @@ int main(int argc, char* argv[])
         768,
         windowsFlags);
 
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+
+
     SDL_GLContext context = SDL_GL_CreateContext(win);
     SDL_GL_MakeCurrent(win, context);
+    
+    glewInit();
+
+
+    glDebugMessageCallback(&glDebugOutput, nullptr);
+
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+    
+    static const GLfloat g_vertex_buffer_data[] = {
+   -1.0f, -1.0f, 0.0f,
+   1.0f, -1.0f, 0.0f,
+   0.0f,  1.0f, 0.0f,
+    };
+
+    // This will identify our vertex buffer
+    GLuint vertexbuffer;
+    // Generate 1 buffer, put the resulting identifier in vertexbuffer
+    glGenBuffers(1, &vertexbuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+    GLuint programID = LoadShaders("D:\\Users\\gjacot\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
+        "D:\\Users\\gjacot\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
+    glUseProgram(programID);
 
     bool apprunning = true;
     while (apprunning)
     {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         SDL_Event curEvent;
         while (SDL_PollEvent(&curEvent))
         {
-
+            switch (curEvent.type)
+            {
+            case SDL_MOUSEMOTION:
+                printf("We got a motion event.\n");
+                printf("Current mouse position is: (%d, %d)\n", curEvent.motion.x, curEvent.motion.y);
+                break;
+            
+            case SDL_KEYDOWN:
+                printf("we got a keyBoard event.\n");
+                break;
+            
+            case SDL_QUIT:
+                apprunning = false;
+                break;
+            
+            default:
+               printf("Unhandled Event!\n");
+                break;
+            }
         }
         glViewport(0, 0, 1024, 768);
-        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClearColor(0.5, 0.5, 0.9, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glColor4f(1.0, 1.0, 1.0, 1.0);
+        //glColor4f(1.0, 1.0, 1.0, 1.0);
         /*glBegin(GL_TRIANGLES);
         glVertex3f(-1.0, 0.0, 0.0);
         glVertex3f(0.0, 1.0, 0.0);
         glVertex3f(1.0, 0.0, 0.0);
         
         glEnd();*/
+        
+        
+        /*        
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(3, GL_FLOAT, sizeof(vec3), Positions.data());
+        */
 
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, Positions.size(), GL_UNSIGNED_INT, index);
+        
+
+        //glDrawElements(GL_TRIANGLES, Positions.size(), GL_UNSIGNED_INT, index);
+
+        // 1st attribute buffer : vertices
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glVertexAttribPointer(
+            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // size
+            GL_FLOAT,           // type
+            GL_FALSE,           // normalized?
+            0,                  // stride
+            (void*)0            // array buffer offset
+        );
+        // Draw the triangle !
+        glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        glDisableVertexAttribArray(0);
 
         SDL_GL_SwapWindow(win);
-
-
     }
 
-    printf("Hello World");
     return 0;
 }
