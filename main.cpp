@@ -16,8 +16,12 @@
 #include <vector>
 #include <numeric>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "dep/stb/stb_image.h"
+
 #include "gc_3d_defs.hpp"
 #include "loadShader.cpp"
+
 using namespace glm;
 
 using namespace GC_3D;
@@ -93,6 +97,45 @@ int main(int argc, char* argv[])
         1.0f,-1.0f, 1.0f
     };
 
+    static const GLfloat g_uv_buffer_data[] = {
+        0.000059f, 1.0f - 0.000004f,
+        0.000103f, 1.0f - 0.336048f,
+        0.335973f, 1.0f - 0.335903f,
+        1.000023f, 1.0f - 0.000013f,
+        0.667979f, 1.0f - 0.335851f,
+        0.999958f, 1.0f - 0.336064f,
+        0.667979f, 1.0f - 0.335851f,
+        0.336024f, 1.0f - 0.671877f,
+        0.667969f, 1.0f - 0.671889f,
+        1.000023f, 1.0f - 0.000013f,
+        0.668104f, 1.0f - 0.000013f,
+        0.667979f, 1.0f - 0.335851f,
+        0.000059f, 1.0f - 0.000004f,
+        0.335973f, 1.0f - 0.335903f,
+        0.336098f, 1.0f - 0.000071f,
+        0.667979f, 1.0f - 0.335851f,
+        0.335973f, 1.0f - 0.335903f,
+        0.336024f, 1.0f - 0.671877f,
+        1.000004f, 1.0f - 0.671847f,
+        0.999958f, 1.0f - 0.336064f,
+        0.667979f, 1.0f - 0.335851f,
+        0.668104f, 1.0f - 0.000013f,
+        0.335973f, 1.0f - 0.335903f,
+        0.667979f, 1.0f - 0.335851f,
+        0.335973f, 1.0f - 0.335903f,
+        0.668104f, 1.0f - 0.000013f,
+        0.336098f, 1.0f - 0.000071f,
+        0.000103f, 1.0f - 0.336048f,
+        0.000004f, 1.0f - 0.671870f,
+        0.336024f, 1.0f - 0.671877f,
+        0.000103f, 1.0f - 0.336048f,
+        0.336024f, 1.0f - 0.671877f,
+        0.335973f, 1.0f - 0.335903f,
+        0.667969f, 1.0f - 0.671889f,
+        1.000004f, 1.0f - 0.671847f,
+        0.667979f, 1.0f - 0.335851f
+    };
+
     GLuint vertexbuffer;
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
     glGenBuffers(1, &vertexbuffer);
@@ -106,14 +149,62 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_cube_vertex_buffer_data), g_cube_vertex_buffer_data, GL_STATIC_DRAW);
 
+    GLuint uvbuffer;
+    glGenBuffers(1, &uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+
     GLuint colorbuffer;
 
     GLuint programID = LoadShaders("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
     
+    GLint UniformCount;
+
+    glGetProgramiv(programID, GL_ACTIVE_UNIFORMS, &UniformCount);
+
+    for (size_t i = 0; i < UniformCount; i++)
+    {
+        char uniform_name[255];
+        GLsizei uniform_name_length;
+        GLint size;
+        GLenum type;
+        glGetActiveUniform(programID, i, 255, &uniform_name_length, &size, &type, uniform_name);
+        std::cout << "c le debug : " << std::string(uniform_name, uniform_name_length) << " [" << i << "]" << std::endl;
+    }
+
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
+
+    int width = 192;
+    int height = 192;
+    int bpp = 1;
+
+    stbi_uc* Image = stbi_load("C:/Users/bapti/Pictures/cube.png", &width, &height, &bpp, 3);
+
+    GLuint Texture;
+
+    glGenTextures(1, &Texture);
+
+    glActiveTexture(Texture);
+
+    glBindTexture(GL_TEXTURE_2D, Texture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, Image);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+
+
 
     bool appRunning = true;
     while (appRunning)
@@ -206,17 +297,20 @@ int main(int argc, char* argv[])
             (void*)0            // array buffer offset
         );
 
+        glUniform1i(0, Texture);
 
+        glUniform2f(2, -0.001f, 0.011f);
+        glUniform2f(3, 1.0f, 1.0f);
 
         // Draw the triangle !
         glBindVertexArray(vertexbuffer);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
         glVertexAttribPointer(
             1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-            3,                                // size
+            2,                                // size
             GL_FLOAT,                         // type
             GL_FALSE,                         // normalized?
             0,                                // stride
