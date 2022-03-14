@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
 
     GLuint colorbuffer;
 
-    GLuint programID = LoadShaders("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
+    GLuint programID = LoadShaders("C:/Users/bherr/Documents/GitHub/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bherr/Documents/GitHub/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
     
     GLint UniformCount;
@@ -177,19 +177,21 @@ int main(int argc, char* argv[])
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
-    int width = 192;
-    int height = 192;
+    int width = 902;
+    int height = 634;
     int bpp = 1;
 
-    stbi_uc* Image = stbi_load("C:/Users/bapti/Pictures/cube.png", &width, &height, &bpp, 3);
+    stbi_uc* Image = stbi_load("C:/Users/bherr/Pictures/goblin.png", &width, &height, &bpp, 3);
 
     GLuint Texture;
 
     glGenTextures(1, &Texture);
 
-    glActiveTexture(Texture);
+    glActiveTexture(GL_TEXTURE0);
 
     glBindTexture(GL_TEXTURE_2D, Texture);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, Image);
 
@@ -199,11 +201,13 @@ int main(int argc, char* argv[])
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // When MINifying the image, use a LINEAR blend of two mipmaps, each filtered LINEARLY too
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
 
 
     glGenerateMipmap(GL_TEXTURE_2D);
-
-
 
 
     bool appRunning = true;
@@ -297,13 +301,13 @@ int main(int argc, char* argv[])
             (void*)0            // array buffer offset
         );
 
-        glUniform1i(0, Texture);
+        //glUniform1i(0, Texture);
 
-        glUniform2f(2, -0.001f, 0.011f);
-        glUniform2f(3, 1.0f, 1.0f);
+        //glUniform2f(2, -0.001f, 0.011f);
+       // glUniform2f(3, 1.0f, 1.0f);
 
         // Draw the triangle !
-        glBindVertexArray(vertexbuffer);
+        //glBindVertexArray(vertexbuffer);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glEnableVertexAttribArray(1);
@@ -319,7 +323,7 @@ int main(int argc, char* argv[])
 
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp2[0][0]);
 
-        glEnableVertexAttribArray(2);
+        //glEnableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
         glVertexAttribPointer(
             0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
@@ -330,7 +334,7 @@ int main(int argc, char* argv[])
             (void*)0                          // array buffer offset
         ); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
-        glBindVertexArray(cubebuffer);
+        //glBindVertexArray(cubebuffer);
         glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
 
         /*glClearColor(0.0, 0.0, 0.0, 0.0);
