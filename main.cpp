@@ -70,8 +70,8 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = LoadShaders("D:\\Users\\gjacot\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
-        "D:\\Users\\gjacot\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
+    GLuint programID = LoadShaders("D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
+        "D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
 
     bool apprunning = true;
