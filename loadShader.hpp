@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <gl/GL.h>
 
-namespace shader
+namespace GC_3D
 {
     class loadShader
     {

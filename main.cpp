@@ -17,13 +17,13 @@
 
 using namespace glm;
 using namespace GC_3D;
-using namespace shader;
-using namespace cube;
 
 
 
 int main(int argc, char* argv[])
 {
+    GC_3D::CubeTuto cube;
+
     SDL_Init(SDL_INIT_VIDEO);
     uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
@@ -62,8 +62,11 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = shader::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.txt", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.txt");
+    GLuint programID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.txt", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.txt");
     glUseProgram(programID);
+
+    // initialize cube
+    cube.initializeCube();
 
     auto startTime = Clock::now();
 
@@ -92,6 +95,12 @@ int main(int argc, char* argv[])
             }
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Enable depth test
+        glEnable(GL_DEPTH_TEST);
+        // Accept fragment if it closer to the camera than the former one
+        glDepthFunc(GL_LESS);
+        // Clear the screen
+
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
@@ -103,7 +112,8 @@ int main(int argc, char* argv[])
 
         // Camera matrix
         mat4 View = lookAt(
-            vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
+            //vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
+            vec3(4,3,3),
             vec3(0, 0, 0), // and looks at the origin
             vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
@@ -113,7 +123,7 @@ int main(int argc, char* argv[])
        
         mat4 Translation = translate(mat4(1.0F), vec3(0.0f, 0.0f, 0.0f));
         mat4 Rotation = rotate(mat4(1.0F), 0.0f, vec3(1.0F, 0.0F, 0.0F));
-        mat4 Scaling = scale(mat4(1.0F), vec3(2.0F, 1.0F, 1.0F));
+        mat4 Scaling = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
 
         Model = Translation * Rotation * Scaling * Model;
 
@@ -121,12 +131,13 @@ int main(int argc, char* argv[])
         mat4 mvp = Projection* View* Model;
 
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-/*
+        GLuint TextureLocId = glGetUniformLocation(programID, "myTextureSampler");
+
         // Send our transformation to the currently bound shader, in the "MVP" uniform
         // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(mvp));
 
-
+/*
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glVertexAttribPointer(
@@ -144,9 +155,7 @@ int main(int argc, char* argv[])
 
         */
         // create cube
-        cube::CubeTuto cube;
-        cube.makeCube();
-
+        cube.makeCube(TextureLocId, iTex);
 
         SDL_GL_SwapWindow(win);
     }
