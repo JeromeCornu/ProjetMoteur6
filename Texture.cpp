@@ -1,13 +1,11 @@
 #include "Texture.hpp"
 
-#include <SDL.h>
-#include <GL/glew.h>
-#include <gl/GL.h>
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void GC_3D::Texture::ApplyTexture(int width, int height, int bpp, char* path)
+using namespace GC_3D;
+
+void Texture::applyTexture(int width, int height, int bpp, char* path)
 {
 	stbi_uc* Image = stbi_load(path, &width, &height, &bpp, 3);
 

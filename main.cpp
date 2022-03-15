@@ -5,24 +5,22 @@
 #include <windows.h>
 #endif
 
-#include <SDL.h>
-#include <GL/glew.h>
-#include <gl/GL.h>
-#include "dep/glm/glm/glm.hpp"
-#include "dep/glm/glm/ext.hpp"
-
 #include "gc_3d_defs.hpp"
+
 #include "loadShader.hpp"
 #include "CubeTuto.hpp"
+#include "Texture.hpp"
 
 using namespace glm;
 using namespace GC_3D;
 
 
-
 int main(int argc, char* argv[])
 {
-    GC_3D::CubeTuto cube;
+    CubeTuto cube;
+    Texture texture;
+
+    /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
     SDL_Init(SDL_INIT_VIDEO);
     uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
@@ -34,6 +32,12 @@ int main(int argc, char* argv[])
         1024,
         768,
         windowsFlags);
+
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
 
     SDL_GLContext context = SDL_GL_CreateContext(win);
     SDL_GL_MakeCurrent(win, context);
@@ -65,8 +69,15 @@ int main(int argc, char* argv[])
     GLuint programID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.txt", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.txt");
     glUseProgram(programID);
 
+
+    /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
+
     // initialize cube
     cube.initializeCube();
+    // initialize texture
+    texture.applyTexture(500, 500, 1, "C:\\Users\\jcornu\\Pictures\\uwu.jpg");
+
+    /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
     auto startTime = Clock::now();
 
@@ -103,6 +114,8 @@ int main(int argc, char* argv[])
 
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+        /* ------------------------------------------------- MATRICES ------------------------------------------------------------- */
+
         mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
         // Or, for an ortho camera :
@@ -135,7 +148,9 @@ int main(int argc, char* argv[])
 
         // Send our transformation to the currently bound shader, in the "MVP" uniform
         // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value_ptr(mvp));
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+
+        /* --------------------------------------------- TRIANGLE ----------------------------------------------------------------- */
 
 /*
         glEnableVertexAttribArray(0);
@@ -152,14 +167,18 @@ int main(int argc, char* argv[])
         // Draw the triangle !
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
-
         */
-        // create cube
-        cube.makeCube(TextureLocId, iTex);
+
+        /* --------------------------------------------- CUBE ----------------------------------------------------------------- */
+
+        // Create cube
+        cube.makeCube(TextureLocId, &texture);
+
+        /* -------------------------------------------------------------------------------------------------------------- */
+
 
         SDL_GL_SwapWindow(win);
     }
 
-    //printf("Hello World");
     return 0;
 }

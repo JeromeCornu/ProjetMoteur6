@@ -1,18 +1,14 @@
-#include <SDL.h>
-#include <GL/glew.h>
-#include <gl/GL.h>
-
 #include <string>       // std::string
 #include <iostream>     // std::cout
 #include <sstream>      // std::stringstream, std::stringbuf
 #include <fstream>     
 
-
-#include "gc_3d_defs.hpp"
 #include "loadShader.hpp"
 
+using namespace GC_3D;
 
-GLuint GC_3D::loadShader::LoadShaders(const char* vertex_file_path, const char* fragment_file_path) {
+GLuint loadShader::LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
+{
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -62,7 +58,6 @@ GLuint GC_3D::loadShader::LoadShaders(const char* vertex_file_path, const char* 
 	}
 
 
-
 	// Compile Fragment Shader
 	printf("Compiling shader : %s\n", fragment_file_path);
 	char const* FragmentSourcePointer = FragmentShaderCode.c_str();
@@ -104,5 +99,3 @@ GLuint GC_3D::loadShader::LoadShaders(const char* vertex_file_path, const char* 
 
 	return ProgramID;
 }
-
-

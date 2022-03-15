@@ -1,6 +1,4 @@
-#include <SDL.h>
-#include <GL/glew.h>
-#include <gl/GL.h>
+#include "gc_3d_defs.hpp"
 
 namespace GC_3D
 {
@@ -13,7 +11,7 @@ namespace GC_3D
 
         GLuint GetTexId() const { return m_Id; }
 
-        void ApplyTexture(int width, int height, int bpp, char* path);
+        void applyTexture(int width, int height, int bpp, char* path);
     };
 
 }

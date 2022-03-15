@@ -1,6 +1,4 @@
-#include <SDL.h>
-#include <GL/glew.h>
-#include <gl/GL.h>
+#include "gc_3d_defs.hpp"
 
 namespace GC_3D
 {
@@ -12,8 +10,8 @@ namespace GC_3D
         Texture* m_Texture;
 
     public:
-        void makeCube (GLuint iTexLoc, Texture* iTex);
-        void initializeCube();
+        void initializeCube() const;
+        void makeCube(GLuint iTexLoc, Texture* iTex) const;
     };
 
 }

@@ -1,14 +1,3 @@
-#include <cstdio>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#include <SDL.h>
-#include <gl/GL.h>
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
-
 #include <chrono>
 #include <iostream>
 #include <iomanip>
@@ -25,7 +14,7 @@ public:
 
     //These arrays should all have the same size.
     //They can be empty as well
-    Vector<vec3> m_Pos = { {-1, -1, -1}, {1, -1, -1}, {-1, 1, -1}, {1, 1, -1},    // Front
+    Vector<vec3> m_Pos = { {-1, -1, -1}, {1, -1, -1}, {-1, 1, -1}, {1, 1, -1},        // Front
                                {-1, -1, 1}, {1, -1, 1}, {-1, 1, 1}, {1, 1, 1},        // Back
 
                                {1, -1, -1}, {1, -1, 1}, {1, 1, -1}, {1, 1, 1},        // Right
