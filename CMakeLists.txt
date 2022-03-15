@@ -2,7 +2,7 @@ project(moteur)
 
 include(glew.cmake)
 
-add_executable(moteur main.cpp gc_3d_defs.hpp)
+add_executable(moteur main.cpp gc_3d_defs.hpp Controls.cpp)
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)
 set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm)

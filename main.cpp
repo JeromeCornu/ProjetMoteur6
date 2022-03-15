@@ -21,6 +21,7 @@
 
 #include "gc_3d_defs.hpp"
 #include "loadShader.cpp"
+#include "Controls.hpp"
 
 using namespace glm;
 
@@ -31,12 +32,15 @@ int main(int argc, char* argv[])
     SDL_Init(SDL_INIT_VIDEO);
     uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
+    GLuint ScreenWidth = 1024;
+    GLuint ScreenHeight = 768;
+    Controls controller;
 
     SDL_Window* win = SDL_CreateWindow("Moteur",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        1024,
-        768,
+        ScreenWidth,
+        ScreenHeight,
         windowsFlags);
 
     SDL_GLContext context = SDL_GL_CreateContext(win);
@@ -46,7 +50,7 @@ int main(int argc, char* argv[])
 
     auto prevTime = std::chrono::steady_clock::now();
 
-    glViewport(0, 0, 1024, 768);
+    glViewport(0, 0, ScreenWidth, ScreenHeight);
 
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
@@ -249,45 +253,19 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+        controller.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight);
+        mat4 ProjectionMatrix = controller.GetProjectionMatrix();
+        mat4 ViewMatrix = controller.GetViewMatrix();
+        mat4 ModelMatrix = mat4(1.0);
+        mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
-        // Or, for an ortho camera :
-        //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
-        // Camera matrix
-        mat4 View = lookAt(
-            vec3(4, 3, 5), // Camera is at (4,3,3), in World Space
-            vec3(0, 0, 0), // and looks at the origin
-            vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-        );
-
-        // Model matrix : an identity matrix (model will be at the origin)
-        mat4 Model = mat4(1.0f);
-
-        mat4 Translation = translate(mat4(1.0F), vec3(0.0f, 0.0f, 1.0f));
-        mat4 Rotation = rotate(mat4(1.0F), radians(45.0f), vec3(1.0F, 1.0F, 1.0F));
-        mat4 Scaling = scale(mat4(1.0F), vec3(2.0F, 2.0F, 2.0F));
-
-        Model = ((Scaling * Translation) * Rotation) * Model;
-
-        mat4 Model2 = mat4(1.0f);
-
-        mat4 Translation2 = translate(mat4(1.0F), vec3(0.0f, 0.0f, 0.0f));
-        mat4 Rotation2 = rotate(mat4(1.0F), radians(0.0f), vec3(1.0F, 1.0F, 1.0F));
-        mat4 Scaling2 = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
-
-        Model2 = ((Scaling2 * Translation2) * Rotation2) * Model2;
-
-        // Our ModelViewProjection : multiplication of our 3 matrices
-        mat4 mvp = Projection * View * Model;
-
-        mat4 mvp2 = Projection * View * Model2;
 
         GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
         // Send our transformation to the currently bound shader, in the "MVP" uniform
         // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
 
         glEnableVertexAttribArray(0);
@@ -320,8 +298,6 @@ int main(int argc, char* argv[])
             0,                                // stride
             (void*)0                          // array buffer offset
         );
-
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp2[0][0]);
 
         //glEnableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
