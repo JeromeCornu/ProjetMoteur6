@@ -10,6 +10,10 @@
 #include <gl/GL.h>
 #include "camera.hpp"
 #include "loadShader.cpp"
+#include "imgui.h"
+#include "backends/imgui_impl_sdl.h"
+#include "backends/imgui_impl_opengl3.h"
+
 
 
 using namespace GC_3D;
@@ -70,6 +74,20 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer bindings
+    // window is the SDL_Window*
+    // context is the SDL_GLContext
+    ImGui_ImplSDL2_InitForOpenGL(win, context);
+    ImGui_ImplOpenGL3_Init();
+
     GLuint programID = LoadShaders("D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
         "D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
@@ -82,6 +100,8 @@ int main(int argc, char* argv[])
         SDL_Event curEvent;
         while (SDL_PollEvent(&curEvent))
         {
+            ImGui_ImplSDL2_ProcessEvent(&curEvent);
+
             switch (curEvent.type)
             {
             case SDL_MOUSEMOTION:
@@ -93,14 +113,27 @@ int main(int argc, char* argv[])
                 printf("we got a keyBoard event.\n");
                 break;
             
-            case SDL_QUIT:
-                apprunning = false;
+            case SDL_QUIT || SDL_WINDOWEVENT:
+                if (curEvent.window.event == SDL_WINDOWEVENT_CLOSE && curEvent.window.windowID == SDL_GetWindowID(win))
+                {
+                    apprunning = false;
+                }
                 break;
             
             default:
                printf("Unhandled Event!\n");
                 break;
             }
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplSDL2_NewFrame(win);
+            ImGui::NewFrame();
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // Render other stuff...
+            // Render imgui
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            SDL_GL_SwapWindow(win);
         }
         glViewport(0, 0, 1024, 768);
         glClearColor(0.5, 0.5, 0.9, 0.0);
@@ -141,6 +174,11 @@ int main(int argc, char* argv[])
 
         SDL_GL_SwapWindow(win);
     }
+
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
 
     return 0;
 }
