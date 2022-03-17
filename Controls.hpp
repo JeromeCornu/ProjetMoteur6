@@ -1,4 +1,4 @@
-#include "GL/glew.h"
+/*#include "GL/glew.h"
 
 namespace GC_3D
 {
@@ -11,4 +11,4 @@ namespace GC_3D
 
 		mat4 GetViewMatrix();
 	};
-}
+}*/

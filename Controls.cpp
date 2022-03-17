@@ -1,4 +1,4 @@
-#include "GL/glew.h"
+/*#include "GL/glew.h"
 #include "dep/glm/glm/glm.hpp"
 #include "dep/glm/glm/ext.hpp"
 #include "Controls.hpp"
@@ -85,4 +85,4 @@ mat4 Controls::GetViewMatrix() {
 		position + direction,	// and looks here : at the same position, plus "direction"
 		up						// Head is up (set to 0,-1,0 to look upside-down)
 	);
-}
+}*/

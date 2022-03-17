@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
     GLuint ScreenWidth = 1024;
     GLuint ScreenHeight = 768;
-    Controls controller;
+    //Controls controller;
 
     SDL_Window* win = SDL_CreateWindow("Moteur",
         SDL_WINDOWPOS_UNDEFINED,
@@ -225,18 +225,27 @@ int main(int argc, char* argv[])
             g_color_buffer_data[3 * v + 2] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         }
 
+        static unsigned int fps = 0;
+        static clock_t t = clock();
+        if (clock() - t > CLOCKS_PER_SEC)
+        {
+            char str[50] = "";
+            sprintf(str, "Moteur OpenGl - FPS : %u", fps);
+            SDL_SetWindowTitle(win, str);
+            t = clock();
+            fps = 0;
+        }
+        fps++;
+
         glGenBuffers(1, &colorbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 
         SDL_Event curEvent;
         /*int width, height;
-        SDL_GetWindowSize(win, &width, &height);
+        SDL_GetWindowSize(win, &width, &height);*/
 
         float ratio = width / (float)height;
-
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);*/
 
         while (SDL_PollEvent(&curEvent))
         {
@@ -253,40 +262,10 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-        controller.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight);
-        mat4 ProjectionMatrix = controller.GetProjectionMatrix();
-        mat4 ViewMatrix = controller.GetViewMatrix();
-        mat4 ModelMatrix = mat4(1.0);
-        mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+        //controller.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight);
+        
 
 
-
-        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
-        // Send our transformation to the currently bound shader, in the "MVP" uniform
-        // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-        );
-
-        //glUniform1i(0, Texture);
-
-        //glUniform2f(2, -0.001f, 0.011f);
-       // glUniform2f(3, 1.0f, 1.0f);
-
-        // Draw the triangle !
-        //glBindVertexArray(vertexbuffer);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -299,19 +278,50 @@ int main(int argc, char* argv[])
             (void*)0                          // array buffer offset
         );
 
-        //glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
-        glVertexAttribPointer(
-            0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-            3,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        ); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        mat4 ProjectionMatrix = perspective(70.0f, ratio, 0.01F, 500002.0F);
+        mat4 view;
+        view = lookAt(
+            vec3(-5, -5, 5),                  //Position de la camera
+            vec3(5001, 5001, 5001),               //Cible Ã  regarder
+            vec3(0.0, 1.0, 0.0)    //position vertical
+        );
+
+        //glEnableVertexAttribArray(2); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
         //glBindVertexArray(cubebuffer);
-        glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+        for (size_t i = 0; i < 5000; i++)
+        {
+            auto curTime = std::chrono::steady_clock::now();
+            std::chrono::duration<float> fTime = curTime - prevTime;
+            float turn = sin(fTime.count());
+
+            mat4 Translation = translate(mat4(1.0), vec3(1+i, 1+i, i+1));
+            mat4 Rotation = rotate(mat4(1.0), i+turn*10, vec3(1.0f, 1.0f, 1.0f));
+
+            mat4 ModelMatrix = mat4(1.0);
+            ModelMatrix = Rotation * Translation * ModelMatrix;
+            mat4 MVP = ProjectionMatrix * view * ModelMatrix;
+
+
+
+            GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+            // Send our transformation to the currently bound shader, in the "MVP" uniform
+            // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
+            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+            glEnableVertexAttribArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
+            glVertexAttribPointer(
+                0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+                3,                                // size
+                GL_FLOAT,                         // type
+                GL_FALSE,                         // normalized?
+                0,                                // stride
+                (void*)0                          // array buffer offset
+            );
+
+            glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+        }
 
         /*glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
