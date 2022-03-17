@@ -26,6 +26,8 @@ void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum seve
 
 int main(int argc, char* argv[])
 {
+    float speed;
+    bool someBoolean;
     Vector<vec3> Positions = { {0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {0, 0, 1}, {1, 1, 0}, {1, 0, 1}, {0, 1, 1}, {1, 1, 1} };
     int index[] = { 0, 1, 2, 1, 2, 4, 2, 4, 6, 4, 6, 7, 1, 4, 5, 4, 5, 7, 0, 1, 3, 1, 3, 5, 0, 2, 3, 2, 3, 6, 3, 5, 6, 5, 6, 7};
 
@@ -104,6 +106,13 @@ int main(int argc, char* argv[])
 
             switch (curEvent.type)
             {
+            case SDL_QUIT || SDL_WINDOWEVENT:
+                if (curEvent.window.event == SDL_WINDOWEVENT_CLOSE && curEvent.window.windowID == SDL_GetWindowID(win))
+                {
+                    apprunning = false;
+                }
+                break;
+
             case SDL_MOUSEMOTION:
                 printf("We got a motion event.\n");
                 printf("Current mouse position is: (%d, %d)\n", curEvent.motion.x, curEvent.motion.y);
@@ -113,30 +122,26 @@ int main(int argc, char* argv[])
                 printf("we got a keyBoard event.\n");
                 break;
             
-            case SDL_QUIT || SDL_WINDOWEVENT:
-                if (curEvent.window.event == SDL_WINDOWEVENT_CLOSE && curEvent.window.windowID == SDL_GetWindowID(win))
-                {
-                    apprunning = false;
-                }
-                break;
-            
+
             default:
                printf("Unhandled Event!\n");
                 break;
             }
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplSDL2_NewFrame(win);
-            ImGui::NewFrame();
+
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             // Render other stuff...
             // Render imgui
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            SDL_GL_SwapWindow(win);
+
         }
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(win);
+        ImGui::NewFrame();
+
+
+
         glViewport(0, 0, 1024, 768);
-        glClearColor(0.5, 0.5, 0.9, 0.0);
+        glClearColor(0.5f, 0.5f, 0.9f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         //glColor4f(1.0, 1.0, 1.0, 1.0);
@@ -172,6 +177,16 @@ int main(int argc, char* argv[])
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
 
+        ImGui::Begin("MyWindow");
+        ImGui::Checkbox("Boolean property", &someBoolean);
+        if (ImGui::Button("Reset Speed")) {
+            // This code is executed when the user clicks the button
+            speed = 0;
+        }
+        ImGui::SliderFloat("Speed", &speed, 0.0f, 10.0f);
+        ImGui::End();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(win);
     }
 
