@@ -10,7 +10,9 @@
 #include "loadShader.hpp"
 #include "CubeTuto.hpp"
 #include "Texture.hpp"
+#include <iostream>
 
+using namespace std;
 using namespace glm;
 using namespace GC_3D;
 
@@ -81,9 +83,29 @@ int main(int argc, char* argv[])
 
     auto startTime = Clock::now();
 
+    // Nb cube wished
+    //int i = 0;
+    // Nb cube drawn
+    int count = 0;
+
+    cout << "Saisir le nombre de cube voulu : ";
+    cin >> count;
+    cout << "On affiche " << count << " cube(s)." << endl;
+
+
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+
     bool appRunning = true;
     while (appRunning)
     {
+        // Position of each cube - initialization
+        float positionX = 0;
+        float positionY = 0;
+        float positionZ = 0;
+
         SDL_Event curEvent;
         /*int width, height;
         SDL_GetWindowSize(win, &width, &height);
@@ -106,12 +128,7 @@ int main(int argc, char* argv[])
             }
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // Enable depth test
-        glEnable(GL_DEPTH_TEST);
-        // Accept fragment if it closer to the camera than the former one
-        glDepthFunc(GL_LESS);
         // Clear the screen
-
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
         /* ------------------------------------------------- MATRICES ------------------------------------------------------------- */
@@ -121,34 +138,51 @@ int main(int argc, char* argv[])
         // Or, for an ortho camera :
         //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
-        auto curTime = Clock::now();
+        //auto curTime = Clock::now();
 
         // Camera matrix
         mat4 View = lookAt(
             //vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
             vec3(4,3,3),
-            vec3(0, 0, 0), // and looks at the origin
+            vec3(0, 0, -5), // and looks at the origin
             vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
-        
-        // Model matrix : an identity matrix (model will be at the origin)
-        mat4 Model = mat4(1.0f);
-       
-        mat4 Translation = translate(mat4(1.0F), vec3(0.0f, 0.0f, 0.0f));
-        mat4 Rotation = rotate(mat4(1.0F), 0.0f, vec3(1.0F, 0.0F, 0.0F));
-        mat4 Scaling = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
 
-        Model = Translation * Rotation * Scaling * Model;
 
-        // Our ModelViewProjection : multiplication of our 3 matrices
-        mat4 mvp = Projection* View* Model;
+        // Position of the cube
+        GLuint MatrixID;
+        GLuint TextureLocId;
 
-        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-        GLuint TextureLocId = glGetUniformLocation(programID, "myTextureSampler");
+        for (int i = 0; i < count; i++)
+        {
+            auto curTime = std::chrono::steady_clock::now();
+            std::chrono::duration<float> fTime = curTime - prevTime;
+            float turn = sin(fTime.count());
 
-        // Send our transformation to the currently bound shader, in the "MVP" uniform
-        // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+            mat4 Translation = translate(mat4(1.0F), vec3(0.0f + positionX, 0.0f + positionY, 0.0f + positionZ));
+            mat4 Rotation = rotate(mat4(1.0F), 0.0f, vec3(1.0F, 0.0F, 0.0F));
+            mat4 Scaling = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
+
+            mat4 Model = Translation * Rotation * Scaling * mat4(1.0f);
+
+            // Our ModelViewProjection : multiplication of our 3 matrices
+            mat4 mvp = Projection * View * Model;
+
+            MatrixID = glGetUniformLocation(programID, "MVP");
+            TextureLocId = glGetUniformLocation(programID, "myTextureSampler");
+
+            // Send our transformation to the currently bound shader, in the "MVP" uniform
+            // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
+            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+
+
+            // Draw the cube
+            cube.makeCube(TextureLocId, &texture);
+
+
+            positionZ -= 4;
+
+        }
 
         /* --------------------------------------------- TRIANGLE ----------------------------------------------------------------- */
 
@@ -168,13 +202,6 @@ int main(int argc, char* argv[])
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
         */
-
-        /* --------------------------------------------- CUBE ----------------------------------------------------------------- */
-
-        // Create cube
-        cube.makeCube(TextureLocId, &texture);
-
-        /* -------------------------------------------------------------------------------------------------------------- */
 
 
         SDL_GL_SwapWindow(win);
