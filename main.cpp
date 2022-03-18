@@ -14,6 +14,8 @@
 #include "backends/imgui_impl_sdl.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "assimp_model.h"
+
 
 
 using namespace GC_3D;
@@ -26,10 +28,14 @@ void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum seve
 
 int main(int argc, char* argv[])
 {
+    CAssimpModel ModelLoader;
     float speed;
     bool someBoolean;
+    
+    /*
     Vector<vec3> Positions = { {0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {0, 0, 1}, {1, 1, 0}, {1, 0, 1}, {0, 1, 1}, {1, 1, 1} };
     int index[] = { 0, 1, 2, 1, 2, 4, 2, 4, 6, 4, 6, 7, 1, 4, 5, 4, 5, 7, 0, 1, 3, 1, 3, 5, 0, 2, 3, 2, 3, 6, 3, 5, 6, 5, 6, 7};
+    */
 
     /*Positions.push_back(vec3(-1, 0, 0));
     Positions.push_back(vec3(0, 1, 0));
@@ -93,6 +99,8 @@ int main(int argc, char* argv[])
     GLuint programID = LoadShaders("D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
         "D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
+
+    ModelLoader.DoTheImportThing("C:\\Users\\gjacot\\Downloads\\suzane.obj");
 
     bool apprunning = true;
     while (apprunning)
