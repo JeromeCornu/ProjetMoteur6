@@ -9,6 +9,8 @@ namespace GC_3D
 	public:
 		void ComputeMatricesFromInputs(GLuint Width, GLuint Height, SDL_Window* Win);
 
+		void Move(SDL_Keycode Type);
+
 		glm::mat4 GetProjectionMatrix();
 
 		glm::mat4 GetViewMatrix();

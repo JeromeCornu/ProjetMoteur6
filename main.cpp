@@ -64,81 +64,91 @@ int main(int argc, char* argv[])
     };
 
     static const GLfloat g_cube_vertex_buffer_data[] = {
-        -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-        -1.0f,-1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f, // triangle 1 : end
-        1.0f, 1.0f,-1.0f, // triangle 2 : begin
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f,-1.0f, // triangle 2 : end
-        1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,
-        1.0f,-1.0f,-1.0f,
-        1.0f, 1.0f,-1.0f,
-        1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,
-        1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f,-1.0f,-1.0f,
-        1.0f, 1.0f,-1.0f,
-        1.0f,-1.0f,-1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f,-1.0f,
-        -1.0f, 1.0f,-1.0f,
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,
+        -1.0f, -1.0f, 1.0f,
         -1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, // face avant
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
         -1.0f, 1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, // face gauche
+
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f, // face derrière
+
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f, // face droite
+
+         -1.0f, 1.0f, 1.0f,
+         -1.0f, 1.0f, -1.0f,
+         1.0f, 1.0f, -1.0f,
+         1.0f, 1.0f, -1.0f,
+         1.0f, 1.0f, 1.0f,
+         -1.0f, 1.0f, 1.0f, // face dessus
+
+         -1.0f, -1.0f, -1.0f,
+         -1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, -1.0f,
+         -1.0f, -1.0f, -1.0f
     };
 
     static const GLfloat g_uv_buffer_data[] = {
-        0.000059f, 1.0f - 0.000004f,
-        0.000103f, 1.0f - 0.336048f,
-        0.335973f, 1.0f - 0.335903f,
-        1.000023f, 1.0f - 0.000013f,
-        0.667979f, 1.0f - 0.335851f,
-        0.999958f, 1.0f - 0.336064f,
-        0.667979f, 1.0f - 0.335851f,
-        0.336024f, 1.0f - 0.671877f,
-        0.667969f, 1.0f - 0.671889f,
-        1.000023f, 1.0f - 0.000013f,
-        0.668104f, 1.0f - 0.000013f,
-        0.667979f, 1.0f - 0.335851f,
-        0.000059f, 1.0f - 0.000004f,
-        0.335973f, 1.0f - 0.335903f,
-        0.336098f, 1.0f - 0.000071f,
-        0.667979f, 1.0f - 0.335851f,
-        0.335973f, 1.0f - 0.335903f,
-        0.336024f, 1.0f - 0.671877f,
-        1.000004f, 1.0f - 0.671847f,
-        0.999958f, 1.0f - 0.336064f,
-        0.667979f, 1.0f - 0.335851f,
-        0.668104f, 1.0f - 0.000013f,
-        0.335973f, 1.0f - 0.335903f,
-        0.667979f, 1.0f - 0.335851f,
-        0.335973f, 1.0f - 0.335903f,
-        0.668104f, 1.0f - 0.000013f,
-        0.336098f, 1.0f - 0.000071f,
-        0.000103f, 1.0f - 0.336048f,
-        0.000004f, 1.0f - 0.671870f,
-        0.336024f, 1.0f - 0.671877f,
-        0.000103f, 1.0f - 0.336048f,
-        0.336024f, 1.0f - 0.671877f,
-        0.335973f, 1.0f - 0.335903f,
-        0.667969f, 1.0f - 0.671889f,
-        1.000004f, 1.0f - 0.671847f,
-        0.667979f, 1.0f - 0.335851f
+        0.0f, 1.0f,// face avant
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face gauche
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face derrière
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face droite
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face dessus
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face dessous
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f
     };
 
     GLuint vertexbuffer;
@@ -175,7 +185,6 @@ int main(int argc, char* argv[])
         GLint size;
         GLenum type;
         glGetActiveUniform(programID, i, 255, &uniform_name_length, &size, &type, uniform_name);
-        std::cout << "c le debug : " << std::string(uniform_name, uniform_name_length) << " [" << i << "]" << std::endl;
     }
 
     glEnable(GL_DEPTH_TEST);
@@ -217,6 +226,8 @@ int main(int argc, char* argv[])
     SDL_WarpMouseInWindow(win, ScreenWidth / 2, ScreenHeight / 2);
 
     bool appRunning = true;
+    SDL_ShowCursor(SDL_DISABLE);
+
     while (appRunning)
     {
 
@@ -251,14 +262,10 @@ int main(int argc, char* argv[])
 
         while (SDL_PollEvent(&curEvent))
         {
-            if (curEvent.type == SDL_QUIT)
+            controller.Move(curEvent.key.keysym.sym);
+            if (curEvent.key.keysym.sym == SDLK_ESCAPE)
             {
                 appRunning = false;
-            }
-
-            if (curEvent.window.type == SDL_WINDOWEVENT_RESIZED)
-            {
-                //glViewport(0.0, 0.0, width, height);
             }
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -287,38 +294,44 @@ int main(int argc, char* argv[])
         //glEnableVertexAttribArray(2); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
         //glBindVertexArray(cubebuffer);
-        for (size_t i = 0; i < 5000; i++)
+        for (size_t i = 0; i < 5; i++)
         {
-            auto curTime = steady_clock::now();
-            std::chrono::duration<float> fTime = curTime - prevTime;
-            float turn = sin(fTime.count());
+            for (size_t j = 0; j < 5; j++)
+            {
+                for (size_t k = 0; k < 5; k++)
+                {
+                    auto curTime = steady_clock::now();
+                    std::chrono::duration<float> fTime = curTime - prevTime;
+                    float turn = sin(fTime.count());
 
-            mat4 Translation = translate(mat4(1.0), vec3(1+i, 1+i, i+1));
-            mat4 Rotation = rotate(mat4(1.0), i+turn*10, vec3(1.0f, 1.0f, 1.0f));
+                    mat4 Translation = translate(mat4(1.0), vec3(i*2, j*2, k*2));
+                    mat4 Rotation = rotate(mat4(1.0), 0.0f, vec3(1.0f, 1.0f, 1.0f));
 
-            mat4 ModelMatrix = mat4(1.0);
-            ModelMatrix = Rotation * Translation * ModelMatrix;
-            mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+                    mat4 ModelMatrix = mat4(1.0);
+                    ModelMatrix = Rotation * Translation * ModelMatrix;
+                    mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 
 
-            GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+                    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
-            // Send our transformation to the currently bound shader, in the "MVP" uniform
-            // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-            glEnableVertexAttribArray(0);
-            glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
-            glVertexAttribPointer(
-                0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                3,                                // size
-                GL_FLOAT,                         // type
-                GL_FALSE,                         // normalized?
-                0,                                // stride
-                (void*)0                          // array buffer offset
-            );
+                    // Send our transformation to the currently bound shader, in the "MVP" uniform
+                    // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
+                    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+                    glEnableVertexAttribArray(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
+                    glVertexAttribPointer(
+                        0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+                        3,                                // size
+                        GL_FLOAT,                         // type
+                        GL_FALSE,                         // normalized?
+                        0,                                // stride
+                        (void*)0                          // array buffer offset
+                    );
 
-            glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+                    glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+                }
+            }
         }
 
         /*glClearColor(0.0, 0.0, 0.0, 0.0);
