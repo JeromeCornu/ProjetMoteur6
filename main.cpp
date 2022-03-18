@@ -24,7 +24,8 @@
 #include "Controls.hpp"
 
 using namespace glm;
-
+using namespace std;
+using namespace chrono;
 using namespace GC_3D;
 
 int main(int argc, char* argv[])
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 
     GLuint ScreenWidth = 1024;
     GLuint ScreenHeight = 768;
-    //Controls controller;
+    Controls controller;
 
     SDL_Window* win = SDL_CreateWindow("Moteur",
         SDL_WINDOWPOS_UNDEFINED,
@@ -213,6 +214,7 @@ int main(int argc, char* argv[])
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
+    SDL_WarpMouseInWindow(win, ScreenWidth / 2, ScreenHeight / 2);
 
     bool appRunning = true;
     while (appRunning)
@@ -278,20 +280,16 @@ int main(int argc, char* argv[])
             (void*)0                          // array buffer offset
         );
 
-        mat4 ProjectionMatrix = perspective(70.0f, ratio, 0.01F, 500002.0F);
-        mat4 view;
-        view = lookAt(
-            vec3(-5, -5, 5),                  //Position de la camera
-            vec3(5001, 5001, 5001),               //Cible Ã  regarder
-            vec3(0.0, 1.0, 0.0)    //position vertical
-        );
+        controller.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, win);
+        mat4 ProjectionMatrix = controller.GetProjectionMatrix();
+        mat4 ViewMatrix = controller.GetViewMatrix();
 
         //glEnableVertexAttribArray(2); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
         //glBindVertexArray(cubebuffer);
         for (size_t i = 0; i < 5000; i++)
         {
-            auto curTime = std::chrono::steady_clock::now();
+            auto curTime = steady_clock::now();
             std::chrono::duration<float> fTime = curTime - prevTime;
             float turn = sin(fTime.count());
 
@@ -300,7 +298,7 @@ int main(int argc, char* argv[])
 
             mat4 ModelMatrix = mat4(1.0);
             ModelMatrix = Rotation * Translation * ModelMatrix;
-            mat4 MVP = ProjectionMatrix * view * ModelMatrix;
+            mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 
 

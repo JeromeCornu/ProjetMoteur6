@@ -1,17 +1,20 @@
-/*#include "GL/glew.h"
-#include "dep/glm/glm/glm.hpp"
-#include "dep/glm/glm/ext.hpp"
+#include <SDL.h>
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include "Controls.hpp"
-#include <minwindef.h>
+#include <chrono>
+#include <iostream>
 
 using namespace glm;
-
+using namespace std;
+using namespace chrono;
 using namespace GC_3D;
 
 
-vec3 position = vec3(0, 0, 5);
+vec3 position = vec3(10, 10, -5);
 
-vec3 direction;
+vec3 direction = -position;
 
 vec3 up;
 // horizontal angle : toward -Z
@@ -22,25 +25,25 @@ float verticalAngle = 0.0f;
 float initialFoV = 45.0f;
 
 float speed = 3.0f; // 3 units / second
-float mouseSpeed = 0.005f;
+float mouseSpeed = 0.05f;
 
-double currentTime = 0;
+steady_clock::time_point currentTime;
 
 float FoV;
 
-void Controls::ComputeMatricesFromInputs(GLuint Width, GLuint Height) {
+void Controls::ComputeMatricesFromInputs(GLuint Width, GLuint Height, SDL_Window* Win)
+{
 	int xpos, ypos;
-	xpos = LOWORD(&xpos);
-	ypos = HIWORD(&ypos);
+	SDL_GetMouseState(&xpos, &ypos);
 
-	glutWarpPointer(Width / 2, Height / 2);
+	SDL_WarpMouseInWindow(Win, Width / 2, Height / 2);
 
-	double lastTime = currentTime;
-	currentTime = glfwGetTime();
-	float deltaTime = float(currentTime - lastTime);
+	auto lastTime = currentTime;
+	currentTime = steady_clock::now();
+	duration<float> deltaTime = currentTime - lastTime;
 
-	horizontalAngle += mouseSpeed * deltaTime * float(1024 / 2 - xpos);
-	verticalAngle += mouseSpeed * deltaTime * float(768 / 2 - ypos);
+	horizontalAngle += mouseSpeed * deltaTime.count() * float(1024 / 2 - xpos);
+	verticalAngle += mouseSpeed * deltaTime.count() * float(768 / 2 - ypos);
 
 	direction = vec3(
 		cos(verticalAngle) * sin(horizontalAngle),
@@ -56,33 +59,41 @@ void Controls::ComputeMatricesFromInputs(GLuint Width, GLuint Height) {
 
 	up = cross(right, direction);
 
-	if (glfwGetKey(GLFW_KEY_UP) == GLFW_PRESS) {
-		position += direction * deltaTime * speed;
-	}
-	// Move backward
-	if (glfwGetKey(GLFW_KEY_DOWN) == GLFW_PRESS) {
-		position -= direction * deltaTime * speed;
-	}
-	// Strafe right
-	if (glfwGetKey(GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		position += right * deltaTime * speed;
-	}
-	// Strafe left
-	if (glfwGetKey(GLFW_KEY_LEFT) == GLFW_PRESS) {
-		position -= right * deltaTime * speed;
+	SDL_Event curEvent;
+
+	while (SDL_PollEvent(&curEvent))
+	{
+		if (curEvent.type == SDLK_z)
+		{
+			position += direction * deltaTime.count() * speed;
+		}
+		else if (curEvent.type == SDLK_s)
+		{
+			position -= direction * deltaTime.count() * speed;
+		}
+		else if (curEvent.type == SDLK_d)
+		{
+			position += right * deltaTime.count() * speed;
+		}
+		else if (curEvent.type == SDLK_q)
+		{
+			position -= right * deltaTime.count() * speed;
+		}
 	}
 
-	FoV = initialFoV - 5 * glfwGetMouseWheel();
+	FoV = initialFoV - 5 * curEvent.wheel.y;
 }
 
-mat4 Controls::GetProjectionMatrix() {
-	return perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
+mat4 Controls::GetProjectionMatrix()
+{
+	return mat4(perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f));
 }
 
-mat4 Controls::GetViewMatrix() {
-	return lookAt(
+mat4 Controls::GetViewMatrix()
+{
+	return mat4(lookAt(
 		position,				// Camera is here
 		position + direction,	// and looks here : at the same position, plus "direction"
 		up						// Head is up (set to 0,-1,0 to look upside-down)
-	);
-}*/
+	));
+}
