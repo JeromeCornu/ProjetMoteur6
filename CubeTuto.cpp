@@ -5,26 +5,51 @@ using namespace GC_3D;
 
 GLuint uvbuffer;
 GLuint vertexbuffer;
+GLuint normalbuffer;
 
 // Position
 static const GLfloat g_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,1.0f, -1.0f, 1.0f,-1.0f, -1.0f, 1.0f, // face avant
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, // face avant
 
-        -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, // face gauche
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, // face gauche
 
-        1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, // face derrière
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f, // face derrière
 
-        1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, // face droite
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f, // face droite
 
-         -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f,
-         1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, // face dessus
+         -1.0f, 1.0f, 1.0f,
+         -1.0f, 1.0f, -1.0f,
+         1.0f, 1.0f, -1.0f,
+         1.0f, 1.0f, -1.0f,
+         1.0f, 1.0f, 1.0f,
+         -1.0f, 1.0f, 1.0f, // face dessus
 
-         -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
-         1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, // face dessous
+         -1.0f, -1.0f, -1.0f,
+         -1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, 1.0f,
+         1.0f, -1.0f, -1.0f,
+         -1.0f, -1.0f, -1.0f // face dessous
 };
 
 // Color
@@ -111,6 +136,49 @@ static const GLfloat g_uv_buffer_data[] = {
         1.0f, 0.0f,
         1.0f, 0.0f,
         1.0f, 1.0f,
+        0.0f, 1.0f
+};
+
+static GLfloat normals[] = {
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face gauche
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face derrière
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face droite
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face dessus
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+
+        0.0f, 1.0f,// face dessous
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
         0.0f, 1.0f,
 };
 
@@ -132,10 +200,16 @@ void CubeTuto::initializeCube() const
     // Generate mipmaps, by the way.
     glGenerateMipmap(GL_TEXTURE_2D);
 
-
+    // Textures buffers
     glGenBuffers(1, &uvbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+
+    // Light buffers
+    glGenBuffers(1, &normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(normals) * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+
 }
 
 
@@ -164,6 +238,19 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
         0,                  // stride
         (void*)0            // array buffer offset
     );
+
+    // 3rd attribute buffer : normals
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glVertexAttribPointer(
+        2,                                // attribute
+        3,                                // size
+        GL_FLOAT,                         // type
+        GL_FALSE,                         // normalized?
+        0,                                // stride
+        (void*)0                          // array buffer offset
+    );
+
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, iTexture->GetTexId());

@@ -79,6 +79,10 @@ int main(int argc, char* argv[])
     // initialize texture
     texture.applyTexture(500, 500, 1, "C:\\Users\\jcornu\\Pictures\\uwu.jpg");
 
+    /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
+
+    vector<CubeTuto> cubesArray;
+
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
     auto startTime = Clock::now();
@@ -129,7 +133,23 @@ int main(int argc, char* argv[])
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Clear the screen
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+        glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+
+        /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
+
+        // Affichage des FPS
+        static unsigned int fps = 0;
+        static clock_t t = clock();
+        if (clock() - t > CLOCKS_PER_SEC)
+        {
+            char str[50] = "";
+            sprintf(str, "Moteur OpenGl - FPS : %u", fps);
+            SDL_SetWindowTitle(win, str);
+            t = clock();
+            fps = 0;
+        }
+        fps++;
+
 
         /* ------------------------------------------------- MATRICES ------------------------------------------------------------- */
 
@@ -175,11 +195,12 @@ int main(int argc, char* argv[])
             // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
             glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
-
             // Draw the cube
             cube.makeCube(TextureLocId, &texture);
-
-
+            
+            // Put in the array of cube
+            cubesArray.push_back(cube);
+            
             positionZ -= 4;
 
         }
