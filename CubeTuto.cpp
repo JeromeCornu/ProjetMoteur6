@@ -139,49 +139,26 @@ static const GLfloat g_uv_buffer_data[] = {
         0.0f, 1.0f
 };
 
-static GLfloat normals[] = {
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
+// normal array
+GLfloat normals[] = {
+                        0, 0, 1,   0, 0, 1,   0, 0, 1,      // face avant
+                        0, 0, 1,   0, 0, 1,   0, 0, 1,
 
-        0.0f, 1.0f,// face gauche
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
+                        -1, 0, 0,   -1, 0, 0,   -1, 0, 0,   // face gauche
+                        -1, 0, 0,   -1, 0, 0,   -1, 0, 0,
 
-        0.0f, 1.0f,// face derrière
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
+                        0, 0, -1,   0, 0, -1,   0, 0, -1,   // face derriere
+                        0, 0, -1,   0, 0, -1,   0, 0, -1,
 
-        0.0f, 1.0f,// face droite
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
+                        1, 0, 0,  1, 0, 0,  1, 0, 0,        // face droite
+                        1, 0, 0,  1, 0, 0,  1, 0, 0,
 
-        0.0f, 1.0f,// face dessus
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
+                        0, 1, 0,   0, 1, 0,   0, 1, 0,      // face dessus
+                        0, 1, 0,   0, 1, 0,   0, 1, 0,
 
-        0.0f, 1.0f,// face dessous
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
+                        0, -1, 0,   0, -1, 0,   0, -1, 0,      // face dessous
+                        0, -1, 0,   0, -1, 0,   0, -1, 0
 };
-
 
 void CubeTuto::initializeCube() const
 {

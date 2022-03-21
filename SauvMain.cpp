@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.txt", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.txt");
+    GLuint programID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.glsl", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.glsl");
     glUseProgram(programID);
 
 
@@ -150,26 +150,42 @@ int main(int argc, char* argv[])
         }
         fps++;
 
-        /* ------------------------------------------------- MATRICES ------------------------------------------------------------- */
+        
+
+        /* ------------------------------------------------- MATRICES 1 ------------------------------------------------------------- */
 
         mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
         // Or, for an ortho camera :
         //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
-        //auto curTime = Clock::now();
+        auto curTime = Clock::now();
+        chrono::duration<float> fTime = curTime - prevTime;
+        float turn = sin(fTime.count());
+        float turn0 = cos(fTime.count());
 
         // Camera matrix
         mat4 View = lookAt(
-            //vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
-            vec3(4, 3, 3),
-            vec3(0, 0, -5), // and looks at the origin
+            // vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
+            vec3(turn * 10, 1, turn0 * 10),
+            vec3(0, 0, 0), // and looks at the origin
             vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
 
 
+        /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
+
+        int LightPositionID;
+        LightPositionID = glGetUniformLocation(programID, "LightPosition_worldspace");
+
+        glUniform3f(LightPositionID, turn * 10, 1, turn0 * 10); // Mettre la position de la light
+
+        /* ------------------------------------------------- MATRICES 2 ------------------------------------------------------------- */
+
         // Position of the cube
         GLuint MatrixID;
+        GLuint ViewID;
+        GLuint ModelID;
         GLuint TextureLocId;
 
         for (int i = 0; i < count; i++)
@@ -179,7 +195,7 @@ int main(int argc, char* argv[])
             float turn = sin(fTime.count());
 
             mat4 Translation = translate(mat4(1.0F), vec3(0.0f + positionX, 0.0f + positionY, 0.0f + positionZ));
-            mat4 Rotation = rotate(mat4(1.0F), 0.0f, vec3(1.0F, 0.0F, 0.0F));
+            mat4 Rotation = rotate(mat4(1.0F), turn * 10, vec3(1.0F, 0.0F, 0.0F));
             mat4 Scaling = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
 
             mat4 Model = Translation * Rotation * Scaling * mat4(1.0f);
@@ -188,11 +204,15 @@ int main(int argc, char* argv[])
             mat4 mvp = Projection * View * Model;
 
             MatrixID = glGetUniformLocation(programID, "MVP");
+            ViewID = glGetUniformLocation(programID, "View");
+            ModelID = glGetUniformLocation(programID, "Model");
             TextureLocId = glGetUniformLocation(programID, "myTextureSampler");
 
             // Send our transformation to the currently bound shader, in the "MVP" uniform
             // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
             glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+            glUniformMatrix4fv(ViewID, 1, GL_FALSE, &View[0][0]);
+            glUniformMatrix4fv(ModelID, 1, GL_FALSE, &Model[0][0]);
 
             // Draw the cube
             cube.makeCube(TextureLocId, &texture);
