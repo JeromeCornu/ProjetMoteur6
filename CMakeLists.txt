@@ -2,7 +2,16 @@ project(moteur)
 
 include(glew.cmake)
 
-add_executable(moteur main.cpp gc_3d_defs.hpp Controls.cpp Controls.hpp SimpleFragmentShader.fragmentshader SimpleVertexShader.vertexshader)
+add_executable(
+	moteur
+	main.cpp
+	gc_3d_defs.hpp
+	Controls.cpp
+	Controls.hpp
+	SimpleFragmentShader.fragmentshader
+	SimpleVertexShader.vertexshader
+	geometry.cpp
+)
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)
 set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm)

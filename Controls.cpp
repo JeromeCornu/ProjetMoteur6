@@ -14,7 +14,7 @@ using namespace GC_3D;
 
 vec3 position = vec3(10, 10, -5);
 
-vec3 direction = -position;
+vec3 direction;
 
 vec3 up;
 
@@ -38,7 +38,7 @@ duration<float> deltaTime;
 
 
 
-void Controls::ComputeMatricesFromInputs(GLuint Width, GLuint Height, SDL_Window* Win)
+void Controls::ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win)
 {
 	int xpos, ypos;
 	SDL_GetMouseState(&xpos, &ypos);
@@ -49,8 +49,17 @@ void Controls::ComputeMatricesFromInputs(GLuint Width, GLuint Height, SDL_Window
 	currentTime = steady_clock::now();
 	deltaTime = currentTime - lastTime;
 
-	horizontalAngle += mouseSpeed * deltaTime.count() * float(1024 / 2 - xpos);
-	verticalAngle += mouseSpeed * deltaTime.count() * float(768 / 2 - ypos);
+	float diffX = Width / 2 - xpos;
+	float diffY = Height / 2 - ypos;
+
+	if (diffX < -5 || diffX > 5)
+	{
+		horizontalAngle += mouseSpeed * deltaTime.count() * float(diffX);
+	}
+	if (diffY < -5 || diffY > 5)
+	{
+		verticalAngle += mouseSpeed * deltaTime.count() * float(diffY);
+	}
 
 	direction = vec3(
 		cos(verticalAngle) * sin(horizontalAngle),
@@ -81,19 +90,18 @@ mat4 Controls::GetProjectionMatrix()
 	return mat4(perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 5002.0f));
 }
 
-mat4 Controls::GetViewMatrix()
+mat4 Controls::GetViewMatrix(vec3 test)
 {
+	direction = -position;
 	return mat4(lookAt(
 		position,				// Camera is here
-		position + direction,	// and looks here : at the same position, plus "direction"
+		test,	// and looks here : at the same position, plus "direction"
 		up						// Head is up (set to 0,-1,0 to look upside-down)
 	));
 }
 
 void Controls::Move(SDL_Keycode Type)
 {
-	cout << "Type : " << Type << endl;
-	
 	switch (Type)
 	{
 	case SDLK_z:

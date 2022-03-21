@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
     SDL_Init(SDL_INIT_VIDEO);
     uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
-    GLuint ScreenWidth = 1024;
-    GLuint ScreenHeight = 768;
+    GLfloat ScreenWidth = 1024;
+    GLfloat ScreenHeight = 768;
     Controls controller;
 
     SDL_Window* win = SDL_CreateWindow("Moteur",
@@ -159,11 +159,6 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint cubebuffer;
-    glGenBuffers(1, &cubebuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_cube_vertex_buffer_data), g_cube_vertex_buffer_data, GL_STATIC_DRAW);
-
     GLuint uvbuffer;
     glGenBuffers(1, &uvbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -287,25 +282,40 @@ int main(int argc, char* argv[])
             (void*)0                          // array buffer offset
         );
 
+        Geometry Sphere;
+        Sphere = Sphere.MakeSphere(5000);
+        Sphere.Bind();
+        Sphere.Draw();
+
         controller.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, win);
         mat4 ProjectionMatrix = controller.GetProjectionMatrix();
-        mat4 ViewMatrix = controller.GetViewMatrix();
+        mat4 ViewMatrix = controller.GetViewMatrix(Sphere.m_Pos[0]);
+
+        mat4 ModelMatrix = mat4(1.0);
+        mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
         //glEnableVertexAttribArray(2); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
         //glBindVertexArray(cubebuffer);
-        for (size_t i = 0; i < 5; i++)
+
+        /*for (size_t i = 0; i < 5; i++)
         {
             for (size_t j = 0; j < 5; j++)
             {
                 for (size_t k = 0; k < 5; k++)
                 {
+                    
+
+
+
+
+
                     auto curTime = steady_clock::now();
                     std::chrono::duration<float> fTime = curTime - prevTime;
                     float turn = sin(fTime.count());
 
                     mat4 Translation = translate(mat4(1.0), vec3(i*2, j*2, k*2));
-                    mat4 Rotation = rotate(mat4(1.0), 0.0f, vec3(1.0f, 1.0f, 1.0f));
+                    mat4 Rotation = rotate(mat4(1.0), turn * 10, vec3(1.0f, 1.0f, 1.0f));
 
                     mat4 ModelMatrix = mat4(1.0);
                     ModelMatrix = Rotation * Translation * ModelMatrix;
@@ -332,7 +342,7 @@ int main(int argc, char* argv[])
                     glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
                 }
             }
-        }
+        }*/
 
         /*glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
