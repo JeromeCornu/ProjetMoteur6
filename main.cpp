@@ -28,7 +28,7 @@ void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum seve
 
 int main(int argc, char* argv[])
 {
-    CAssimpModel ModelLoader;
+    //CAssimpModel ModelLoader;
     float speed;
     bool someBoolean;
     
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
         "D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
 
-    ModelLoader.DoTheImportThing("C:\\Users\\gjacot\\Downloads\\suzane.obj");
+    //ModelLoader.DoTheImportThing("C:\\Users\\gjacot\\Downloads\\suzane.obj");
 
     bool apprunning = true;
     while (apprunning)

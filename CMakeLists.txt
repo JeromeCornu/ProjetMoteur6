@@ -19,7 +19,8 @@ gc_3d_defs.hpp
 Camera.cpp 
 camera.hpp 
 assimp_model.h 
-assimp_model.cpp)
+assimp_model.cpp
+)
 
 
 set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/glm)
