@@ -11,15 +11,6 @@ using namespace std;
 using namespace chrono;
 using namespace GC_3D;
 
-
-vec3 position = vec3(10, 10, -5);
-
-vec3 direction;
-
-vec3 up;
-
-vec3 Right;
-
 // horizontal angle : toward -Z
 float horizontalAngle = 3.14f;
 // vertical angle : 0, look at the horizon
@@ -90,12 +81,11 @@ mat4 Controls::GetProjectionMatrix()
 	return mat4(perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 5002.0f));
 }
 
-mat4 Controls::GetViewMatrix(vec3 test)
+mat4 Controls::GetViewMatrix()
 {
-	direction = -position;
 	return mat4(lookAt(
 		position,				// Camera is here
-		test,	// and looks here : at the same position, plus "direction"
+		direction,	// and looks here : at the same position, plus "direction"
 		up						// Head is up (set to 0,-1,0 to look upside-down)
 	));
 }

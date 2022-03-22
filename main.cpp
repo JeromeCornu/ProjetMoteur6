@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
     GLfloat ScreenWidth = 1024;
     GLfloat ScreenHeight = 768;
     Controls controller;
+    controller.direction = -controller.position;
 
     SDL_Window* win = SDL_CreateWindow("Moteur",
         SDL_WINDOWPOS_UNDEFINED,
@@ -52,6 +53,21 @@ int main(int argc, char* argv[])
     auto prevTime = std::chrono::steady_clock::now();
 
     glViewport(0, 0, ScreenWidth, ScreenHeight);
+
+
+    Geometry Sphere;
+    Sphere.MakeSphere(5);
+    Sphere.Bind();
+
+    Vector<GLfloat> SpherePos;
+
+    for (size_t i = 0; i < Sphere.m_Pos.size(); i++)
+    {
+        SpherePos.push_back(Sphere.m_Pos[i][0]);
+        SpherePos.push_back(Sphere.m_Pos[i][1]);
+        SpherePos.push_back(Sphere.m_Pos[i][2]);
+    }
+
 
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
@@ -150,6 +166,23 @@ int main(int argc, char* argv[])
         1.0f, 1.0f,
         0.0f, 1.0f
     };
+
+    static GLfloat g_sphere_buffer_data[sizeof(Sphere.m_Pos)] = {};
+
+    for (size_t i = 0; i < Sphere.m_Pos.size(); i++)
+    {
+        g_sphere_buffer_data[i] = SpherePos[i];
+    }
+
+    GLuint SphereBuffer;
+    glGenBuffers(1, &SphereBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, SphereBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_sphere_buffer_data), g_sphere_buffer_data, GL_STATIC_DRAW);
+
+    GLuint CubeBuffer;
+    glGenBuffers(1, &CubeBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_cube_vertex_buffer_data), g_cube_vertex_buffer_data, GL_STATIC_DRAW);
 
     GLuint vertexbuffer;
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
@@ -282,40 +315,26 @@ int main(int argc, char* argv[])
             (void*)0                          // array buffer offset
         );
 
-        Geometry Sphere;
-        Sphere = Sphere.MakeSphere(5000);
-        Sphere.Bind();
-        Sphere.Draw();
-
         controller.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, win);
         mat4 ProjectionMatrix = controller.GetProjectionMatrix();
-        mat4 ViewMatrix = controller.GetViewMatrix(Sphere.m_Pos[0]);
-
-        mat4 ModelMatrix = mat4(1.0);
-        mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+        mat4 ViewMatrix = controller.GetViewMatrix();
 
         //glEnableVertexAttribArray(2); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
         //glBindVertexArray(cubebuffer);
 
-        /*for (size_t i = 0; i < 5; i++)
+        for (size_t i = 0; i < 5; i++)
         {
             for (size_t j = 0; j < 5; j++)
             {
                 for (size_t k = 0; k < 5; k++)
                 {
-                    
-
-
-
-
-
-                    auto curTime = steady_clock::now();
-                    std::chrono::duration<float> fTime = curTime - prevTime;
-                    float turn = sin(fTime.count());
+                    //auto curTime = steady_clock::now();
+                    //std::chrono::duration<float> fTime = curTime - prevTime;
+                    //float turn = sin(fTime.count());
 
                     mat4 Translation = translate(mat4(1.0), vec3(i*2, j*2, k*2));
-                    mat4 Rotation = rotate(mat4(1.0), turn * 10, vec3(1.0f, 1.0f, 1.0f));
+                    mat4 Rotation = rotate(mat4(1.0), 0.0f, vec3(1.0f, 1.0f, 1.0f));
 
                     mat4 ModelMatrix = mat4(1.0);
                     ModelMatrix = Rotation * Translation * ModelMatrix;
@@ -329,7 +348,7 @@ int main(int argc, char* argv[])
                     // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
                     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
                     glEnableVertexAttribArray(0);
-                    glBindBuffer(GL_ARRAY_BUFFER, cubebuffer);
+                    glBindBuffer(GL_ARRAY_BUFFER, SphereBuffer);
                     glVertexAttribPointer(
                         0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
                         3,                                // size
@@ -339,10 +358,12 @@ int main(int argc, char* argv[])
                         (void*)0                          // array buffer offset
                     );
 
-                    glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+                    Sphere.Draw();
+
+                    //glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
                 }
             }
-        }*/
+        }
 
         /*glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);

@@ -40,39 +40,6 @@ void Geometry::Draw() const
 {
     if (!m_Indices.empty())
     {
-        static const GLuint Size = 422;
-        Vector<GLfloat> m_PosTest;
-        static GLfloat g_vertex_buffer_data[Size] = {};
-
-        for (size_t i = 0; i < m_Pos.size(); i+=3)
-        {
-            m_PosTest.push_back(m_Pos[i][0]);
-            m_PosTest.push_back(m_Pos[i][1]);
-            m_PosTest.push_back(m_Pos[i][2]);
-        }
-
-        for (size_t i = 0; i < m_Pos.size(); i++)
-        {
-            for (size_t j = 0; j < m_Pos.size(); j++)
-            {
-                g_vertex_buffer_data[j] = m_PosTest[i];
-            }
-        }
-        GLuint Buffer;
-        glGenBuffers(1, &Buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, Buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, Buffer);
-        glVertexAttribPointer(
-            0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-            3,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        );
         glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, m_Indices.data());
     }
     else
