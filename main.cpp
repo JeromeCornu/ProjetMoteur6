@@ -10,9 +10,8 @@
 #include <gl/GL.h>
 #include "camera.hpp"
 #include "loadShader.cpp"
-#include "imgui.h"
-#include "backends/imgui_impl_sdl.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "ImGuiTool.hpp"
+
 
 #include "assimp_model.h"
 
@@ -29,8 +28,8 @@ void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum seve
 int main(int argc, char* argv[])
 {
     //CAssimpModel ModelLoader;
-    float speed;
-    bool someBoolean;
+    float speed = 20;
+    bool someBoolean = false;
     
     /*
     Vector<vec3> Positions = { {0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {0, 0, 1}, {1, 1, 0}, {1, 0, 1}, {0, 1, 1}, {1, 1, 1} };
@@ -81,20 +80,9 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer bindings
-    // window is the SDL_Window*
-    // context is the SDL_GLContext
-    ImGui_ImplSDL2_InitForOpenGL(win, context);
-    ImGui_ImplOpenGL3_Init();
+    
+    ImguiTool UiTool;
+    UiTool.Setup(win, context);
 
     GLuint programID = LoadShaders("D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
         "D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
@@ -142,12 +130,9 @@ int main(int argc, char* argv[])
             // Render imgui
 
         }
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(win);
-        ImGui::NewFrame();
 
-
-
+        UiTool.NewFrame(win);
+       
         glViewport(0, 0, 1024, 768);
         glClearColor(0.5f, 0.5f, 0.9f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -185,23 +170,12 @@ int main(int argc, char* argv[])
         glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
 
-        ImGui::Begin("MyWindow");
-        ImGui::Checkbox("Boolean property", &someBoolean);
-        if (ImGui::Button("Reset Speed")) {
-            // This code is executed when the user clicks the button
-            speed = 0;
-        }
-        ImGui::SliderFloat("Speed", &speed, 0.0f, 10.0f);
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        UiTool.Window(&speed, &someBoolean);
+     
         SDL_GL_SwapWindow(win);
     }
 
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();
+    UiTool.EndUi();
 
     return 0;
 }

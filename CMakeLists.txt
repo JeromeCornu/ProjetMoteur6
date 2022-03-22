@@ -20,6 +20,8 @@ Camera.cpp
 camera.hpp 
 assimp_model.h 
 assimp_model.cpp
+ImGuiTool.hpp
+ImGuiTool.cpp
 )
 
 
