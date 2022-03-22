@@ -19,21 +19,21 @@ using namespace GC_3D;
 
 int main(int argc, char* argv[])
 {
-    CubeTuto cube;
-    Texture texture;
+    CubeTuto Cube;
+    Texture Texture;
 
     /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
     SDL_Init(SDL_INIT_VIDEO);
-    uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+    uint32_t WindowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 
-    SDL_Window* win = SDL_CreateWindow("Moteur",
+    SDL_Window* Win = SDL_CreateWindow("Moteur",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1024,
         768,
-        windowsFlags);
+        WindowsFlags);
 
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -41,12 +41,12 @@ int main(int argc, char* argv[])
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 
-    SDL_GLContext context = SDL_GL_CreateContext(win);
-    SDL_GL_MakeCurrent(win, context);
+    SDL_GLContext Context = SDL_GL_CreateContext(Win);
+    SDL_GL_MakeCurrent(Win, Context);
 
     glewInit();
 
-    auto prevTime = std::chrono::steady_clock::now();
+    auto PrevTime = std::chrono::steady_clock::now();
 
     glViewport(0, 0, 1024, 768);
 
@@ -54,47 +54,47 @@ int main(int argc, char* argv[])
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    static const GLfloat g_vertex_buffer_data[] = {
+    static const GLfloat G_vertex_buffer_data[] = {
         -1.0f, -1.0f, 0.0f,
         1.0f, -1.0f, 0.0f,
         0.0f,  1.0f, 0.0f,
     };
 
-    GLuint vertexbuffer;
+    GLuint Vertexbuffer;
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
+    glGenBuffers(1, &Vertexbuffer);
     // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Vertexbuffer);
     // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(G_vertex_buffer_data), G_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.glsl", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.glsl");
-    glUseProgram(programID);
+    GLuint ProgramID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.glsl", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.glsl");
+    glUseProgram(ProgramID);
 
 
     /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
 
     // initialize cube
-    cube.initializeCube();
+    Cube.initializeCube();
     // initialize texture
-    texture.applyTexture(500, 500, 1, "C:\\Users\\jcornu\\Pictures\\uwu.jpg");
+    Texture.applyTexture(500, 500, 1, "C:\\Users\\jcornu\\Pictures\\uwu.jpg");
 
     /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
 
-    vector<CubeTuto> cubesArray;
+    vector<CubeTuto> CubesArray;
 
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
-    auto startTime = Clock::now();
+    auto StartTime = Clock::now();
 
     // Nb cube wished
     //int i = 0;
     // Nb cube drawn
-    int count = 0;
+    int Count = 0;
 
     cout << "Saisir le nombre de cube voulu : ";
-    cin >> count;
-    cout << "On affiche " << count << " cube(s)." << endl;
+    cin >> Count;
+    cout << "On affiche " << Count << " cube(s)." << endl;
 
 
     // Enable depth test
@@ -102,15 +102,15 @@ int main(int argc, char* argv[])
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
-    bool appRunning = true;
-    while (appRunning)
+    bool AppRunning = true;
+    while (AppRunning)
     {
         // Position of each cube - initialization
-        float positionX = 0;
-        float positionY = 0;
-        float positionZ = 0;
+        float PositionX = 0;
+        float PositionY = 0;
+        float PositionZ = 0;
 
-        SDL_Event curEvent;
+        SDL_Event CurEvent;
         /*int width, height;
         SDL_GetWindowSize(win, &width, &height);
 
@@ -119,14 +119,14 @@ int main(int argc, char* argv[])
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);*/
 
-        while (SDL_PollEvent(&curEvent))
+        while (SDL_PollEvent(&CurEvent))
         {
-            if (curEvent.type == SDL_QUIT)
+            if (CurEvent.type == SDL_QUIT)
             {
-                appRunning = false;
+                AppRunning = false;
             }
 
-            if (curEvent.window.type == SDL_WINDOWEVENT_RESIZED)
+            if (CurEvent.window.type == SDL_WINDOWEVENT_RESIZED)
             {
                 //glViewport(0.0, 0.0, width, height);
             }
@@ -138,17 +138,17 @@ int main(int argc, char* argv[])
         /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
 
         // Affichage des FPS
-        static unsigned int fps = 0;
-        static clock_t t = clock();
-        if (clock() - t > CLOCKS_PER_SEC)
+        static unsigned int Fps = 0;
+        static clock_t T = clock();
+        if (clock() - T > CLOCKS_PER_SEC)
         {
-            char str[50] = "";
-            sprintf(str, "Moteur OpenGl - FPS : %u", fps);
-            SDL_SetWindowTitle(win, str);
-            t = clock();
-            fps = 0;
+            char Str[50] = "";
+            sprintf(Str, "Moteur OpenGl - FPS : %u", Fps);
+            SDL_SetWindowTitle(Win, Str);
+            T = clock();
+            Fps = 0;
         }
-        fps++;
+        Fps++;
 
 
         /* ------------------------------------------------- MATRICES 1 ------------------------------------------------------------- */
@@ -158,15 +158,16 @@ int main(int argc, char* argv[])
         // Or, for an ortho camera :
         //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
 
-        auto curTime = Clock::now();
-        chrono::duration<float> fTime = curTime - prevTime;
-        float turn = sin(fTime.count());
-        float turn0 = cos(fTime.count());
+        // Chrono pour la caméra
+        auto CurTime = Clock::now();
+        chrono::duration<float> FTime = CurTime - PrevTime;
+        float Turn = sin(FTime.count());
+        float Turn0 = cos(FTime.count());
 
         // Camera matrix
         mat4 View = lookAt(
             // vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
-            vec3(turn * 10, 1, turn0 * 10),
+            vec3(Turn * 10, 1, Turn0 * 10),
             vec3(0, 0, 0), // and looks at the origin
             vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
@@ -175,9 +176,9 @@ int main(int argc, char* argv[])
         /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
 
         int LightPositionID;
-        LightPositionID = glGetUniformLocation(programID, "LightPosition_worldspace");
+        LightPositionID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
 
-        glUniform3f(LightPositionID, turn * 10, 1, turn0 * 10); // Mettre la position de la light
+        glUniform3f(LightPositionID, Turn * 10, 1, Turn0 * 10); // Mettre la position de la light
 
         /* ------------------------------------------------- MATRICES 2 ------------------------------------------------------------- */
 
@@ -187,14 +188,15 @@ int main(int argc, char* argv[])
         GLuint ModelID;
         GLuint TextureLocId;
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < Count; i++)
         {
-            auto curTime = std::chrono::steady_clock::now();
-            std::chrono::duration<float> fTime = curTime - prevTime;
-            float turn = sin(fTime.count());
+            // Chrono pour les cubes
+            auto CurTime = std::chrono::steady_clock::now();
+            std::chrono::duration<float> FTime = CurTime - PrevTime;
+            float Turn = sin(FTime.count());
 
-            mat4 Translation = translate(mat4(1.0F), vec3(0.0f + positionX, 0.0f + positionY, 0.0f + positionZ));
-            mat4 Rotation = rotate(mat4(1.0F), turn * 10, vec3(1.0F, 0.0F, 0.0F));
+            mat4 Translation = translate(mat4(1.0F), vec3(0.0f + PositionX, 0.0f + PositionY, 0.0f + PositionZ));
+            mat4 Rotation = rotate(mat4(1.0F), Turn * 10, vec3(1.0F, 0.0F, 0.0F));
             mat4 Scaling = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
 
             mat4 Model = Translation * Rotation * Scaling * mat4(1.0f);
@@ -202,10 +204,10 @@ int main(int argc, char* argv[])
             // Our ModelViewProjection : multiplication of our 3 matrices
             mat4 mvp = Projection * View * Model;
 
-            MatrixID = glGetUniformLocation(programID, "MVP");
-            ViewID = glGetUniformLocation(programID, "View");
-            ModelID = glGetUniformLocation(programID, "Model");
-            TextureLocId = glGetUniformLocation(programID, "myTextureSampler");
+            MatrixID = glGetUniformLocation(ProgramID, "MVP");
+            ViewID = glGetUniformLocation(ProgramID, "View");
+            ModelID = glGetUniformLocation(ProgramID, "Model");
+            TextureLocId = glGetUniformLocation(ProgramID, "MyTextureSampler");
 
             // Send our transformation to the currently bound shader, in the "MVP" uniform
             // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
@@ -214,12 +216,12 @@ int main(int argc, char* argv[])
             glUniformMatrix4fv(ModelID, 1, GL_FALSE, &Model[0][0]);
 
             // Draw the cube
-            cube.makeCube(TextureLocId, &texture);
+            Cube.makeCube(TextureLocId, &Texture);
 
             // Put in the array of cube
-            cubesArray.push_back(cube);
+            CubesArray.push_back(Cube);
 
-            positionZ -= 4;
+            PositionZ -= 4;
 
         }
 
@@ -243,7 +245,7 @@ int main(int argc, char* argv[])
         */
 
 
-        SDL_GL_SwapWindow(win);
+        SDL_GL_SwapWindow(Win);
     }
 
     return 0;

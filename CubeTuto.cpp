@@ -3,12 +3,12 @@
 
 using namespace GC_3D;
 
-GLuint uvbuffer;
-GLuint vertexbuffer;
-GLuint normalbuffer;
+GLuint Uvbuffer;
+GLuint Vertexbuffer;
+GLuint Normalbuffer;
 
 // Position
-static const GLfloat g_vertex_buffer_data[] = {
+static const GLfloat G_vertex_buffer_data[] = {
         -1.0f, -1.0f, 1.0f,
         -1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, 1.0f,
@@ -95,7 +95,7 @@ static const GLfloat g_color_buffer_data[] = {
 */
 
 // UV
-static const GLfloat g_uv_buffer_data[] = {
+static const GLfloat G_uv_buffer_data[] = {
         0.0f, 1.0f,// face avant
         0.0f, 0.0f,
         1.0f, 0.0f,
@@ -140,7 +140,7 @@ static const GLfloat g_uv_buffer_data[] = {
 };
 
 // normal array
-GLfloat normals[] = {
+GLfloat Normals[] = {
                         0, 0, 1,   0, 0, 1,   0, 0, 1,      // face avant
                         0, 0, 1,   0, 0, 1,   0, 0, 1,
 
@@ -163,11 +163,11 @@ GLfloat normals[] = {
 void CubeTuto::initializeCube() const
 {
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
+    glGenBuffers(1, &Vertexbuffer);
     // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Vertexbuffer);
     // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(G_vertex_buffer_data), G_vertex_buffer_data, GL_STATIC_DRAW);
 
 
     // When MAGnifying the image (no bigger mipmap available), use LINEAR filtering
@@ -178,14 +178,14 @@ void CubeTuto::initializeCube() const
     glGenerateMipmap(GL_TEXTURE_2D);
 
     // Textures buffers
-    glGenBuffers(1, &uvbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+    glGenBuffers(1, &Uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(G_uv_buffer_data), G_uv_buffer_data, GL_STATIC_DRAW);
 
     // Light buffers
-    glGenBuffers(1, &normalbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(normals) * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+    glGenBuffers(1, &Normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Normals) * sizeof(glm::vec3), &Normals[0], GL_STATIC_DRAW);
 
 }
 
@@ -194,7 +194,7 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
 {
     // 2nd attribute buffer : colors
     glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Uvbuffer);
     glVertexAttribPointer(
         1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
         2,                                // size
@@ -205,7 +205,7 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     );
 
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Vertexbuffer);
     glVertexAttribPointer(
         0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
         3,                  // size
@@ -217,7 +217,7 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
 
     // 3rd attribute buffer : normals
     glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, Normalbuffer);
     glVertexAttribPointer(
         2,                                // attribute
         3,                                // size
