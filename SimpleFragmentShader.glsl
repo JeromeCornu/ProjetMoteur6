@@ -11,18 +11,20 @@ in float distanceLightVertex;
 
 uniform sampler2D myTextureSampler;
 
+vec3 MaterialDiffuseColor = vec3 (1.0f, 1.0f, 1.0f);
 
-// const vec3 light = normalize(vec3(0.2, 0.8, 1.0));
+// Light
+vec3 lightColor = vec3 (1.0f, 1.0f, 1.0f);
+float LightPower = 20.0f;
+vec3 pointLight;
 
-// vec3 MaterialDiffuseColor  = vec3 (0.0f, 0.0f, 0.0f);
-float LightPower = 60.0f;
+// Ambient Light 
+float ambientStrength = 0.1;
+vec3 ambientColor = vec3 (1.0f, 1.0f, 1.0f);
 
 
-
-void main(){
-  //color = vec3(1,0,0);
-  //color = fragmentColor;
-
+void main()
+{
 
   // ---------------  Light  --------------------
 
@@ -35,6 +37,12 @@ void main(){
   // Cosine of the angle between the normal and the light direction
   float cosTheta = clamp( dot( Normal_cameraspace, LightDirection_cameraspace ), 0, 1);	// dot( n,l ) = n.l -- clamp -> return the hightest number
 
-  color = texture( myTextureSampler, UV ).rgb*(max(cosTheta, 0.1)) * LightPower / (distanceLightVertex * distanceLightVertex);
-  //color = MaterialDiffuseColor * light * LightPower * cosTheta / (distance * distance); 
-  }
+  pointLight = MaterialDiffuseColor * texture( myTextureSampler, UV ).rgb*(max(cosTheta, 0.1)) * LightPower * lightColor / (distanceLightVertex * distanceLightVertex);
+  
+  // -----------  Ambient Light  ----------------
+  
+  vec3 ambient = ambientColor * ambientStrength * MaterialDiffuseColor * texture( myTextureSampler, UV ).rgb*(max(cosTheta, 0.1));
+
+  color = max(ambient, pointLight);
+
+}

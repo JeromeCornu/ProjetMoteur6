@@ -192,7 +192,6 @@ void CubeTuto::initializeCube() const
 
 void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
 {
-
     // 2nd attribute buffer : colors
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -237,6 +236,6 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     glDrawArrays(GL_TRIANGLES, 0, 12 * 3); // 12*3 indices starting at 0 -> 12 triangles -> 6 squares
 
     // disable les buffers
-    glDisableVertexAttribArray(0); 
+    glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 }

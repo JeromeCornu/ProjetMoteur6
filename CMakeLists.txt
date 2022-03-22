@@ -5,8 +5,7 @@ project(moteur)
 include(glew.cmake)
 
 add_executable(
-	moteur SauvMain.cpp
-	## moteur main.cpp
+	moteur main.cpp
 	Geometry.cpp
 	gc_3d_defs.hpp
 	loadShader.cpp

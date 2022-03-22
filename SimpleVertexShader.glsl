@@ -24,12 +24,6 @@ uniform vec3 LightPosition_worldspace;
 
 void main()
 {
-  // gl_Position.xyz = vertexPosition;
-  // gl_Position =  MVP * vec4(vertexPosition, 1);
-  // gl_Position.w = 1.0;
-
-  // fragmentColor = vertexColor;
-
   gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
   UV = vertexUV;
 
@@ -47,7 +41,5 @@ void main()
 
   // Only correct if ModelMatrix does not scale the model ! Use its inverse transpose if not.
   Normal_cameraspace = ( View * Model * vec4(normals,0)).xyz;
-
-
 
 }
