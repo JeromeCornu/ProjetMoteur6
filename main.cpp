@@ -19,8 +19,6 @@ using namespace GC_3D;
 
 int main(int argc, char* argv[])
 {
-    CubeTuto Cube;
-    Texture Texture;
 
     /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
@@ -68,11 +66,14 @@ int main(int argc, char* argv[])
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(G_vertex_buffer_data), G_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint ProgramID = GC_3D::loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.glsl", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.glsl");
+    GLuint ProgramID = loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.glsl", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.glsl");
     glUseProgram(ProgramID);
 
 
     /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
+
+    CubeTuto Cube;
+    Texture Texture;
 
     // initialize cube
     Cube.initializeCube();
@@ -87,9 +88,7 @@ int main(int argc, char* argv[])
 
     auto StartTime = Clock::now();
 
-    // Nb cube wished
-    //int i = 0;
-    // Nb cube drawn
+    // Nb cube wish
     int Count = 0;
 
     cout << "Saisir le nombre de cube voulu : ";
@@ -164,21 +163,23 @@ int main(int argc, char* argv[])
         float Turn = sin(FTime.count());
         float Turn0 = cos(FTime.count());
 
+        // Position de la caméra
+        vec3 CameraPosition = vec3 (Turn * 10, 1, Turn0 * 10);
+
         // Camera matrix
         mat4 View = lookAt(
             // vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
-            vec3(Turn * 10, 1, Turn0 * 10),
+            vec3(CameraPosition),
             vec3(0, 0, 0), // and looks at the origin
             vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
-
 
         /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
 
         int LightPositionID;
         LightPositionID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
 
-        glUniform3f(LightPositionID, Turn * 10, 1, Turn0 * 10); // Mettre la position de la light
+        glUniform3f(LightPositionID, CameraPosition.x, CameraPosition.y, CameraPosition.z); // Mettre la position de la light
 
         /* ------------------------------------------------- MATRICES 2 ------------------------------------------------------------- */
 
