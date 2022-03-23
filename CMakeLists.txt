@@ -6,11 +6,13 @@ add_executable(
 	moteur
 	main.cpp
 	gc_3d_defs.hpp
-	Controls.cpp
-	Controls.hpp
 	SimpleFragmentShader.fragmentshader
 	SimpleVertexShader.vertexshader
 	geometry.cpp
+	FPSCounter.cpp
+	FPSCounter.hpp
+	Camera.cpp
+	Camera.hpp
 )
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)

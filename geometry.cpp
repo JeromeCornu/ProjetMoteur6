@@ -40,6 +40,39 @@ void Geometry::Draw() const
 {
     if (!m_Indices.empty())
     {
+
+        Vector<GLfloat> SpherePos;
+
+        for (size_t i = 0; i < m_Pos.size(); i++)
+        {
+            SpherePos.push_back(m_Pos[i][0]);
+            SpherePos.push_back(m_Pos[i][1]);
+            SpherePos.push_back(m_Pos[i][2]);
+        }
+
+        static GLfloat g_sphere_buffer_data[sizeof(m_Pos)] = {};
+
+        for (size_t i = 0; i < m_Pos.size(); i++)
+        {
+            g_sphere_buffer_data[i] = SpherePos[i];
+        }
+
+        GLuint SphereBuffer;
+        glGenBuffers(1, &SphereBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, SphereBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_sphere_buffer_data), g_sphere_buffer_data, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, SphereBuffer);
+        glVertexAttribPointer(
+            0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+            3,                                // size
+            GL_FLOAT,                         // type
+            GL_FALSE,                         // normalized?
+            0,                                // stride
+            (void*)0                          // array buffer offset
+        );
+
         glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, m_Indices.data());
     }
     else

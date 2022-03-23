@@ -1,7 +1,87 @@
-class Camera
-{
-	void
+#include "Camera.hpp"
+#include <glm/ext.hpp>
 
-	vec3 basis[3];
-	vec3 position
-};
+using namespace glm;
+using namespace GC_3D;
+using namespace std;
+using namespace chrono;
+
+void Camera::ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win)
+{
+	int xpos, ypos;
+	SDL_GetMouseState(&xpos, &ypos);
+
+	SDL_WarpMouseInWindow(Win, Width / 2, Height / 2);
+
+	auto lastTime = currentTime;
+	currentTime = steady_clock::now();
+	deltaTime = currentTime - lastTime;
+
+	float diffX = Width / 2 - xpos;
+	float diffY = Height / 2 - ypos;
+
+	if (diffX < -5 || diffX > 5)
+	{
+		horizontalAngle += mouseSpeed * deltaTime.count() * float(diffX);
+	}
+	if (diffY < -5 || diffY > 5)
+	{
+		verticalAngle += mouseSpeed * deltaTime.count() * float(diffY);
+	}
+
+	direction = vec3(
+		cos(verticalAngle) * sin(horizontalAngle),
+		sin(verticalAngle),
+		cos(verticalAngle) * cos(horizontalAngle)
+	);
+
+	Right = vec3(
+		sin(horizontalAngle - 3.14f / 2.0f),
+		0,
+		cos(horizontalAngle - 3.14f / 2.0f)
+	);
+
+	up = cross(Right, direction);
+
+	SDL_Event curEvent;
+
+	while (SDL_PollEvent(&curEvent))
+	{
+
+	}
+
+	FoV = initialFoV - 5 * curEvent.wheel.y;
+}
+
+mat4 Camera::GetProjectionMatrix()
+{
+	return mat4(perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 5002.0f));
+}
+
+mat4 Camera::GetViewMatrix()
+{
+	return mat4(lookAt(
+		position,				// Camera is here
+		position + direction,	// and looks here : at the same position, plus "direction"
+		up						// Head is up (set to 0,-1,0 to look upside-down)
+	));
+}
+
+void Camera::Move(SDL_Keycode Type)
+{
+	switch (Type)
+	{
+	case SDLK_z:
+		position += direction * deltaTime.count() * speed;
+		break;
+	case SDLK_s:
+		position -= direction * deltaTime.count() * speed;
+		break;
+	case SDLK_d:
+		position += Right * deltaTime.count() * speed;
+		break;
+	case SDLK_q:
+		position -= Right * deltaTime.count() * speed;
+		break;
+	}
+}
