@@ -14,6 +14,10 @@ add_executable(
 	CubeTuto.hpp
 	Texture.cpp
 	Texture.hpp
+	Camera.cpp
+	Camera.hpp
+	FPS.cpp
+	FPS.hpp
 )
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)

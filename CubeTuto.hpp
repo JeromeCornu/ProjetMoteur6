@@ -12,7 +12,8 @@ namespace GC_3D
     public:
         void initializeCube() const;
         void makeCube(GLuint iTexLoc, Texture* iTex) const;
-        void getPosition() const;
+        mat4 SetTransform(mat3 Transform);
+        mat3 GetTransform();
     };
 
 }

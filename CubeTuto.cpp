@@ -1,6 +1,8 @@
 #include "CubeTuto.hpp"
 #include "Texture.hpp"
 
+using namespace std;
+using namespace glm;
 using namespace GC_3D;
 
 GLuint Uvbuffer;
@@ -160,6 +162,18 @@ GLfloat Normals[] = {
                         0, -1, 0,   0, -1, 0,   0, -1, 0
 };
 
+
+float PosX, PosY, PosZ;
+float RotX, RotY, RotZ;
+float ScaX, ScaY, ScaZ;
+
+vec3 vPosition = vec3(PosX, PosY, PosZ);
+vec3 vRotate = vec3(RotX, RotY, RotZ);
+vec3 vScale = vec3(ScaX, ScaY, ScaZ);
+
+mat3 Transform = mat3(vPosition, vRotate, vScale);
+
+
 void CubeTuto::initializeCube() const
 {
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
@@ -188,7 +202,6 @@ void CubeTuto::initializeCube() const
     glBufferData(GL_ARRAY_BUFFER, sizeof(Normals) * sizeof(glm::vec3), &Normals[0], GL_STATIC_DRAW);
 
 }
-
 
 void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
 {
@@ -238,4 +251,20 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     // disable les buffers
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+}
+
+mat4 CubeTuto::SetTransform(mat3 Transform) {
+
+    // Parametres des cubes
+    mat4 Translation = translate(mat4(1.0F), vec3(Transform[0][0], Transform[1][0], Transform[2][0]));
+    mat4 Rotation = rotate(mat4(1.0F), 1.0f, vec3(Transform[0][1], Transform[1][1], Transform[2][1]));
+    mat4 Scaling = scale(mat4(1.0F), vec3(Transform[0][2], Transform[1][2], Transform[2][2]));
+
+    mat4 Model = Translation * Rotation * Scaling * mat4(1.0f);
+
+    return Model;
+}
+
+mat3 CubeTuto::GetTransform() {
+    return Transform;
 }

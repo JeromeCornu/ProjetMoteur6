@@ -10,6 +10,9 @@
 #include "loadShader.hpp"
 #include "CubeTuto.hpp"
 #include "Texture.hpp"
+#include "Camera.hpp"
+#include "FPS.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -26,7 +29,7 @@ int main(int argc, char* argv[])
     uint32_t WindowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 
-    SDL_Window* Win = SDL_CreateWindow("Moteur",
+    SDL_Window* Win = SDL_CreateWindow("Moteur - Groupe 1",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1024,
@@ -74,6 +77,7 @@ int main(int argc, char* argv[])
 
     CubeTuto Cube;
     Texture Texture;
+    Camera Camera;
 
     // initialize cube
     Cube.initializeCube();
@@ -85,8 +89,6 @@ int main(int argc, char* argv[])
     vector<CubeTuto> CubesArray;
 
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
-
-    auto StartTime = Clock::now();
 
     // Nb cube wish
     int Count = 0;
@@ -136,50 +138,22 @@ int main(int argc, char* argv[])
 
         /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
 
-        // Affichage des FPS
-        static unsigned int Fps = 0;
-        static clock_t T = clock();
-        if (clock() - T > CLOCKS_PER_SEC)
-        {
-            char Str[50] = "";
-            sprintf(Str, "Moteur OpenGl - FPS : %u", Fps);
-            SDL_SetWindowTitle(Win, Str);
-            T = clock();
-            Fps = 0;
-        }
-        Fps++;
+        FPS Fps;
+        Fps.Display(Win);
 
 
         /* ------------------------------------------------- MATRICES 1 ------------------------------------------------------------- */
 
-        mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
-        // Or, for an ortho camera :
-        //mat4 Projection = ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
+        mat4 View = Camera.Create(10, 5, 10);
 
-        // Chrono pour la caméra
-        auto CurTime = Clock::now();
-        chrono::duration<float> FTime = CurTime - PrevTime;
-        float Turn = sin(FTime.count());
-        float Turn0 = cos(FTime.count());
-
-        // Position de la caméra
-        vec3 CameraPosition = vec3 (Turn * 10, 1, Turn0 * 10);
-
-        // Camera matrix
-        mat4 View = lookAt(
-            // vec3(0, 0, 3.0*glm::cos(Seconds(curTime - startTime))), // Camera is at (4,3,3), in World Space
-            vec3(CameraPosition),
-            vec3(0, 0, 0), // and looks at the origin
-            vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-        );
 
         /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
 
         int LightPositionID;
         LightPositionID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
 
-        glUniform3f(LightPositionID, CameraPosition.x, CameraPosition.y, CameraPosition.z); // Mettre la position de la light
+        glUniform3f(LightPositionID, 5, 5, 5); // Mettre la position de la light
 
         /* ------------------------------------------------- MATRICES 2 ------------------------------------------------------------- */
 
@@ -188,6 +162,7 @@ int main(int argc, char* argv[])
         GLuint ViewID;
         GLuint ModelID;
         GLuint TextureLocId;
+        int decrementer = 0;
 
         for (int i = 0; i < Count; i++)
         {
@@ -196,11 +171,18 @@ int main(int argc, char* argv[])
             std::chrono::duration<float> FTime = CurTime - PrevTime;
             float Turn = sin(FTime.count());
 
-            mat4 Translation = translate(mat4(1.0F), vec3(0.0f + PositionX, 0.0f + PositionY, 0.0f + PositionZ));
-            mat4 Rotation = rotate(mat4(1.0F), Turn * 10, vec3(1.0F, 0.0F, 0.0F));
-            mat4 Scaling = scale(mat4(1.0F), vec3(1.0F, 1.0F, 1.0F));
+            // Contruction du cube
+            mat3 TransformCube = mat3(
+                {0, 0, 0},
+                {0, 0, 0},
+                {0, 0, 0}
+            );
 
-            mat4 Model = Translation * Rotation * Scaling * mat4(1.0f);
+            mat4 Model = Cube.SetTransform(TransformCube);
+            decrementer -= 4;
+
+            // Projection
+            mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
             // Our ModelViewProjection : multiplication of our 3 matrices
             mat4 mvp = Projection * View * Model;
@@ -222,29 +204,7 @@ int main(int argc, char* argv[])
             // Put in the array of cube
             CubesArray.push_back(Cube);
 
-            PositionZ -= 4;
-
         }
-
-        /* --------------------------------------------- TRIANGLE ----------------------------------------------------------------- */
-
-/*
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-        );
-
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        glDisableVertexAttribArray(0);
-        */
-
 
         SDL_GL_SwapWindow(Win);
     }
