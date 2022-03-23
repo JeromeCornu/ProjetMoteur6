@@ -22,6 +22,10 @@ assimp_model.h
 assimp_model.cpp
 ImGuiTool.hpp
 ImGuiTool.cpp
+Mesh.h
+Mesh.cpp
+objLoader.cpp
+objLoader.hpp
 )
 
 

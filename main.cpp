@@ -123,12 +123,7 @@ int main(int argc, char* argv[])
                printf("Unhandled Event!\n");
                 break;
             }
-
-
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            // Render other stuff...
-            // Render imgui
-
         }
 
         UiTool.NewFrame(win);
