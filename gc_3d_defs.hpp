@@ -2,10 +2,14 @@
 
 #include <chrono>
 
-#include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/glm.hpp>  
 
-#include <vector>
+#include <SDL.h>
+#include <GL/glew.h>
+#include <gl/GL.h>
+
+#include <vector>;
 
 namespace GC_3D
 {

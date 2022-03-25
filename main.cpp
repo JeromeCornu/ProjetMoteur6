@@ -1,176 +1,153 @@
-﻿#include <cstdio>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
 #include "gc_3d_defs.hpp"
-#include <SDL.h>
-#include "GL/glew.h"
-#include <gl/GL.h>
-#include "camera.hpp"
-#include "loadShader.cpp"
-#include "ImGuiTool.hpp"
 
+#include "Init.hpp"
+#include "CubeTuto.hpp"
+#include "Texture.hpp"
+#include "Camera.hpp"
+#include "FPS.hpp"
+#include "Matrix.hpp"
 
-#include "assimp_model.h"
+#include <iostream>
 
-
-
+using namespace std;
+using namespace glm;
 using namespace GC_3D;
-
-void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-    printf(message);
-}
 
 
 int main(int argc, char* argv[])
 {
-    //CAssimpModel ModelLoader;
-    float speed = 20;
-    bool someBoolean = false;
-    
-    /*
-    Vector<vec3> Positions = { {0, 0, 0}, {0, 1, 0}, {1, 0, 0}, {0, 0, 1}, {1, 1, 0}, {1, 0, 1}, {0, 1, 1}, {1, 1, 1} };
-    int index[] = { 0, 1, 2, 1, 2, 4, 2, 4, 6, 4, 6, 7, 1, 4, 5, 4, 5, 7, 0, 1, 3, 1, 3, 5, 0, 2, 3, 2, 3, 6, 3, 5, 6, 5, 6, 7};
-    */
 
-    /*Positions.push_back(vec3(-1, 0, 0));
-    Positions.push_back(vec3(0, 1, 0));
-    Positions.push_back(vec3(1, 0, 0));*/
+    CubeTuto Cube = CubeTuto();
+    Texture Texture;
 
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-    uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+    /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
+
+    Init init;
+    SDL_Window* Win = init.CreateTheWindow();
+    init.Vertex();
+    GLuint ProgramID = init.LinkShader();
 
 
-    SDL_Window* win = SDL_CreateWindow("Moteur",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        1024,
-        768,
-        windowsFlags);
+    /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+    // initialize cube
+    Cube.initializeCube();
+    // initialize texture
+    Texture.applyTexture(500, 500, 1, "assets/uwu.jpg");
 
 
-    SDL_GLContext context = SDL_GL_CreateContext(win);
-    SDL_GL_MakeCurrent(win, context);
-    
-    glewInit();
+    auto PrevTime = std::chrono::steady_clock::now();
+
+    /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
+
+    vector<CubeTuto> CubesArray;
+
+    /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
+
+    // Nb cube wish
+    int Count = 0;
+    cout << "Saisir le nombre de cube voulu : ";
+    cin >> Count;
+    cout << "On affiche " << Count << " cube(s)." << endl;
 
 
-    glDebugMessageCallback(&glDebugOutput, nullptr);
-
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-    
-    static const GLfloat g_vertex_buffer_data[] = {
-   -1.0f, -1.0f, 0.0f,
-   1.0f, -1.0f, 0.0f,
-   0.0f,  1.0f, 0.0f,
-    };
-
-    // This will identify our vertex buffer
-    GLuint vertexbuffer;
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    
-    ImguiTool UiTool;
-    UiTool.Setup(win, context);
-
-    GLuint programID = LoadShaders("D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleVertexShader.vertexshader",
-        "D:\\Users\\Gjacot\\GroupeMoteur\\ProjetMoteur6\\common\\SimpleFragmentShader.fragmentshader");
-    glUseProgram(programID);
-
-    //ModelLoader.DoTheImportThing("C:\\Users\\gjacot\\Downloads\\suzane.obj");
-
-    bool apprunning = true;
-    while (apprunning)
+    bool AppRunning = true;
+    while (AppRunning)
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        SDL_Event CurEvent;
 
-        SDL_Event curEvent;
-        while (SDL_PollEvent(&curEvent))
+
+        while (SDL_PollEvent(&CurEvent))
         {
-            ImGui_ImplSDL2_ProcessEvent(&curEvent);
-
-            switch (curEvent.type)
+            if (CurEvent.type == SDL_QUIT)
             {
-            case SDL_QUIT || SDL_WINDOWEVENT:
-                if (curEvent.window.event == SDL_WINDOWEVENT_CLOSE && curEvent.window.windowID == SDL_GetWindowID(win))
-                {
-                    apprunning = false;
-                }
-                break;
-
-            case SDL_MOUSEMOTION:
-                printf("We got a motion event.\n");
-                printf("Current mouse position is: (%d, %d)\n", curEvent.motion.x, curEvent.motion.y);
-                break;
-            
-            case SDL_KEYDOWN:
-                printf("we got a keyBoard event.\n");
-                break;
-            
-
-            default:
-               printf("Unhandled Event!\n");
-                break;
+                AppRunning = false;
             }
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            if (CurEvent.window.type == SDL_WINDOWEVENT_RESIZED)
+            {
+                //glViewport(0.0, 0.0, width, height);
+            }
+        }
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Clear the screen
+        glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+
+        /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
+
+        FPS Fps;
+        Fps.Display(Win);
+
+        /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
+
+        int LightPositionID;
+        LightPositionID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
+
+        glUniform3f(LightPositionID, 5, 5, 5); // Mettre la position de la light
+
+        /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
+
+        int decrementer = 0;
+        Matrix matrix;
+        GLuint TextureLocId;
+        mat4 Model;
+
+        for (int i = 0; i < Count; i++)
+        {
+            // Chrono pour les cubes
+            auto CurTime = std::chrono::steady_clock::now();
+            std::chrono::duration<float> FTime = CurTime - PrevTime;
+            float Turn = sin(FTime.count());
+
+            // Contruction du cube
+            mat3 TransformCube = mat3(
+                {1, decrementer, 1},    // position
+                {1, 1, 1},              // rotation
+                {1, 1, 1}               // scale
+            );
+
+            Cube.SetTransform(TransformCube, Model);
+
+            // Create matrix
+            matrix.ModelViewMaker(Model);
+            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+
+            // Draw the cube
+            Cube.makeCube(TextureLocId, &Texture);
+
+            // Put in the array of cube
+            CubesArray.push_back(Cube);
+
+
+            decrementer -= 4;
         }
 
-        UiTool.NewFrame(win);
-       
-        glViewport(0, 0, 1024, 768);
-        glClearColor(0.5f, 0.5f, 0.9f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        
-        //glColor4f(1.0, 1.0, 1.0, 1.0);
-        /*glBegin(GL_TRIANGLES);
-        glVertex3f(-1.0, 0.0, 0.0);
-        glVertex3f(0.0, 1.0, 0.0);
-        glVertex3f(1.0, 0.0, 0.0);
-        
-        glEnd();*/
-        
-        
-        /*        
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, sizeof(vec3), Positions.data());
-        */
-
-        
-
-        //glDrawElements(GL_TRIANGLES, Positions.size(), GL_UNSIGNED_INT, index);
-
-        // 1st attribute buffer : vertices
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-        );
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        glDisableVertexAttribArray(0);
-
-        UiTool.Window(&speed, &someBoolean);
-     
-        SDL_GL_SwapWindow(win);
+        SDL_GL_SwapWindow(Win);
     }
-
-    UiTool.EndUi();
 
     return 0;
 }
+
+
+/* FRUSTUM CULLING
+* Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
+produit scalaire = position * normal face cube =
+regarder si c'est positif ou negatif
+(on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
+
+    on va pas tester tt les points : donner un centre et prendre la sphere englobante
+    si elle est dehors le frustum completement, alors le modele de la sphere est dehors
+    Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
+    Si c'est moins c'est nickel
+
+
+Pour trouver normal = regle de la main droite
+
+*/
