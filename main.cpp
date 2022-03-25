@@ -218,14 +218,17 @@ int main(int argc, char* argv[])
 
         float ratio = width / (float)height;
 
+        Vector<GLboolean> PressedButtons;
+
         while (SDL_PollEvent(&curEvent))
         {
-            Camera.Move(curEvent.key.keysym.sym);
+            Camera.Move(curEvent);
             if (curEvent.key.keysym.sym == SDLK_ESCAPE)
             {
                 appRunning = false;
             }
         }
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 

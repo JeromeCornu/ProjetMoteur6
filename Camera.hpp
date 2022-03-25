@@ -1,3 +1,4 @@
+#include "gc_3d_defs.hpp"
 #include <GL/glew.h>
 #include <SDL_video.h>
 #include <glm/glm.hpp>
@@ -38,6 +39,14 @@ namespace GC_3D
 
 		float speed = 100.0f;
 
+		bool ZPressed = false;
+
+		bool SPressed = false;
+
+		bool DPressed = false;
+
+		bool QPressed = false;
+
 
 
 		void ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win);
@@ -46,6 +55,6 @@ namespace GC_3D
 
 		glm::mat4 GetViewMatrix();
 
-		void Move(SDL_Keycode Type);
+		void Move(SDL_Event Event);
 	};
 }
