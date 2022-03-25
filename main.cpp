@@ -15,6 +15,8 @@
 #include "Matrix.hpp"
 
 #include <iostream>
+#include <filesystem>
+#include "PathFinder.hpp"
 
 using namespace std;
 using namespace glm;
@@ -24,8 +26,17 @@ using namespace GC_3D;
 int main(int argc, char* argv[])
 {
 
+
     CubeTuto Cube = CubeTuto();
     Texture Texture;
+
+    /* ------------------------------------------------- INITIALIZATION PathFinder ------------------------------------------------------------- */
+
+    filesystem::path appPath(GetAppPath());
+    auto appDir = appPath.parent_path();
+    auto shaderPath = appDir / "asset";
+    auto vShaderPath = shaderPath / "SimpleVertexShader.glsl";
+    auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
 
     /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
@@ -40,7 +51,7 @@ int main(int argc, char* argv[])
     // initialize cube
     Cube.initializeCube();
     // initialize texture
-    Texture.applyTexture(500, 500, 1, "assets/uwu.jpg");
+    Texture.applyTexture(500, 500, 1, "asset/uwu.jpg");
 
 
     auto PrevTime = std::chrono::steady_clock::now();
