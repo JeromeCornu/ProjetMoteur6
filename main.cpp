@@ -210,6 +210,14 @@ int main(int argc, char* argv[])
     bool appRunning = true;
     SDL_ShowCursor(SDL_DISABLE);
 
+    bool ZPressed = false;
+
+    bool SPressed = false;
+
+    bool DPressed = false;
+
+    bool QPressed = false;
+
     while (appRunning)
     {
         Counter.Increment(Win);
@@ -218,16 +226,53 @@ int main(int argc, char* argv[])
 
         float ratio = width / (float)height;
 
-        Vector<GLboolean> PressedButtons;
-
         while (SDL_PollEvent(&curEvent))
         {
-            Camera.Move(curEvent);
+            if (curEvent.type == SDL_KEYDOWN)
+            {
+                switch (curEvent.key.keysym.sym)
+                {
+                case SDLK_z:
+                    ZPressed = true;
+                    break;
+                case SDLK_s:
+                    SPressed = true;
+                    break;
+                case SDLK_q:
+                    QPressed = true;
+                    break;
+                case SDLK_d:
+                    DPressed = true;
+                    break;
+                }
+            }
+            else if (curEvent.type == SDL_KEYUP)
+            {
+                switch (curEvent.key.keysym.sym)
+                {
+                case SDLK_z:
+                    ZPressed = false;
+                    break;
+                case SDLK_s:
+                    SPressed = false;
+                    break;
+                case SDLK_q:
+                    QPressed = false;
+                    break;
+                case SDLK_d:
+                    DPressed = false;
+                    break;
+                }
+            }
             if (curEvent.key.keysym.sym == SDLK_ESCAPE)
             {
                 appRunning = false;
             }
         }
+
+        Vector<GLboolean> PressedButtons = {ZPressed, SPressed, QPressed, DPressed};
+
+        Camera.Move(PressedButtons);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 0.4f, 0.0f);

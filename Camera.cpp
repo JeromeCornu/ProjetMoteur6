@@ -68,66 +68,21 @@ mat4 Camera::GetViewMatrix()
 	));
 }
 
-void Camera::Move(SDL_Event Event)
+void Camera::Move(Vector<GLboolean> PressedButtons)
 {
-	const Uint8* keystates = SDL_GetKeyboardState(NULL);
-
-	if (keystates[SDL_SCANCODE_Z]) {
-		cout << "keystates : " << keystates << endl;
-	}
-	if (keystates[SDL_SCANCODE_RIGHT]) {
-		
-	}
-
-	if (Event.type == SDL_KEYDOWN)
-	{
-		switch (Event.key.keysym.sym)
-		{
-		case SDLK_z:
-			ZPressed = true;
-			break;
-		case SDLK_s:
-			SPressed = true;
-			break;
-		case SDLK_q:
-			QPressed = true;
-			break;
-		case SDLK_d:
-			DPressed = true;
-			break;
-		}
-	}
-	else if (Event.type == SDL_KEYUP)
-	{
-		switch (Event.key.keysym.sym)
-		{
-		case SDLK_z:
-			ZPressed = false;
-			break;
-		case SDLK_s:
-			SPressed = false;
-			break;
-		case SDLK_q:
-			QPressed = false;
-			break;
-		case SDLK_d:
-			DPressed = false;
-			break;
-		}
-	}
-	if (ZPressed)
+	if (PressedButtons[0])
 	{
 		position += direction * deltaTime.count() * speed;
 	}
-	if (SPressed)
+	if (PressedButtons[1])
 	{
 		position -= direction * deltaTime.count() * speed;
 	}
-	if (QPressed)
+	if (PressedButtons[2])
 	{
 		position -= Right * deltaTime.count() * speed;
 	}
-	if (DPressed)
+	if (PressedButtons[3])
 	{
 		position += Right * deltaTime.count() * speed;
 	}

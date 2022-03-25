@@ -37,7 +37,7 @@ namespace GC_3D
 		// Initial Field of View
 		float initialFoV = 45.0f;
 
-		float speed = 100.0f;
+		float speed = 50.0f;
 
 		bool ZPressed = false;
 
@@ -55,6 +55,6 @@ namespace GC_3D
 
 		glm::mat4 GetViewMatrix();
 
-		void Move(SDL_Event Event);
+		void Move(Vector<GLboolean> PressedButtons);
 	};
 }
