@@ -199,7 +199,7 @@ void CubeTuto::initializeCube() const
     // Light buffers
     glGenBuffers(1, &Normalbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, Normalbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Normals) * sizeof(glm::vec3), &Normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Normals), &Normals[0], GL_STATIC_DRAW);
 
 }
 
@@ -253,18 +253,32 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     glDisableVertexAttribArray(1);
 }
 
-mat4 CubeTuto::SetTransform(mat3 Transform) {
+void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {
 
     // Parametres des cubes
-    mat4 Translation = translate(mat4(1.0F), vec3(Transform[0][0], Transform[1][0], Transform[2][0]));
-    mat4 Rotation = rotate(mat4(1.0F), 1.0f, vec3(Transform[0][1], Transform[1][1], Transform[2][1]));
-    mat4 Scaling = scale(mat4(1.0F), vec3(Transform[0][2], Transform[1][2], Transform[2][2]));
+    mat4 Translation = translate(mat4(1.0F), vec3(Transform[0][0], Transform[0][1], Transform[0][2]));
+    mat4 Rotation = rotate(mat4(1.0F), 1.0f, vec3(Transform[1][0], Transform[1][1], Transform[1][2]));
+    mat4 Scaling = scale(mat4(1.0F), vec3(Transform[2][0], Transform[2][1], Transform[2][2]));
 
-    mat4 Model = Translation * Rotation * Scaling * mat4(1.0f);
-
-    return Model;
+    Model = Translation * Rotation * Scaling * mat4(1.0f);
 }
 
 mat3 CubeTuto::GetTransform() {
     return Transform;
 }
+
+/* FRUSTUM CULLING
+* Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
+produit scalaire = position * normal face cube =
+regarder si c'est positif ou negatif
+(on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
+
+    on va pas tester tt les points : donner un centre et prendre la sphere englobante
+    si elle est dehors le frustum completement, alors le modele de la sphere est dehors 
+    Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
+    Si c'est moins c'est nickel
+
+
+Pour trouver normal = regle de la main droite
+
+*/

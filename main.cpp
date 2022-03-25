@@ -7,11 +7,12 @@
 
 #include "gc_3d_defs.hpp"
 
-#include "loadShader.hpp"
+#include "Init.hpp"
 #include "CubeTuto.hpp"
 #include "Texture.hpp"
 #include "Camera.hpp"
 #include "FPS.hpp"
+#include "Matrix.hpp"
 
 #include <iostream>
 
@@ -23,66 +24,26 @@ using namespace GC_3D;
 int main(int argc, char* argv[])
 {
 
+    CubeTuto Cube = CubeTuto();
+    Texture Texture;
+
     /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
-    SDL_Init(SDL_INIT_VIDEO);
-    uint32_t WindowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-
-
-    SDL_Window* Win = SDL_CreateWindow("Moteur - Groupe 1",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        1024,
-        768,
-        WindowsFlags);
-
-
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-
-    SDL_GLContext Context = SDL_GL_CreateContext(Win);
-    SDL_GL_MakeCurrent(Win, Context);
-
-    glewInit();
-
-    auto PrevTime = std::chrono::steady_clock::now();
-
-    glViewport(0, 0, 1024, 768);
-
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-    static const GLfloat G_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f,
-    };
-
-    GLuint Vertexbuffer;
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &Vertexbuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, Vertexbuffer);
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(G_vertex_buffer_data), G_vertex_buffer_data, GL_STATIC_DRAW);
-
-    GLuint ProgramID = loadShader::LoadShaders("C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleVertexShader.glsl", "C:\\Users\\jcornu\\Documents\\GitHub\\ProjetMoteur6\\SimpleFragmentShader.glsl");
-    glUseProgram(ProgramID);
+    Init init;
+    SDL_Window* Win = init.CreateTheWindow();
+    init.Vertex();
+    GLuint ProgramID = init.LinkShader();
 
 
     /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
 
-    CubeTuto Cube;
-    Texture Texture;
-    Camera Camera;
-
     // initialize cube
     Cube.initializeCube();
     // initialize texture
-    Texture.applyTexture(500, 500, 1, "C:\\Users\\jcornu\\Pictures\\uwu.jpg");
+    Texture.applyTexture(500, 500, 1, "assets/uwu.jpg");
+
+
+    auto PrevTime = std::chrono::steady_clock::now();
 
     /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
 
@@ -92,33 +53,16 @@ int main(int argc, char* argv[])
 
     // Nb cube wish
     int Count = 0;
-
     cout << "Saisir le nombre de cube voulu : ";
     cin >> Count;
     cout << "On affiche " << Count << " cube(s)." << endl;
 
 
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
-
     bool AppRunning = true;
     while (AppRunning)
     {
-        // Position of each cube - initialization
-        float PositionX = 0;
-        float PositionY = 0;
-        float PositionZ = 0;
-
         SDL_Event CurEvent;
-        /*int width, height;
-        SDL_GetWindowSize(win, &width, &height);
 
-        float ratio = width / (float)height;
-
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);*/
 
         while (SDL_PollEvent(&CurEvent))
         {
@@ -141,13 +85,6 @@ int main(int argc, char* argv[])
         FPS Fps;
         Fps.Display(Win);
 
-
-        /* ------------------------------------------------- MATRICES 1 ------------------------------------------------------------- */
-
-
-        mat4 View = Camera.Create(10, 5, 10);
-
-
         /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
 
         int LightPositionID;
@@ -155,14 +92,12 @@ int main(int argc, char* argv[])
 
         glUniform3f(LightPositionID, 5, 5, 5); // Mettre la position de la light
 
-        /* ------------------------------------------------- MATRICES 2 ------------------------------------------------------------- */
+        /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
 
-        // Position of the cube
-        GLuint MatrixID;
-        GLuint ViewID;
-        GLuint ModelID;
-        GLuint TextureLocId;
         int decrementer = 0;
+        Matrix matrix;
+        GLuint TextureLocId;
+        mat4 Model;
 
         for (int i = 0; i < Count; i++)
         {
@@ -173,30 +108,16 @@ int main(int argc, char* argv[])
 
             // Contruction du cube
             mat3 TransformCube = mat3(
-                {0, 0, 0},
-                {0, 0, 0},
-                {0, 0, 0}
+                {1, decrementer, 1},    // position
+                {1, 1, 1},              // rotation
+                {1, 1, 1}               // scale
             );
 
-            mat4 Model = Cube.SetTransform(TransformCube);
-            decrementer -= 4;
+            Cube.SetTransform(TransformCube, Model);
 
-            // Projection
-            mat4 Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-
-            // Our ModelViewProjection : multiplication of our 3 matrices
-            mat4 mvp = Projection * View * Model;
-
-            MatrixID = glGetUniformLocation(ProgramID, "MVP");
-            ViewID = glGetUniformLocation(ProgramID, "View");
-            ModelID = glGetUniformLocation(ProgramID, "Model");
-            TextureLocId = glGetUniformLocation(ProgramID, "MyTextureSampler");
-
-            // Send our transformation to the currently bound shader, in the "MVP" uniform
-            // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
-            glUniformMatrix4fv(ViewID, 1, GL_FALSE, &View[0][0]);
-            glUniformMatrix4fv(ModelID, 1, GL_FALSE, &Model[0][0]);
+            // Create matrix
+            matrix.ModelViewMaker(Model);
+            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
 
             // Draw the cube
             Cube.makeCube(TextureLocId, &Texture);
@@ -204,6 +125,8 @@ int main(int argc, char* argv[])
             // Put in the array of cube
             CubesArray.push_back(Cube);
 
+
+            decrementer -= 4;
         }
 
         SDL_GL_SwapWindow(Win);
@@ -211,3 +134,20 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+
+/* FRUSTUM CULLING
+* Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
+produit scalaire = position * normal face cube =
+regarder si c'est positif ou negatif
+(on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
+
+    on va pas tester tt les points : donner un centre et prendre la sphere englobante
+    si elle est dehors le frustum completement, alors le modele de la sphere est dehors
+    Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
+    Si c'est moins c'est nickel
+
+
+Pour trouver normal = regle de la main droite
+
+*/

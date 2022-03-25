@@ -6,7 +6,9 @@ include(glew.cmake)
 
 add_executable(
 	moteur main.cpp
-	Geometry.cpp
+	#Geometry.cpp
+	Init.cpp
+	Init.hpp
 	gc_3d_defs.hpp
 	loadShader.cpp
 	loadShader.hpp
@@ -18,6 +20,8 @@ add_executable(
 	Camera.hpp
 	FPS.cpp
 	FPS.hpp
+	Matrix.cpp
+	Matrix.hpp
 )
 
 set(SDL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/SDL/include)

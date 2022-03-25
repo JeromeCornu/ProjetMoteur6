@@ -1,5 +1,9 @@
 #include "gc_3d_defs.hpp"
 
+using namespace std;
+using namespace glm;
+using namespace GC_3D;
+
 namespace GC_3D
 {
     class Texture;
@@ -12,7 +16,7 @@ namespace GC_3D
     public:
         void initializeCube() const;
         void makeCube(GLuint iTexLoc, Texture* iTex) const;
-        mat4 SetTransform(mat3 Transform);
+        void SetTransform(mat3 Transform, mat4& Model);
         mat3 GetTransform();
     };
 
