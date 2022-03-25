@@ -18,12 +18,8 @@ moteur main.cpp
 gc_3d_defs.hpp 
 Camera.cpp 
 camera.hpp 
-assimp_model.h 
-assimp_model.cpp
 ImGuiTool.hpp
 ImGuiTool.cpp
-Mesh.h
-Mesh.cpp
 objLoader.cpp
 objLoader.hpp
 )
