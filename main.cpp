@@ -1,5 +1,7 @@
+
 #include <stdio.h>
 #include <stdlib.h>
+﻿#include <cstdio>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -19,13 +21,15 @@
 #include <filesystem>
 #include "PathFinder.hpp"
 
-using namespace std;
 using namespace glm;
+using namespace std;
+using namespace chrono;
 using namespace GC_3D;
 
 
 int main(int argc, char* argv[])
 {
+	
     ImguiTool Imgui;
     CubeTuto Cube = CubeTuto();
     Texture Texture;
@@ -58,7 +62,10 @@ int main(int argc, char* argv[])
     Cube.initializeCube();
     // initialize texture
     Texture.applyTexture(500, 500, 1, "asset/uwu.jpg");
-
+	// initialize sphere
+    Geometry Sphere;
+    Sphere.MakeSphere(5);
+    Sphere.Bind();
 
     auto PrevTime = std::chrono::steady_clock::now();
 
@@ -67,17 +74,79 @@ int main(int argc, char* argv[])
 
     vector<CubeTuto> CubesArray;
 
+    /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
+
+	Camera Camera;
+    //Camera.direction = -Camera.position;
+	
+    SDL_WarpMouseInWindow(Win, ScreenWidth / 2, ScreenHeight / 2);
+
+    bool appRunning = true;
+    SDL_ShowCursor(SDL_DISABLE);
+
+    bool ZPressed = false;
+
+    bool SPressed = false;
+
+    bool DPressed = false;
+
+    bool QPressed = false;
+
+
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
+
 
     bool AppRunning = true;
     while (AppRunning)
     {
-
         SDL_Event CurEvent;
+		
+		Counter.Increment(Win);
+
+        SDL_Event curEvent;
+
+        float ratio = width / (float)height;
 
         while (SDL_PollEvent(&CurEvent))
         {
             ImGui_ImplSDL2_ProcessEvent(&CurEvent);
+
+			if (curEvent.type == SDL_KEYDOWN)
+            {
+                switch (curEvent.key.keysym.sym)
+                {
+                case SDLK_z:
+                    ZPressed = true;
+                    break;
+                case SDLK_s:
+                    SPressed = true;
+                    break;
+                case SDLK_q:
+                    QPressed = true;
+                    break;
+                case SDLK_d:
+                    DPressed = true;
+                    break;
+                }
+            }
+            else if (curEvent.type == SDL_KEYUP)
+            {
+                switch (curEvent.key.keysym.sym)
+                {
+                case SDLK_z:
+                    ZPressed = false;
+                    break;
+                case SDLK_s:
+                    SPressed = false;
+                    break;
+                case SDLK_q:
+                    QPressed = false;
+                    break;
+                case SDLK_d:
+                    DPressed = false;
+                    break;
+                }
+            }
 
             if (CurEvent.type == SDL_QUIT || SDL_WINDOWEVENT) {
 
@@ -92,10 +161,22 @@ int main(int argc, char* argv[])
                 //glViewport(0.0, 0.0, width, height);
             }
         }
+		
+		
+		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Clear the screen
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+		
+		
+		/* --------------------------------------------------- CAMERA ------------------------------------------------------------ */
 
+        Camera.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, Win);
+
+        Vector<GLboolean> PressedButtons = {ZPressed, SPressed, QPressed, DPressed};
+
+        Camera.Move(PressedButtons);
+		
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
         
         Imgui.NewFrame(Win);
@@ -136,18 +217,18 @@ int main(int argc, char* argv[])
 
             // Draw the cube
             Cube.makeCube(TextureLocId, &Texture);
-
+			
             // Put in the array of cube
             CubesArray.push_back(Cube);
-
 
             decrementer -= 4;
         }
 
         SDL_GL_SwapWindow(Win);
     }
-
+	
     Imgui.EndUi();
+	
     return 0;
 }
 
