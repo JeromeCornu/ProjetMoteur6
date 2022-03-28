@@ -18,6 +18,7 @@
 #include <filesystem>
 #include "PathFinder.hpp"
 #include "objLoader.hpp"
+#include "Mesh.h"
 
 using namespace std;
 using namespace glm;
@@ -46,6 +47,8 @@ int main(int argc, char* argv[])
     init.Vertex();
     GLuint ProgramID = init.LinkShader();
 
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
 
@@ -63,12 +66,19 @@ int main(int argc, char* argv[])
 
     /* --------------------------------------------- ASSIMP LOADING --------------------------------------------------------- */
 
-    Vector<unsigned short> indices;
+    Mesh Mesh;
     Vector<vec3> vertices;
     Vector<vec2> uvs;
     Vector<vec3> normals;
+    Vector<unsigned int> indices;
+
 
     bool ModelLoaded = loadAssImp("asset/suzanne.obj", indices, vertices, uvs, normals);
+    if (ModelLoaded)
+    {
+        Mesh.InitBuffers(vertices, uvs, normals, indices);
+        //Mesh.initializeMesh();
+    }
 
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
@@ -101,6 +111,8 @@ int main(int argc, char* argv[])
         // Clear the screen
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
 
+
+
         /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
 
         FPS Fps;
@@ -122,7 +134,19 @@ int main(int argc, char* argv[])
 
         if (ModelLoaded)
         {
-            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+            mat3 TransformModel = mat3(
+                { 1, decrementer, 1 },    // position
+                { 1, 1, 1 },              // rotation
+                { 1, 1, 1 }               // scale
+            );
+            Mesh.SetTransform(TransformModel, Model);
+
+            // Create matrix
+            matrix.ModelViewMaker(Model);
+            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+
+            // Draw the Mesh
+            Mesh.makeMesh(TextureLocId, &Texture, indices);
         }
 
         

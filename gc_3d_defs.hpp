@@ -9,7 +9,7 @@
 #include <GL/glew.h>
 #include <gl/GL.h>
 
-#include <vector>;
+#include <vector>
 
 namespace GC_3D
 {

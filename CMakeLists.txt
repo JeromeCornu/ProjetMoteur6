@@ -40,6 +40,8 @@ add_executable(
 	ImGuiTool.cpp
 	PathFinder.hpp
 	PathFinder.cpp
+	Mesh.cpp
+	Mesh.h
 )
 
 
