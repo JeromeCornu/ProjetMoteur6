@@ -13,6 +13,7 @@
 #include "Camera.hpp"
 #include "FPS.hpp"
 #include "Matrix.hpp"
+#include "ImGuiTool.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -25,10 +26,17 @@ using namespace GC_3D;
 
 int main(int argc, char* argv[])
 {
-
-
+    ImguiTool Imgui;
     CubeTuto Cube = CubeTuto();
     Texture Texture;
+
+    int decrementer = 0;
+
+    // Imgui parameters
+    int NumberCubes = 5;
+    float RotateX = 0.0f;
+    float RotateY = 0.0f;
+    float RotateZ = 0.0f;
 
     /* ------------------------------------------------- INITIALIZATION PathFinder ------------------------------------------------------------- */
 
@@ -38,13 +46,11 @@ int main(int argc, char* argv[])
     auto vShaderPath = shaderPath / "SimpleVertexShader.glsl";
     auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
 
-    /* ------------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
+    /* --------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
-    Init init;
-    SDL_Window* Win = init.CreateTheWindow();
-    init.Vertex();
-    GLuint ProgramID = init.LinkShader();
-
+    SDL_Window* Win = Init::CreateTheWindow(Imgui);
+    Init::Vertex();
+    GLuint ProgramID = Init::LinkShader();
 
     /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
 
@@ -56,30 +62,29 @@ int main(int argc, char* argv[])
 
     auto PrevTime = std::chrono::steady_clock::now();
 
+
     /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
 
     vector<CubeTuto> CubesArray;
 
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
-    // Nb cube wish
-    int Count = 0;
-    cout << "Saisir le nombre de cube voulu : ";
-    cin >> Count;
-    cout << "On affiche " << Count << " cube(s)." << endl;
-
-
     bool AppRunning = true;
     while (AppRunning)
     {
-        SDL_Event CurEvent;
 
+        SDL_Event CurEvent;
 
         while (SDL_PollEvent(&CurEvent))
         {
-            if (CurEvent.type == SDL_QUIT)
-            {
-                AppRunning = false;
+            ImGui_ImplSDL2_ProcessEvent(&CurEvent);
+
+            if (CurEvent.type == SDL_QUIT || SDL_WINDOWEVENT) {
+
+                if (CurEvent.window.event == SDL_WINDOWEVENT_CLOSE && CurEvent.window.windowID == SDL_GetWindowID(Win))
+                {
+                    AppRunning = false;
+                }
             }
 
             if (CurEvent.window.type == SDL_WINDOWEVENT_RESIZED)
@@ -90,6 +95,11 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // Clear the screen
         glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+
+        /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
+        
+        Imgui.NewFrame(Win);
+        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ);
 
         /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
 
@@ -105,23 +115,17 @@ int main(int argc, char* argv[])
 
         /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
 
-        int decrementer = 0;
         Matrix matrix;
         GLuint TextureLocId;
         mat4 Model;
 
-        for (int i = 0; i < Count; i++)
+        for (int i = 0; i < NumberCubes; i++)
         {
-            // Chrono pour les cubes
-            auto CurTime = std::chrono::steady_clock::now();
-            std::chrono::duration<float> FTime = CurTime - PrevTime;
-            float Turn = sin(FTime.count());
-
             // Contruction du cube
             mat3 TransformCube = mat3(
-                {1, decrementer, 1},    // position
-                {1, 1, 1},              // rotation
-                {1, 1, 1}               // scale
+                {1, decrementer, 1},            // position
+                {RotateX, RotateY, RotateZ},    // rotation
+                {1, 1, 1}                       // scale
             );
 
             Cube.SetTransform(TransformCube, Model);
@@ -143,6 +147,7 @@ int main(int argc, char* argv[])
         SDL_GL_SwapWindow(Win);
     }
 
+    Imgui.EndUi();
     return 0;
 }
 

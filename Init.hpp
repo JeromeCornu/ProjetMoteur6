@@ -2,12 +2,11 @@
 
 namespace GC_3D
 {
+    class ImguiTool;
 
-    class Init
+    namespace Init
     {
-
-    public:
-        SDL_Window* CreateTheWindow();
+        SDL_Window* CreateTheWindow(ImguiTool& Imgui);
         void Vertex();
         GLuint LinkShader();
     };

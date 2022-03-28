@@ -1,12 +1,13 @@
 #include "Init.hpp"
 #include "loadShader.hpp"
+#include "ImGuiTool.hpp"
 
 using namespace std;
 using namespace glm;
 using namespace GC_3D;
 
 
-SDL_Window* Init::CreateTheWindow() {
+SDL_Window* Init::CreateTheWindow(ImguiTool& Imgui) {
 
     SDL_Init(SDL_INIT_VIDEO);
     uint32_t WindowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
@@ -30,6 +31,9 @@ SDL_Window* Init::CreateTheWindow() {
     glewInit();
 
     glViewport(0, 0, 1024, 768);
+
+
+    Imgui.Setup(Win, Context);
 
     return Win;
 }
