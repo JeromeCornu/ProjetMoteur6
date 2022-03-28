@@ -1,3 +1,5 @@
+#pragma once
+
 #include "gc_3d_defs.hpp"
 #include <GL/glew.h>
 #include <SDL_video.h>
@@ -12,7 +14,7 @@ namespace GC_3D
 	class Camera
 	{
 	public:
-		glm::vec3 position = glm::vec3(10, 10, -5);
+		glm::vec3 position = glm::vec3(0, 0, 10);
 
 		glm::vec3 direction;
 
@@ -47,13 +49,13 @@ namespace GC_3D
 
 		bool QPressed = false;
 
-
-
 		void ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win);
 
 		glm::mat4 GetProjectionMatrix();
 
 		glm::mat4 GetViewMatrix();
+
+		void SetViewMatrix(vec3 NewPosition);
 
 		void Move(Vector<GLboolean> PressedButtons);
 	};

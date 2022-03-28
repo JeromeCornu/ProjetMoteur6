@@ -158,7 +158,7 @@ GLfloat Normals[] = {
                         0, 1, 0,   0, 1, 0,   0, 1, 0,      // face dessus
                         0, 1, 0,   0, 1, 0,   0, 1, 0,
 
-                        0, -1, 0,   0, -1, 0,   0, -1, 0,      // face dessous
+                        0, -1, 0,   0, -1, 0,   0, -1, 0,   // face dessous
                         0, -1, 0,   0, -1, 0,   0, -1, 0
 };
 
@@ -209,35 +209,35 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, Uvbuffer);
     glVertexAttribPointer(
-        1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-        2,                                // size
-        GL_FLOAT,                         // type
-        GL_FALSE,                         // normalized?
-        0,                                // stride
-        (void*)0                          // array buffer offset
+        1,                              // attribute. No particular reason for 1, but must match the layout in the shader.
+        2,                              // size
+        GL_FLOAT,                       // type
+        GL_FALSE,                       // normalized?
+        0,                              // stride
+        (void*)0                        // array buffer offset
     );
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, Vertexbuffer);
     glVertexAttribPointer(
-        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        (void*)0            // array buffer offset
+        0,                              // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        3,                              // size
+        GL_FLOAT,                       // type
+        GL_FALSE,                       // normalized?
+        0,                              // stride
+        (void*)0                        // array buffer offset
     );
 
     // 3rd attribute buffer : normals
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, Normalbuffer);
     glVertexAttribPointer(
-        2,                                // attribute
-        3,                                // size
-        GL_FLOAT,                         // type
-        GL_FALSE,                         // normalized?
-        0,                                // stride
-        (void*)0                          // array buffer offset
+        2,                              // attribute
+        3,                              // size
+        GL_FLOAT,                       // type
+        GL_FALSE,                       // normalized?
+        0,                              // stride
+        (void*)0                        // array buffer offset
     );
 
 
@@ -257,10 +257,14 @@ void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {
 
     // Parametres des cubes
     mat4 Translation = translate(mat4(1.0F), vec3(Transform[0][0], Transform[0][1], Transform[0][2]));
-    mat4 Rotation = rotate(mat4(1.0F), 1.0f, vec3(Transform[1][0], Transform[1][1], Transform[1][2]));
+
+    mat4 RotationX = rotate(mat4(1.0F), Transform[1][0], vec3(1, 0, 0)); // Axe X
+    mat4 RotationY = rotate(mat4(1.0F), Transform[1][1], vec3(0, 1, 0)); // Axe Y
+    mat4 RotationZ = rotate(mat4(1.0F), Transform[1][2], vec3(0, 0, 1)); // Axe Z
+
     mat4 Scaling = scale(mat4(1.0F), vec3(Transform[2][0], Transform[2][1], Transform[2][2]));
 
-    Model = Translation * Rotation * Scaling * mat4(1.0f);
+    Model = Translation * RotationX * RotationY * RotationZ * Scaling * mat4(1.0f);
 }
 
 mat3 CubeTuto::GetTransform() {

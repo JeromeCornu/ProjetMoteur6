@@ -13,7 +13,7 @@ SDL_Window* Init::CreateTheWindow(ImguiTool& Imgui) {
     uint32_t WindowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 
-    SDL_Window* Win = SDL_CreateWindow("Moteur - Groupe 1",
+    SDL_Window* Win = SDL_CreateWindow("Moteur - Groupe BRUHAHAN",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1024,
@@ -31,7 +31,6 @@ SDL_Window* Init::CreateTheWindow(ImguiTool& Imgui) {
     glewInit();
 
     glViewport(0, 0, 1024, 768);
-
 
     Imgui.Setup(Win, Context);
 

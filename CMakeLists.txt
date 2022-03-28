@@ -47,8 +47,6 @@ set(STB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dep/stb)
 set_property(TARGET moteur PROPERTY CXX_STANDARD 17)
 
 
-
-
 target_include_directories(moteur PRIVATE ${SDL_INCLUDE_DIR})
 target_include_directories(moteur PRIVATE ${GLM_INCLUDE_DIR})
 target_include_directories(moteur PRIVATE ${STB_INCLUDE_DIR})

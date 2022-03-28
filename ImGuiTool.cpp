@@ -1,9 +1,10 @@
-
 #include "ImGuiTool.hpp"
+#include "Camera.hpp"
 
 
 namespace GC_3D
 {
+
     void ImguiTool::Setup(SDL_Window* win, SDL_GLContext context)
     {
         // Setup Dear ImGui context
@@ -28,31 +29,40 @@ namespace GC_3D
         ImGui::NewFrame();
     }
 
-    void ImguiTool::Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ)
+    void ImguiTool::Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower)
     {
-        ImGui::Begin("MySuperWindow");
+        ImGui::Begin("BRUHAHAN");
 
-        // Parameters
-
-            /* 1 */
-        // ImGui::Checkbox("Boolean property", someBoolean);
-
-            /* 3 */
+        ImGui::Text("\n\n----------------- Cubes -----------------");
         ImGui::SliderInt("Number of Cubes", NumberCubes, 0, 10000);
-
+            
         ImGui::Text("\nRotation of all the Cubes : ");
-        ImGui::SliderFloat("Rotation X", RotateX, 0.0f, 180.0f);
-        ImGui::SliderFloat("Rotation Y", RotateY, 0.0f, 180.0f);
-        ImGui::SliderFloat("Rotation Z", RotateZ, 0.0f, 180.0f);
+        ImGui::SliderFloat("Rotation X", RotateX, 1.0f, 6.0f);
+        ImGui::SliderFloat("Rotation Y", RotateY, 1.0f, 6.0f);
+        ImGui::SliderFloat("Rotation Z", RotateZ, 1.0f, 6.0f);
 
-        /* 2 */
-        if (ImGui::Button("Clean")) {
-            // This code is executed when the user clicks the button
-            *NumberCubes = 0;
-            *RotateX = 0.0f;
-            *RotateY = 0.0f;
-            *RotateZ = 0.0f;
+
+        ImGui::Text("\n\n----------------- Light -----------------");
+        ImGui::SliderFloat("Power", LightPower, 0.0f, 100.0f);
+        ImGui::Text("\nColor : ");
+        ImGui::SliderFloat("Red", LightColorX, 0.0f, 1.0f);
+        ImGui::SliderFloat("Green", LightColorY, 0.0f, 1.0f);
+        ImGui::SliderFloat("Blue", LightColorZ, 0.0f, 1.0f);
+
+
+        ImGui::Text("\n\n----------------- Reset -----------------");
+        if (ImGui::Button("Origin")) {
+            vec3 Origin = vec3(0.0f, 0.0f, 10.0f);
+            MainCamera->position = Origin;
+            *RotateX = 1.0f;
+            *RotateY = 1.0f;
+            *RotateZ = 1.0f;
+            *LightColorX = 1.0f;
+            *LightColorY = 1.0f;
+            *LightColorZ = 1.0f;
+            *LightPower = 20.0f;
         }
+
 
         ImGui::End();
         ImGui::Render();

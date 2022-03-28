@@ -14,13 +14,13 @@ uniform sampler2D MyTextureSampler;
 vec3 MaterialDiffuseColor = vec3 (1.0f, 1.0f, 1.0f);
 
 // Light
-vec3 LightColor = vec3 (1.0f, 1.0f, 1.0f);
-float LightPower = 20.0f;
+uniform vec3 LightColor = vec3 (1.0f, 1.0f, 1.0f);
+uniform float LightPower = 20.0f;
 vec3 PointLight;
 
 // Ambient Light 
-float AmbientStrength = 0.1;
-vec3 AmbientColor = vec3 (1.0f, 1.0f, 1.0f);
+uniform float AmbientStrength = 0.1;
+uniform vec3 AmbientColor = vec3 (1.0f, 1.0f, 1.0f);
 
 
 void main()

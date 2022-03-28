@@ -1,4 +1,4 @@
-#include "Camera.hpp"
+﻿#include "Camera.hpp"
 #include <glm/ext.hpp>
 #include <iostream>
 
@@ -7,12 +7,13 @@ using namespace GC_3D;
 using namespace std;
 using namespace chrono;
 
+
 void Camera::ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win)
 {
 	int xpos, ypos;
-	SDL_GetMouseState(&xpos, &ypos);
+		SDL_GetMouseState(&xpos, &ypos);
 
-	SDL_WarpMouseInWindow(Win, Width / 2, Height / 2);
+		SDL_WarpMouseInWindow(Win, Width / 2, Height / 2);
 
 	auto lastTime = currentTime;
 	currentTime = steady_clock::now();
@@ -66,6 +67,11 @@ mat4 Camera::GetViewMatrix()
 		position + direction,	// and looks here : at the same position, plus "direction"
 		up						// Head is up (set to 0,-1,0 to look upside-down)
 	));
+}
+
+void Camera::SetViewMatrix(vec3 NewPosition)
+{
+	position = NewPosition;
 }
 
 void Camera::Move(Vector<GLboolean> PressedButtons)
