@@ -122,11 +122,11 @@ int main(int argc, char* argv[])
 
         if (ModelLoaded)
         {
-            glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         }
 
-        /*
-        for (int i = 0; i < Count; i++)
+        
+        /*for (int i = 0; i < Count; i++)
         {
             // Chrono pour les cubes
             //auto CurTime = std::chrono::steady_clock::now();
@@ -154,8 +154,8 @@ int main(int argc, char* argv[])
 
 
             decrementer -= 4;
-        }
-        */
+        }*/
+        
 
         SDL_GL_SwapWindow(Win);
     }
