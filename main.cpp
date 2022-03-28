@@ -17,6 +17,7 @@
 #include <iostream>
 #include <filesystem>
 #include "PathFinder.hpp"
+#include "objLoader.hpp"
 
 using namespace std;
 using namespace glm;
@@ -60,12 +61,21 @@ int main(int argc, char* argv[])
 
     vector<CubeTuto> CubesArray;
 
+    /* --------------------------------------------- ASSIMP LOADING --------------------------------------------------------- */
+
+    Vector<unsigned short> indices;
+    Vector<vec3> vertices;
+    Vector<vec2> uvs;
+    Vector<vec3> normals;
+
+    bool ModelLoaded = loadAssImp("asset/suzanne.obj", indices, vertices, uvs, normals);
+
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
     // Nb cube wish
     int Count = 0;
     cout << "Saisir le nombre de cube voulu : ";
-    cin >> Count;
+    //cin >> Count;
     cout << "On affiche " << Count << " cube(s)." << endl;
 
 
@@ -110,12 +120,18 @@ int main(int argc, char* argv[])
         GLuint TextureLocId;
         mat4 Model;
 
+        if (ModelLoaded)
+        {
+            glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+        }
+
+        /*
         for (int i = 0; i < Count; i++)
         {
             // Chrono pour les cubes
-            auto CurTime = std::chrono::steady_clock::now();
-            std::chrono::duration<float> FTime = CurTime - PrevTime;
-            float Turn = sin(FTime.count());
+            //auto CurTime = std::chrono::steady_clock::now();
+            //std::chrono::duration<float> FTime = CurTime - PrevTime;
+            //float Turn = sin(FTime.count());
 
             // Contruction du cube
             mat3 TransformCube = mat3(
@@ -139,6 +155,7 @@ int main(int argc, char* argv[])
 
             decrementer -= 4;
         }
+        */
 
         SDL_GL_SwapWindow(Win);
     }
