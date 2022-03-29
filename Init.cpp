@@ -63,9 +63,9 @@ void Init::Vertex() {
     glDepthFunc(GL_LESS);
 }
 
-GLuint Init::LinkShader() {
+GLuint Init::LinkShader(filesystem::path Vertex, filesystem::path Fragment) {
 
-    GLuint ProgramID = loadShader::LoadShaders("asset\\SimpleVertexShader.glsl", "asset\\SimpleFragmentShader.glsl");
+    GLuint ProgramID = loadShader::LoadShaders(Vertex, Fragment);
     glUseProgram(ProgramID);
 
     return ProgramID;

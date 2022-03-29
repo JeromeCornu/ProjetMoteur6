@@ -1,4 +1,5 @@
 #include "gc_3d_defs.hpp"
+#include <filesystem>
 
 namespace GC_3D
 {
@@ -8,7 +9,7 @@ namespace GC_3D
     {
         SDL_Window* CreateTheWindow(ImguiTool& Imgui);
         void Vertex();
-        GLuint LinkShader();
+        GLuint LinkShader(std::filesystem::path Vertex, std::filesystem::path Fragment);
     };
 
 }

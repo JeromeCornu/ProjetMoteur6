@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 
     SDL_Window* Win = Init::CreateTheWindow(Imgui);
     Init::Vertex();
-    GLuint ProgramID = Init::LinkShader();
+    GLuint ProgramID = Init::LinkShader(vShaderPath, fShaderPath);
 
     /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
 
