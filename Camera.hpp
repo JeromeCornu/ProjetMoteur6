@@ -12,7 +12,7 @@ namespace GC_3D
 	class Camera
 	{
 	public:
-		glm::vec3 position = glm::vec3(10, 10, -5);
+		glm::vec3 position = glm::vec3(5, 5, 30);
 
 		glm::vec3 direction;
 

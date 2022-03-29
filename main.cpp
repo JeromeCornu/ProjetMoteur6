@@ -292,40 +292,49 @@ int main(int argc, char* argv[])
         mat4 ProjectionMatrix = Camera.GetProjectionMatrix();
         mat4 ViewMatrix = Camera.GetViewMatrix();
 
-        for (size_t i = 0; i < 5; i++)
+        auto curTime = steady_clock::now();
+        std::chrono::duration<float> fTime = curTime - prevTime;
+        float turnSin = sin(fTime.count());
+        float turnCos = cos(fTime.count());
+
+        for (size_t i = 0; i < 2; i++)
         {
             for (size_t j = 0; j < 5; j++)
             {
                 for (size_t k = 0; k < 5; k++)
                 {
-                    mat4 Translation = translate(mat4(1.0), vec3(i*2, j*2, k*2));
-                    mat4 Rotation = rotate(mat4(1.0), 0.0f, vec3(1.0f, 1.0f, 1.0f));
+                    for (size_t l = 0; l < 5; l++)
+                    {
 
-                    mat4 ModelMatrix = mat4(1.0);
-                    ModelMatrix = Rotation * Translation * ModelMatrix;
-                    mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+                        mat4 Translation = translate(mat4(1.0), vec3(j * 2 + turnSin * 5, k * 2 + i * 20 + turnSin * 10, l * 2 + turnCos * 20));
+                        mat4 Rotation = rotate(mat4(1.0), 0.0f, vec3(1.0f, 1.0f, 1.0f));
+
+                        mat4 ModelMatrix = mat4(1.0);
+                        ModelMatrix = Rotation * Translation * ModelMatrix;
+                        mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 
 
-                    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+                        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
-                    // Send our transformation to the currently bound shader, in the "MVP" uniform
-                    // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-                    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-                    glEnableVertexAttribArray(0);
-                    glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
-                    glVertexAttribPointer(
-                        0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                        3,                                // size
-                        GL_FLOAT,                         // type
-                        GL_FALSE,                         // normalized?
-                        0,                                // stride
-                        (void*)0                          // array buffer offset
-                    );
+                        // Send our transformation to the currently bound shader, in the "MVP" uniform
+                        // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
+                        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+                        glEnableVertexAttribArray(0);
+                        glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
+                        glVertexAttribPointer(
+                            0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+                            3,                                // size
+                            GL_FLOAT,                         // type
+                            GL_FALSE,                         // normalized?
+                            0,                                // stride
+                            (void*)0                          // array buffer offset
+                        );
 
-                    glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+                        glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
 
-                    //Sphere.Draw();
+                        //Sphere.Draw();
+                    }
                 }
             }
         }
