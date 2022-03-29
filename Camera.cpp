@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include <glm/ext.hpp>
 #include <iostream>
+#include "gc_3d_defs.hpp"
 
 using namespace glm;
 using namespace GC_3D;

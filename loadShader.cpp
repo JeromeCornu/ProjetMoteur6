@@ -1,8 +1,14 @@
-#include <fstream>
-#include <sstream>
+#include <string>       // std::string
+#include <iostream>     // std::cout
+#include <sstream>      // std::stringstream, std::stringbuf
+#include <fstream>     
 
-GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path) {
+#include "loadShader.hpp"
 
+using namespace GC_3D;
+
+GLuint loadShader::LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
+{
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -52,7 +58,6 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	}
 
 
-
 	// Compile Fragment Shader
 	printf("Compiling shader : %s\n", fragment_file_path);
 	char const* FragmentSourcePointer = FragmentShaderCode.c_str();
@@ -67,7 +72,6 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
 	}
-
 
 
 	// Link the program

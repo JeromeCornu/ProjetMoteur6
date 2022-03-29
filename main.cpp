@@ -1,20 +1,25 @@
-﻿#include <cstdio>
+#include <cstdio>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include "GL/glew.h"
-#include <SDL.h>
-#include <gl/GL.h>
-#include "dep/glm/glm/glm.hpp"
-#include "dep/glm/glm/ext.hpp"
+#include "gc_3d_defs.hpp"
 
-#include <chrono>
+#include "Init.hpp"
+#include "CubeTuto.hpp"
+#include "Texture.hpp"
+#include "Camera.hpp"
+#include "FPS.hpp"
+#include "Matrix.hpp"
+
 #include <iostream>
-#include <iomanip>
-#include <vector>
-#include <numeric>
+#include <filesystem>
+#include "PathFinder.hpp"
+#include "objLoader.hpp"
+#include "Mesh.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "dep/stb/stb_image.h"
@@ -28,6 +33,7 @@ using namespace glm;
 using namespace std;
 using namespace chrono;
 using namespace GC_3D;
+
 
 int main(int argc, char* argv[])
 {
@@ -338,10 +344,23 @@ int main(int argc, char* argv[])
                 }
             }
         }
-
-        SDL_GL_SwapWindow(Win);
-
-
     }
     return 0;
 }
+
+
+/* FRUSTUM CULLING
+* Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
+produit scalaire = position * normal face cube =
+regarder si c'est positif ou negatif
+(on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
+
+    on va pas tester tt les points : donner un centre et prendre la sphere englobante
+    si elle est dehors le frustum completement, alors le modele de la sphere est dehors
+    Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
+    Si c'est moins c'est nickel
+
+
+Pour trouver normal = regle de la main droite
+
+*/
