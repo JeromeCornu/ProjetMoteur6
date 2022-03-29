@@ -166,18 +166,18 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_cube_vertex_buffer_data), g_cube_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = LoadShaders("C:/Users/bherr/Documents/GitHub/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bherr/Documents/GitHub/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
+    GLuint programID = LoadShaders("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
     glUseProgram(programID);
 
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
-    int width = 902;
-    int height = 634;
+    int width = 225;
+    int height = 225;
     int bpp = 1;
 
-    stbi_uc* Image = stbi_load("C:/Users/bherr/Pictures/goblin.png", &width, &height, &bpp, 3);
+    stbi_uc* Image = stbi_load("C:/Users/bapti/Pictures/hacker.jpg", &width, &height, &bpp, 3);
 
     GLuint Texture;
 
