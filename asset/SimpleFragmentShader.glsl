@@ -3,6 +3,14 @@
 //in vec3 fragmentColor;
 out vec3 Color;
 
+// SKY
+out vec4 FragColor;
+
+in vec3 TexCoords;
+
+uniform samplerCube skybox;
+// ---
+
 in vec2 UV;
 in vec3 Normal;
 in vec3 Normal_cameraspace;
@@ -25,6 +33,10 @@ uniform vec3 AmbientColor = vec3 (1.0f, 1.0f, 1.0f);
 
 void main()
 {
+
+  // ---------------  Sky  --------------------
+
+    FragColor = texture(skybox, TexCoords);
 
   // ---------------  Light  --------------------
 

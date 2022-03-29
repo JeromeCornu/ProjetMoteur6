@@ -38,6 +38,8 @@ add_executable(
 	ImGuiTool.cpp
 	PathFinder.hpp
 	PathFinder.cpp
+	Skybox.hpp
+	Skybox.cpp
 )
 
 

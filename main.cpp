@@ -15,6 +15,7 @@
 #include "FPS.hpp"
 #include "Matrix.hpp"
 #include "ImGuiTool.hpp"
+#include "Skybox.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -36,7 +37,8 @@ int main(int argc, char* argv[])
 	
     ImguiTool Imgui;
     CubeTuto Cube = CubeTuto();
-    Texture Texture;
+    Texture TextureCube;
+    Skybox Sky;
 
 
     // Imgui parameters
@@ -64,14 +66,42 @@ int main(int argc, char* argv[])
     // initialize cube
     Cube.initializeCube();
     // initialize texture
-    Texture.applyTexture(500, 500, 1, "asset/uwu.jpg");
+    TextureCube.applyTexture(500, 500, 1, "asset/uwu.jpg");
+
+    // Skybox
+    Sky.SkyBox_CreateTexture();
+
+    vector<std::string> faces;
+    {
+        "right.jpg",
+            "left.jpg",
+            "top.jpg",
+            "bottom.jpg",
+            "front.jpg",
+            "back.jpg";
+    };
+    unsigned int cubemapTexture = Sky.loadCubemap(faces);
+
+
 	// initialize sphere
     /*
     Geometry Sphere;
     Sphere.MakeSphere(5);
     Sphere.Bind();
     */
-    auto PrevTime = std::chrono::steady_clock::now();
+
+
+
+    /* ------------------------------------------------------- SKYBOX --------------------------------------------------------------- */
+
+    glDepthMask(GL_FALSE);
+    //skyboxShader.use();
+    // ... set view and projection matrix
+    //glBindVertexArray(skyboxVAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDepthMask(GL_TRUE);
+    // ... draw rest of the scene
 
 
     /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
@@ -116,6 +146,7 @@ int main(int argc, char* argv[])
     float ColorLightY = 1.0f;
     float ColorLightZ = 1.0f;
     float PowerLight = 20;
+
 
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
@@ -228,7 +259,7 @@ int main(int argc, char* argv[])
             matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
 
             // Draw the cube
-            Cube.makeCube(TextureLocId, &Texture);
+            Cube.makeCube(TextureLocId, &TextureCube);
 			
             // Put in the array of cube
             CubesArray.push_back(Cube);

@@ -4,6 +4,15 @@ layout(location = 0) in vec3 VertexPosition_modelspace;
 layout(location = 1) in vec2 VertexUV;
 layout(location = 2) in vec3 Normals;
 
+// SKY
+layout (location = 3) in vec3 aPosSky;
+
+out vec3 TexCoordsSky;
+
+uniform mat4 projectionSky;
+uniform mat4 viewSky;
+// ---
+
 
 vec4 gl_Position;
 
@@ -24,6 +33,11 @@ uniform vec3 LightPosition_worldspace;
 
 void main()
 {
+	// SKY
+  TexCoordsSky = aPosSky;
+  // gl_Position = projectionSky * viewSky * vec4(aPosSky, 1.0);
+	// ---
+
   gl_Position =  MVP * vec4(VertexPosition_modelspace,1);
   UV = VertexUV;
 
