@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     Vector<unsigned int> indices;
 
 
-    bool ModelLoaded = loadAssImp("asset/suzanne.obj", indices, vertices, uvs, normals);
+    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
     if (ModelLoaded)
     {
         Mesh.InitBuffers(vertices, uvs, normals, indices);
