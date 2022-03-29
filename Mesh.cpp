@@ -112,6 +112,7 @@ void Mesh::makeMesh(GLuint iTexLoc, Texture* iTexture, Vector<unsigned int> indi
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
     // Draw the triangles !
+
     glDrawElements(
         GL_TRIANGLES,      // mode
         indices.size(),    // count
