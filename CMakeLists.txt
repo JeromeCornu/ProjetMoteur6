@@ -41,6 +41,10 @@ add_executable(
 	PathFinder.cpp
 	Mesh.cpp
 	Mesh.h
+	FPSCounter.hpp
+	FPSCounter.cpp
+	SimpleVertexShader.vertexshader
+	common/SimpleFragmentShader.fragmentshader
 )
 
 

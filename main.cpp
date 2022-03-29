@@ -25,9 +25,8 @@
 #include "dep/stb/stb_image.h"
 
 #include "gc_3d_defs.hpp"
-#include "loadShader.cpp"
+#include "loadShader.hpp"
 #include "FPSCounter.hpp"
-#include "Camera.hpp"
 
 using namespace glm;
 using namespace std;
@@ -48,26 +47,16 @@ int main(int argc, char* argv[])
 
     FPSCounter Counter;
 
-    SDL_Window* Win = SDL_CreateWindow("Moteur",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        ScreenWidth,
-        ScreenHeight,
-        windowsFlags);
-
-    SDL_GLContext context = SDL_GL_CreateContext(Win);
-    SDL_GL_MakeCurrent(Win, context);
+    Init init;
+    SDL_Window* Win = init.CreateTheWindow();
+    init.Vertex();
+    GLuint ProgramID = init.LinkShader();
 
     glewInit();
 
     auto prevTime = std::chrono::steady_clock::now();
 
     glViewport(0, 0, ScreenWidth, ScreenHeight);
-
-
-    Geometry Sphere;
-    Sphere.MakeSphere(5);
-    Sphere.Bind();
 
 
     GLuint VertexArrayID;
@@ -172,8 +161,7 @@ int main(int argc, char* argv[])
     glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_cube_vertex_buffer_data), g_cube_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint programID = LoadShaders("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
-    glUseProgram(programID);
+    glUseProgram(ProgramID);
 
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
@@ -183,19 +171,12 @@ int main(int argc, char* argv[])
     int height = 225;
     int bpp = 1;
 
-    stbi_uc* Image = stbi_load("C:/Users/bapti/Pictures/hacker.jpg", &width, &height, &bpp, 3);
-
-    GLuint Texture;
-
-    glGenTextures(1, &Texture);
+    Texture Texture;
+    Texture.applyTexture(500, 500, 1, "C:/Users/bapti/Pictures/hacker.jpg");
 
     glActiveTexture(GL_TEXTURE0);
 
-    glBindTexture(GL_TEXTURE_2D, Texture);
-
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, Image);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -223,6 +204,19 @@ int main(int argc, char* argv[])
     bool DPressed = false;
 
     bool QPressed = false;
+
+    Mesh Mesh;
+    Vector<vec3> vertices;
+    Vector<vec2> uvs;
+    Vector<vec3> normals;
+    Vector<unsigned int> indices;
+
+    bool ModelLoaded = loadAssImp("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/asset/suzanne.obj", indices, vertices, uvs, normals);
+    if (ModelLoaded)
+    {
+        Mesh.InitBuffers(vertices, uvs, normals, indices);
+        //Mesh.initializeMesh();
+    }
 
     while (appRunning)
     {
@@ -321,7 +315,7 @@ int main(int argc, char* argv[])
 
 
 
-                        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+                        GLuint MatrixID = glGetUniformLocation(ProgramID, "MVP");
 
                         // Send our transformation to the currently bound shader, in the "MVP" uniform
                         // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
@@ -338,12 +332,35 @@ int main(int argc, char* argv[])
                         );
 
                         glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
-
-                        //Sphere.Draw();
                     }
                 }
             }
         }
+
+        int LightPositionID;
+        LightPositionID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
+
+        int decrementer = 0;
+        mat4 Model;
+        Matrix matrix;
+        GLuint TextureLocId;
+
+        mat3 TransformModel = mat3(
+            { 1, decrementer, 1 },    // position
+            { 1, 1, 1 },              // rotation
+            { 1, 1, 1 }               // scale
+        );
+        Mesh.SetTransform(TransformModel, Model);
+
+        // Create matrix
+        matrix.ModelViewMaker(Model);
+        matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+
+        // Draw the Mesh
+        Mesh.makeMesh(TextureLocId, &Texture, indices);
+
+
+        SDL_GL_SwapWindow(Win);
     }
     return 0;
 }

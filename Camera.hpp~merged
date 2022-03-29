@@ -1,4 +1,5 @@
 #include "gc_3d_defs.hpp"
+<<<<<<< HEAD
 #include <GL/glew.h>
 #include <SDL_video.h>
 #include <glm/glm.hpp>
@@ -55,6 +56,18 @@ namespace GC_3D
 
 		glm::mat4 GetViewMatrix();
 
-		void Move(GC_3D::Vector<GLboolean> PressedButtons);
+		void Move(Vector<GLboolean> PressedButtons);
 	};
+=======
+
+namespace GC_3D
+{
+    class Camera
+    {
+
+    public:
+        mat4 Create(float PositionX, float PositionY, float PositionZ);
+    };
+
+>>>>>>> GuillaumeTest
 }

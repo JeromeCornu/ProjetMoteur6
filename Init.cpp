@@ -62,7 +62,8 @@ void Init::Vertex() {
 
 GLuint Init::LinkShader() {
 
-    GLuint ProgramID = loadShader::LoadShaders("asset\\SimpleVertexShader.glsl", "asset\\SimpleFragmentShader.glsl");
+
+    GLuint ProgramID = loadShader::LoadShaders("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/common/SimpleFragmentShader.fragmentshader");
     glUseProgram(ProgramID);
 
     return ProgramID;

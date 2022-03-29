@@ -22,7 +22,7 @@ mat4 Matrix::ModelViewMaker(mat4 Model) {
 	CubeTuto Cube;
 
 	// Model view Parameter
-	View = Camera.Create(10, 5, 10);
+	View = Camera.GetViewMatrix();
 
 	Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
