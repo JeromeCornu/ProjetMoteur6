@@ -1,3 +1,6 @@
+#pragma once
+
+#include "gc_3d_defs.hpp"
 #include <GL/glew.h>
 #include <SDL_video.h>
 #include <glm/glm.hpp>
@@ -11,7 +14,7 @@ namespace GC_3D
 	class Camera
 	{
 	public:
-		glm::vec3 position = glm::vec3(10, 10, -5);
+		glm::vec3 position = glm::vec3(0, 0, 10);
 
 		glm::vec3 direction;
 
@@ -36,9 +39,15 @@ namespace GC_3D
 		// Initial Field of View
 		float initialFoV = 45.0f;
 
-		float speed = 100.0f;
+		float speed = 50.0f;
 
+		bool ZPressed = false;
 
+		bool SPressed = false;
+
+		bool DPressed = false;
+
+		bool QPressed = false;
 
 		void ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win);
 
@@ -46,6 +55,8 @@ namespace GC_3D
 
 		glm::mat4 GetViewMatrix();
 
-		void Move(SDL_Keycode Type);
+		void SetViewMatrix(vec3 NewPosition);
+
+		void Move(Vector<GLboolean> PressedButtons);
 	};
 }

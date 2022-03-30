@@ -1,17 +1,19 @@
-#include "Camera.hpp"
+﻿#include "Camera.hpp"
 #include <glm/ext.hpp>
+#include <iostream>
 
 using namespace glm;
 using namespace GC_3D;
 using namespace std;
 using namespace chrono;
 
+
 void Camera::ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win)
 {
 	int xpos, ypos;
-	SDL_GetMouseState(&xpos, &ypos);
+		SDL_GetMouseState(&xpos, &ypos);
 
-	SDL_WarpMouseInWindow(Win, Width / 2, Height / 2);
+		SDL_WarpMouseInWindow(Win, Width / 2, Height / 2);
 
 	auto lastTime = currentTime;
 	currentTime = steady_clock::now();
@@ -67,21 +69,27 @@ mat4 Camera::GetViewMatrix()
 	));
 }
 
-void Camera::Move(SDL_Keycode Type)
+void Camera::SetViewMatrix(vec3 NewPosition)
 {
-	switch (Type)
+	position = NewPosition;
+}
+
+void Camera::Move(Vector<GLboolean> PressedButtons)
+{
+	if (PressedButtons[0])
 	{
-	case SDLK_z:
 		position += direction * deltaTime.count() * speed;
-		break;
-	case SDLK_s:
+	}
+	if (PressedButtons[1])
+	{
 		position -= direction * deltaTime.count() * speed;
-		break;
-	case SDLK_d:
-		position += Right * deltaTime.count() * speed;
-		break;
-	case SDLK_q:
+	}
+	if (PressedButtons[2])
+	{
 		position -= Right * deltaTime.count() * speed;
-		break;
+	}
+	if (PressedButtons[3])
+	{
+		position += Right * deltaTime.count() * speed;
 	}
 }

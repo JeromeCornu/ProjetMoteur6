@@ -1,290 +1,356 @@
-﻿#include <cstdio>
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include "GL/glew.h"
-#include <SDL.h>
-#include <gl/GL.h>
-#include "dep/glm/glm/glm.hpp"
-#include "dep/glm/glm/ext.hpp"
-
-#include <chrono>
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <numeric>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "dep/stb/stb_image.h"
-
 #include "gc_3d_defs.hpp"
-#include "loadShader.cpp"
-#include "FPSCounter.hpp"
+
+#include "Init.hpp"
+#include "CubeTuto.hpp"
+#include "Texture.hpp"
 #include "Camera.hpp"
+#include "FPS.hpp"
+#include "Matrix.hpp"
+#include "ImGuiTool.hpp"
+#include "Skybox.hpp"
+
+#include <iostream>
+#include <filesystem>
+#include "PathFinder.hpp"
+#include "objLoader.hpp"
+#include "Mesh.h"
 
 using namespace glm;
 using namespace std;
 using namespace chrono;
 using namespace GC_3D;
 
+
+extern "C" {
+    _declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
+}
+
+
 int main(int argc, char* argv[])
 {
-    SDL_Init(SDL_INIT_VIDEO);
-    uint32_t windowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-
-    int ScreenWidth = 1024;
-    int ScreenHeight = 768;
-
-    Camera Camera;
-    //Camera.direction = -Camera.position;
-
-    FPSCounter Counter;
-
-    SDL_Window* Win = SDL_CreateWindow("Moteur",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        ScreenWidth,
-        ScreenHeight,
-        windowsFlags);
-
-    SDL_GLContext context = SDL_GL_CreateContext(Win);
-    SDL_GL_MakeCurrent(Win, context);
-
-    glewInit();
-
-    auto prevTime = std::chrono::steady_clock::now();
-
-    glViewport(0, 0, ScreenWidth, ScreenHeight);
+	
+    ImguiTool Imgui;
+    CubeTuto Cube = CubeTuto();
+    Texture TextureCube;
+    Texture TextureModel;
+    Skybox Sky;
 
 
+    // Imgui parameters
+    int NumberCubes = 5;
+    float RotateX = 1.0f;
+    float RotateY = 1.0f;
+    float RotateZ = 1.0f;
+
+    /* ------------------------------------------------- INITIALIZATION PathFinder ------------------------------------------------------------- */
+
+    filesystem::path appPath(GetAppPath());
+    auto appDir = appPath.parent_path();
+    auto shaderPath = appDir / "asset";
+    auto vShaderPath = shaderPath / "SimpleVertexShader.glsl";
+    auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
+    auto vSkyboxPath = shaderPath / "SkyboxVertexShader.glsl";
+    auto fSkyboxPath = shaderPath / "SkyboxFragmentShader.glsl";
+
+    /* --------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
+
+
+    SDL_Window* Win = Init::CreateTheWindow(Imgui);
+    Init::Vertex();
+    GLuint ProgramID = Init::LinkShader(vShaderPath, fShaderPath);
+
+    /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
+
+    // initialize cube
+    Cube.initializeCube();
+    // initialize texture
+    TextureCube.applyTexture(500, 500, 1, "asset/uwu.jpg");
+
+    // Skybox
+    Sky.SkyBox_CreateTexture();
+
+    vector<std::string> faces;
+    {
+            "right.jpg",
+            "left.jpg",
+            "top.jpg",
+            "bottom.jpg",
+            "front.jpg",
+            "back.jpg";
+    };
+    unsigned int cubemapTexture = Sky.loadCubemap(faces);
+
+
+	// initialize sphere
+    /*
     Geometry Sphere;
     Sphere.MakeSphere(5);
     Sphere.Bind();
-
-
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-    static const GLfloat g_uv_buffer_data[] = {
-        0.0f, 1.0f,// face avant
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-
-        0.0f, 1.0f,// face gauche
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-
-        0.0f, 1.0f,// face derrière
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-
-        0.0f, 1.0f,// face droite
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-
-        0.0f, 1.0f,// face dessus
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-
-        0.0f, 1.0f,// face dessous
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f
-    };
-
-    static const GLfloat g_cube_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f, // face avant
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f, // face gauche
-
-        1.0f, -1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, // face derri�re
-
-        1.0f, -1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, 1.0f, // face droite
-
-         -1.0f, 1.0f, 1.0f,
-         -1.0f, 1.0f, -1.0f,
-         1.0f, 1.0f, -1.0f,
-         1.0f, 1.0f, -1.0f,
-         1.0f, 1.0f, 1.0f,
-         -1.0f, 1.0f, 1.0f, // face dessus
-
-         -1.0f, -1.0f, -1.0f,
-         -1.0f, -1.0f, 1.0f,
-         1.0f, -1.0f, 1.0f,
-         1.0f, -1.0f, 1.0f,
-         1.0f, -1.0f, -1.0f,
-         -1.0f, -1.0f, -1.0f
-    };
-
-    GLuint uvbuffer;
-    glGenBuffers(1, &uvbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
-
-    GLuint CubeBuffer;
-    glGenBuffers(1, &CubeBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_cube_vertex_buffer_data), g_cube_vertex_buffer_data, GL_STATIC_DRAW);
-
-    GLuint programID = LoadShaders("C:/Users/bherr/Documents/GitHub/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bherr/Documents/GitHub/ProjetMoteur6/SimpleFragmentShader.fragmentshader");
-    glUseProgram(programID);
-
-    glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
-
-    int width = 902;
-    int height = 634;
-    int bpp = 1;
-
-    stbi_uc* Image = stbi_load("C:/Users/bherr/Pictures/goblin.png", &width, &height, &bpp, 3);
-
-    GLuint Texture;
-
-    glGenTextures(1, &Texture);
-
-    glActiveTexture(GL_TEXTURE0);
-
-    glBindTexture(GL_TEXTURE_2D, Texture);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, Image);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // When MINifying the image, use a LINEAR blend of two mipmaps, each filtered LINEARLY too
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    */
 
 
 
-    glGenerateMipmap(GL_TEXTURE_2D);
+    /* ------------------------------------------------------- SKYBOX --------------------------------------------------------------- */
 
+    glDepthMask(GL_FALSE);
+    //skyboxShader.use();
+    // ... set view and projection matrix
+    //glBindVertexArray(skyboxVAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDepthMask(GL_TRUE);
+    // ... draw rest of the scene
+
+
+    /* --------------------------------------------- INITIALIZATION TABLEAU --------------------------------------------------------- */
+
+    vector<CubeTuto> CubesArray;
+
+
+    /* --------------------------------------------- ASSIMP LOADING --------------------------------------------------------- */
+
+    Mesh Mesh;
+    Vector<vec3> vertices;
+    Vector<vec2> uvs;
+    Vector<vec3> normals;
+    Vector<unsigned int> indices;
+
+
+    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
+    if (ModelLoaded)
+    {
+        Mesh.InitBuffers(vertices, uvs, normals, indices);
+        //Mesh.initializeMesh();
+    }
+
+    /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
+
+    // Nb cube wish
+    int Count = 0;
+    cout << "Saisir le nombre de cube voulu : ";
+    //cin >> Count;
+    cout << "On affiche " << Count << " cube(s)." << endl;
+
+    /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
+
+	Camera Camera;
+    Camera.direction = -Camera.position;
+
+    int ScreenWidth = 1024;
+    int ScreenHeight = 768;
+    
     SDL_WarpMouseInWindow(Win, ScreenWidth / 2, ScreenHeight / 2);
 
     bool appRunning = true;
     SDL_ShowCursor(SDL_DISABLE);
 
-    while (appRunning)
+    bool ZPressed = false;
+
+    bool SPressed = false;
+
+    bool DPressed = false;
+
+    bool QPressed = false;
+
+    bool ControlMouse = false;
+
+    /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
+
+    int LightPositionID;
+    LightPositionID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
+
+    int LightPowerID;
+    LightPowerID = glGetUniformLocation(ProgramID, "LightPower");
+
+    int LightColorID;
+    LightColorID = glGetUniformLocation(ProgramID, "LightColor");
+
+    float ColorLightX = 1.0f;
+    float ColorLightY = 1.0f;
+    float ColorLightZ = 1.0f;
+    float PowerLight = 20;
+
+
+    /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
+
+    bool AppRunning = true;
+    while (AppRunning)
     {
-        Counter.Increment(Win);
+        SDL_Event CurEvent;
 
-        SDL_Event curEvent;
-
-        float ratio = width / (float)height;
-
-        while (SDL_PollEvent(&curEvent))
+        while (SDL_PollEvent(&CurEvent))
         {
-            Camera.Move(curEvent.key.keysym.sym);
-            if (curEvent.key.keysym.sym == SDLK_ESCAPE)
+            ImGui_ImplSDL2_ProcessEvent(&CurEvent);
+
+			if (CurEvent.type == SDL_KEYDOWN)
             {
-                appRunning = false;
-            }
-        }
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-        glVertexAttribPointer(
-            1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-            2,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        );
-
-        Camera.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, Win);
-        mat4 ProjectionMatrix = Camera.GetProjectionMatrix();
-        mat4 ViewMatrix = Camera.GetViewMatrix();
-
-        for (size_t i = 0; i < 5; i++)
-        {
-            for (size_t j = 0; j < 5; j++)
-            {
-                for (size_t k = 0; k < 5; k++)
+                switch (CurEvent.key.keysym.sym)
                 {
-                    mat4 Translation = translate(mat4(1.0), vec3(i*2, j*2, k*2));
-                    mat4 Rotation = rotate(mat4(1.0), 0.0f, vec3(1.0f, 1.0f, 1.0f));
-
-                    mat4 ModelMatrix = mat4(1.0);
-                    ModelMatrix = Rotation * Translation * ModelMatrix;
-                    mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
-
-
-                    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
-                    // Send our transformation to the currently bound shader, in the "MVP" uniform
-                    // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-                    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-                    glEnableVertexAttribArray(0);
-                    glBindBuffer(GL_ARRAY_BUFFER, CubeBuffer);
-                    glVertexAttribPointer(
-                        0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                        3,                                // size
-                        GL_FLOAT,                         // type
-                        GL_FALSE,                         // normalized?
-                        0,                                // stride
-                        (void*)0                          // array buffer offset
-                    );
-
-                    glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
-
-                    //Sphere.Draw();
+                case SDLK_z:
+                    ZPressed = true;
+                    break;
+                case SDLK_s:
+                    SPressed = true;
+                    break;
+                case SDLK_q:
+                    QPressed = true;
+                    break;
+                case SDLK_d:
+                    DPressed = true;
+                    break;
                 }
             }
+            else if (CurEvent.type == SDL_KEYUP)
+            {
+                switch (CurEvent.key.keysym.sym)
+                {
+                case SDLK_z:
+                    ZPressed = false;
+                    break;
+                case SDLK_s:
+                    SPressed = false;
+                    break;
+                case SDLK_q:
+                    QPressed = false;
+                    break;
+                case SDLK_d:
+                    DPressed = false;
+                    break;
+
+                    // Quit application (escape)
+                case SDLK_ESCAPE:
+                    AppRunning = false;
+                    break;
+
+                    // Take/Lose control Mouse
+                case SDLK_m:
+                    ControlMouse = !ControlMouse;
+                    break;
+                }
+            }
+            // Quit application (red cross)
+            if (CurEvent.type == SDL_QUIT) {
+                AppRunning = false;
+            }
+
+            if (CurEvent.window.type == SDL_WINDOWEVENT_RESIZED)
+            {
+                // glViewport(0.0, 0.0, width, height);
+            }
+        }		
+		
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Clear the screen
+        glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+
+        /* --------------------------------------------------- PARAMETERS ------------------------------------------------------------ */
+
+
+        Matrix matrix;
+        GLuint TextureLocId;
+        mat4 Model;
+        int PositionY = 0;
+		
+		/* --------------------------------------------------- CAMERA ------------------------------------------------------------ */
+        if (!ControlMouse) {
+            Camera.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, Win);
         }
 
+        Vector<GLboolean> PressedButtons = {ZPressed, SPressed, QPressed, DPressed};
+
+        Camera.Move(PressedButtons);
+
+        /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
+
+        FPS Fps;
+        Fps.Display(Win);
+
+        /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
+
+
+        /*if (ModelLoaded)
+        {
+            mat3 TransformModel = mat3(
+                { 1, 1, 1 },    // position
+                { 1, 1, 1 },              // rotation
+                { 1, 1, 1 }               // scale
+            );
+            Mesh.SetTransform(TransformModel, Model);
+
+            // Create matrix
+            matrix.ModelViewMaker(Model, Camera);
+            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+
+            // Draw the Mesh
+            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
+        }*/
+
+
+        for (int i = 0; i < NumberCubes; i++)
+        {
+            // Contruction du cube
+            mat3 TransformCube = mat3(
+                {0, PositionY, 0},              // position
+                {RotateX, RotateY, RotateZ},    // rotation
+                {1, 1, 1}                       // scale
+            );
+
+            Cube.SetTransform(TransformCube, Model);
+
+            // Create matrix
+            matrix.ModelViewMaker(Model, Camera);
+            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+
+            // Draw the cube
+            Cube.makeCube(TextureLocId, &TextureCube);
+			
+            // Put in the array of cube
+            CubesArray.push_back(Cube);
+
+            PositionY -= 4;
+        }
+
+        /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
+
+        Imgui.NewFrame(Win);
+        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
+
+        /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
+
+        glUniform3f(LightPositionID, 5, 5, 5);                                  // Mettre la position de la light
+        glUniform3f(LightColorID, ColorLightX, ColorLightY, ColorLightZ);       // Mettre la couleur de la light
+        glUniform1f(LightPowerID, PowerLight);                                  // Mettre le power de la light
+
+        /* --------------------------------------------------- END ------------------------------------------------------------ */
+
         SDL_GL_SwapWindow(Win);
-
-
     }
+	
+    Imgui.EndUi();
     return 0;
 }
+
+
+/* FRUSTUM CULLING
+    Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
+    produit scalaire = position * normal face cube =
+    regarder si c'est positif ou negatif
+    (on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
+
+        on va pas tester tt les points : donner un centre et prendre la sphere englobante
+        si elle est dehors le frustum completement, alors le modele de la sphere est dehors
+        Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
+        Si c'est moins c'est nickel
+
+
+    Pour trouver normal = regle de la main droite
+
+*/
