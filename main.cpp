@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
     Sphere.Bind();
     */
 
-
+    auto PrevTime = std::chrono::steady_clock::now();
 
 
 
@@ -134,20 +134,12 @@ int main(int argc, char* argv[])
 
 
 
-    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
+    bool ModelLoaded = loadAssImp("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
     if (ModelLoaded)
     {
         Mesh.InitBuffers(vertices, uvs, normals, indices);
         //Mesh.initializeMesh();
     }
-
-    /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
-
-    // Nb cube wish
-    int Count = 0;
-    cout << "Saisir le nombre de cube voulu : ";
-    //cin >> Count;
-    cout << "On affiche " << Count << " cube(s)." << endl;
 
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
 
@@ -306,6 +298,7 @@ int main(int argc, char* argv[])
             Mesh.makeMesh(TextureLocId, &TextureModel, indices);
         }*/
 
+        Cube.MakeGiantCube(Camera, ProgramID, TextureCube, PrevTime);
 
         for (int i = 0; i < NumberCubes; i++)
         {
@@ -323,7 +316,7 @@ int main(int argc, char* argv[])
             matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
 
             // Draw the cube
-            Cube.makeCube(TextureLocId, &TextureCube);
+            Cube.MakeCube(TextureLocId, &TextureCube);
 			
             // Put in the array of cube
             CubesArray.push_back(Cube);

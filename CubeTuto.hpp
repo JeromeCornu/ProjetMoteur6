@@ -6,6 +6,8 @@ using namespace GC_3D;
 
 namespace GC_3D
 {
+    class Camera;
+
     class Texture;
 
     class CubeTuto
@@ -15,8 +17,9 @@ namespace GC_3D
 
     public:
         void initializeCube() const;
-        void makeCube(GLuint iTexLoc, Texture* iTex) const;
+        void MakeCube(GLuint iTexLoc, Texture* iTex) const;
         void SetTransform(mat3 Transform, mat4& Model);
+        void MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureCube, std::chrono::steady_clock::time_point PrevTime);
         mat3 GetTransform();
     };
 

@@ -5,9 +5,9 @@ namespace GC_3D
     class Texture
     {
 
-    GLuint m_Id;
-
     public:
+
+        GLuint m_Id;
 
         GLuint GetTexId() const { return m_Id; }
 

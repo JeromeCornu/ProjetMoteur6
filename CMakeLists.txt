@@ -41,7 +41,7 @@ add_executable(
 	Mesh.h
 	FPSCounter.hpp
 	FPSCounter.cpp
-	SimpleVertexShader.vertexshader
+	common/SimpleVertexShader.vertexshader
 	common/SimpleFragmentShader.fragmentshader
 	Skybox.hpp
 	Skybox.cpp

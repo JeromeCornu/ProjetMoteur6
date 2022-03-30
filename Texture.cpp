@@ -1,6 +1,5 @@
 #include "Texture.hpp"
 #include "stb_image.h"
-#include "Texture.hpp"
 
 
 using namespace GC_3D;

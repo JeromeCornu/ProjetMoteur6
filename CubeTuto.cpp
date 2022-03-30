@@ -1,9 +1,13 @@
 #include "CubeTuto.hpp"
 #include "Texture.hpp"
+#include "Matrix.hpp"
+#include "Camera.hpp"
+#include <iostream>
 
 using namespace std;
 using namespace glm;
 using namespace GC_3D;
+using namespace chrono;
 
 GLuint Uvbuffer;
 GLuint Vertexbuffer;
@@ -203,7 +207,7 @@ void CubeTuto::initializeCube() const
 
 }
 
-void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
+void CubeTuto::MakeCube(GLuint iTexLoc, Texture* iTexture) const
 {
     // 2nd attribute buffer : colors
     glEnableVertexAttribArray(1);
@@ -265,6 +269,43 @@ void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {
     mat4 Scaling = scale(mat4(1.0F), vec3(Transform[2][0], Transform[2][1], Transform[2][2]));
 
     Model = Translation * RotationX * RotationY * RotationZ * Scaling * mat4(1.0f);
+}
+
+void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureCube, steady_clock::time_point PrevTime)
+{
+    Matrix Matrix;
+    GLuint TextureLocId;
+    mat4 Model;
+
+    auto CurTime = steady_clock::now();
+    duration<float> FTime = CurTime - PrevTime;
+    float TurnSin = sin(FTime.count());
+    float TurnCos = cos(FTime.count());
+
+    for (size_t i = 0; i < 1; i++)
+    {
+        for (size_t j = 0; j < 2; j++)
+        {
+            for (size_t k = 0; k < 1; k++)
+            {
+                for (size_t l = 0; l < 1; l++)
+                {
+                    mat3 TransformCube = mat3(
+                        { 0 + (j * 2) + (i * 2 * 5) + (TurnSin + 5 * ((j * 2) + (i * 2 * 5))), 0 + (k * 2) + (TurnCos + 5 * (k * 2)), 0 + (l * 2) + (TurnSin + 5 * (l * 2)) },                      // position
+                        { 0, 0, 0 },                   // rotation
+                        { 1, 1, 1 }                       // scale
+                    );
+                    SetTransform(TransformCube, Model);
+
+                    // Create matrix
+                    Matrix.ModelViewMaker(Model, MainCamera);
+                    Matrix.ModelViewSetter(Program, TextureLocId, Model);
+
+                    MakeCube(TextureLocId, &TextureCube);
+                }
+            }
+        }
+    }
 }
 
 mat3 CubeTuto::GetTransform() {
