@@ -3,13 +3,15 @@
 #include <chrono>
 
 #include <glm/ext.hpp>
-#include <glm/glm.hpp>  
+#include <glm/glm.hpp>
 
 #include <SDL.h>
 #include <GL/glew.h>
 #include <gl/GL.h>
 
 #include <vector>
+#include <string>
+#include <memory>
 
 namespace GC_3D
 {
@@ -31,5 +33,21 @@ namespace GC_3D
     {
         vec3 m_Center;
         float m_Radius;
+    };
+
+    struct Geometry
+    {
+    public:
+        //These arrays should all have the same size.
+        //They can be empty as well
+        Vector<vec3> m_Pos;
+        Vector<vec3> m_Normals;
+        Vector<vec2> m_TexCoord;
+
+        Vector<uint32_t> m_Indices;
+
+        // void Bind() const;
+        // void Draw() const;
+        // Geometry MakeSphere(float iRadius);
     };
 }

@@ -1,7 +1,7 @@
-#include "Texture.hpp"
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "Texture.hpp"
+
 
 using namespace GC_3D;
 
@@ -32,4 +32,13 @@ void Texture::applyTexture(int width, int height, int bpp, char* path)
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(Image);
+}
+
+GLuint Texture::applySkybox(int width, int height, int bpp, char* path)
+{
+	stbi_uc* Image = stbi_load(path, &width, &height, &bpp, 3);
+
+	glGenTextures(1, &m_Id);
+
+	return m_Id;
 }
