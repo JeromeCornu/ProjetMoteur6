@@ -112,7 +112,7 @@ void Mesh::makeMesh(GLuint iTexLoc, Texture* iTexture, Vector<unsigned int> indi
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
     // Draw the triangles !
-
+    
     glDrawElements(
         GL_TRIANGLES,      // mode
         indices.size(),    // count
@@ -122,11 +122,12 @@ void Mesh::makeMesh(GLuint iTexLoc, Texture* iTexture, Vector<unsigned int> indi
     // disable les buffers
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 }
 
 void Mesh::SetTransform(mat3 MTransform, mat4& Model) {
 
-    // Parametres des cubes
+    // Parametres du mesh
     mat4 Translation = translate(mat4(1.0F), vec3(MTransform[0][0], MTransform[0][1], MTransform[0][2]));
     mat4 Rotation = rotate(mat4(1.0F), 1.0f, vec3(MTransform[1][0], MTransform[1][1], MTransform[1][2]));
     mat4 Scaling = scale(mat4(1.0F), vec3(MTransform[2][0], MTransform[2][1], MTransform[2][2]));

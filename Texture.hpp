@@ -5,7 +5,7 @@ namespace GC_3D
     class Texture
     {
 
-    GLuint m_Id;
+        GLuint m_Id;
 
     public:
 
@@ -15,4 +15,4 @@ namespace GC_3D
         GLuint applySkybox(int width, int height, int bpp, char* path);
     };
 
-}
+};

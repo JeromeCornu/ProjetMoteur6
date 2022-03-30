@@ -14,7 +14,7 @@ namespace GC_3D
 	public:
 		void Setup(SDL_Window* win, SDL_GLContext context);
 		void NewFrame(SDL_Window* win);
-		void Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower);
+		void Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, float* Speed);
 		bool ColorPicker(const char* label, float col[3]);
 		void EndUi();
 	};

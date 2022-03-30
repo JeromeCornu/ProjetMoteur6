@@ -251,6 +251,7 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     // disable les buffers
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 }
 
 void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {

@@ -73,6 +73,7 @@ int main(int argc, char* argv[])
     Cube.initializeCube();
     // initialize texture
     TextureCube.applyTexture(500, 500, 1, "asset/uwu.jpg");
+    TextureModel.applyTexture(4096, 4096, 1, "asset/OldCabin/textures/cabin_BaseColor.png");
 
     // Skybox
     Sky.SkyBox_CreateTexture();
@@ -124,20 +125,12 @@ int main(int argc, char* argv[])
     Vector<unsigned int> indices;
 
 
-    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
+    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.obj", indices, vertices, uvs, normals);
     if (ModelLoaded)
     {
         Mesh.InitBuffers(vertices, uvs, normals, indices);
         //Mesh.initializeMesh();
     }
-
-    /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
-
-    // Nb cube wish
-    int Count = 0;
-    cout << "Saisir le nombre de cube voulu : ";
-    //cin >> Count;
-    cout << "On affiche " << Count << " cube(s)." << endl;
 
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
 
@@ -276,24 +269,9 @@ int main(int argc, char* argv[])
         /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
 
 
-        /*if (ModelLoaded)
-        {
-            mat3 TransformModel = mat3(
-                { 1, 1, 1 },    // position
-                { 1, 1, 1 },              // rotation
-                { 1, 1, 1 }               // scale
-            );
-            Mesh.SetTransform(TransformModel, Model);
-
-            // Create matrix
-            matrix.ModelViewMaker(Model, Camera);
-            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
-
-            // Draw the Mesh
-            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
-        }*/
 
 
+        
         for (int i = 0; i < NumberCubes; i++)
         {
             // Contruction du cube
@@ -317,11 +295,28 @@ int main(int argc, char* argv[])
 
             PositionY -= 4;
         }
+        
+        if (ModelLoaded)
+        {
+            mat3 TransformModel = mat3(
+                { 1, 1, 1 },    // position
+                { 1, 1, 1 },              // rotation
+                { 1, 1, 1 }               // scale
+            );
+            Mesh.SetTransform(TransformModel, Model);
+
+            // Create matrix
+            matrix.ModelViewMaker(Model, Camera);
+            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+
+            // Draw the Mesh
+            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
+        }
 
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
-        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
+        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight, &Camera.speed);
 
         /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
 
