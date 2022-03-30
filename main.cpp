@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
     ImguiTool Imgui;
     CubeTuto Cube = CubeTuto();
     Texture TextureCube;
+    Texture TextureModel;
     Skybox Sky;
 
 
@@ -275,30 +276,22 @@ int main(int argc, char* argv[])
         /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
 
 
-        if (ModelLoaded)
+        /*if (ModelLoaded)
         {
             mat3 TransformModel = mat3(
-                { 1, decrementer, 1 },    // position
+                { 1, 1, 1 },    // position
                 { 1, 1, 1 },              // rotation
                 { 1, 1, 1 }               // scale
             );
             Mesh.SetTransform(TransformModel, Model);
 
             // Create matrix
-            matrix.ModelViewMaker(Model);
+            matrix.ModelViewMaker(Model, Camera);
             matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
 
             // Draw the Mesh
-            Mesh.makeMesh(TextureLocId, &Texture, indices);
-        }
-
-        
-        /*for (int i = 0; i < Count; i++)
-        {
-            // Chrono pour les cubes
-            //auto CurTime = std::chrono::steady_clock::now();
-            //std::chrono::duration<float> FTime = CurTime - PrevTime;
-            //float Turn = sin(FTime.count());
+            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
+        }*/
 
 
         for (int i = 0; i < NumberCubes; i++)
@@ -322,9 +315,6 @@ int main(int argc, char* argv[])
             // Put in the array of cube
             CubesArray.push_back(Cube);
 
-            decrementer -= 4;
-        }*/
-        
             PositionY -= 4;
         }
 
@@ -345,7 +335,6 @@ int main(int argc, char* argv[])
     }
 	
     Imgui.EndUi();
-	
     return 0;
 }
 
