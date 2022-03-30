@@ -54,6 +54,8 @@ int main(int argc, char* argv[])
     auto shaderPath = appDir / "asset";
     auto vShaderPath = shaderPath / "SimpleVertexShader.glsl";
     auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
+    auto vSkyboxPath = shaderPath / "SkyboxVertexShader.glsl";
+    auto fSkyboxPath = shaderPath / "SkyboxFragmentShader.glsl";
 
     /* --------------------------------------------- INITIALIZATION PROJECT ------------------------------------------------------------- */
 
@@ -73,7 +75,7 @@ int main(int argc, char* argv[])
 
     vector<std::string> faces;
     {
-        "right.jpg",
+            "right.jpg",
             "left.jpg",
             "top.jpg",
             "bottom.jpg",

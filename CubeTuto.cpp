@@ -270,19 +270,3 @@ void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {
 mat3 CubeTuto::GetTransform() {
     return Transform;
 }
-
-/* FRUSTUM CULLING
-* Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
-produit scalaire = position * normal face cube =
-regarder si c'est positif ou negatif
-(on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
-
-    on va pas tester tt les points : donner un centre et prendre la sphere englobante
-    si elle est dehors le frustum completement, alors le modele de la sphere est dehors 
-    Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
-    Si c'est moins c'est nickel
-
-
-Pour trouver normal = regle de la main droite
-
-*/
