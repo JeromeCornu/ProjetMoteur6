@@ -37,6 +37,7 @@ SDL_Window* Init::CreateTheWindow(ImguiTool& Imgui) {
     return Win;
 }
 
+
 void Init::Vertex() {
 
     GLuint VertexArrayID;
@@ -63,10 +64,11 @@ void Init::Vertex() {
     glDepthFunc(GL_LESS);
 }
 
+
 GLuint Init::LinkShader(filesystem::path Vertex, filesystem::path Fragment) {
 
     GLuint ProgramID = loadShader::LoadShaders(Vertex, Fragment);
-    glUseProgram(ProgramID);
+    // glUseProgram(ProgramID);
 
     return ProgramID;
 }

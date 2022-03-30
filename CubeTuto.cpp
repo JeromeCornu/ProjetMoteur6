@@ -220,7 +220,7 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, Vertexbuffer);
     glVertexAttribPointer(
-        0,                              // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        0,                              // attribute. No particular reason for 0, but must match the layout in the shader.
         3,                              // size
         GL_FLOAT,                       // type
         GL_FALSE,                       // normalized?
@@ -248,10 +248,12 @@ void CubeTuto::makeCube(GLuint iTexLoc, Texture* iTexture) const
     // Draw the triangle !
     glDrawArrays(GL_TRIANGLES, 0, 12 * 3); // 12*3 indices starting at 0 -> 12 triangles -> 6 squares
 
-    // disable les buffers
+    // Disable les buffers
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 }
+
 
 void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {
 
