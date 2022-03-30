@@ -279,8 +279,6 @@ void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureC
 
     auto CurTime = steady_clock::now();
     duration<float> FTime = CurTime - PrevTime;
-    float TurnSin = sin(FTime.count());
-    float TurnCos = cos(FTime.count());
 
     for (size_t i = 0; i < 1; i++)
     {
@@ -290,8 +288,10 @@ void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureC
             {
                 for (size_t l = 0; l < 1; l++)
                 {
+                    float TurnSin = sin(FTime.count());
+                    float TurnCos = cos(FTime.count());
                     mat3 TransformCube = mat3(
-                        { 0 + (j * 2) + (i * 2 * 5) + (TurnSin + 5 * ((j * 2) + (i * 2 * 5))), 0 + (k * 2) + (TurnCos + 5 * (k * 2)), 0 + (l * 2) + (TurnSin + 5 * (l * 2)) },                      // position
+                        { 0 + (j * 2 + i * 2 * 5) + TurnCos * 5, 0 + (k * 2), 0 + l * 2 + TurnSin * 5 },                      // position
                         { 0, 0, 0 },                   // rotation
                         { 1, 1, 1 }                       // scale
                     );
