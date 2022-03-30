@@ -1,15 +1,15 @@
 #include "gc_3d_defs.hpp"
+#include <filesystem>
 
 namespace GC_3D
 {
+    class ImguiTool;
 
-    class Init
+    namespace Init
     {
-
-    public:
-        SDL_Window* CreateTheWindow();
+        SDL_Window* CreateTheWindow(ImguiTool& Imgui);
         void Vertex();
-        GLuint LinkShader();
+        GLuint LinkShader(std::filesystem::path Vertex, std::filesystem::path Fragment);
     };
 
 }

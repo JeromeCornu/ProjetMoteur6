@@ -16,15 +16,12 @@ mat4 mvp;
 mat4 View;
 mat4 Projection;
 
-mat4 Matrix::ModelViewMaker(mat4 Model) {
 
-	Camera Camera;
-	CubeTuto Cube;
+mat4 Matrix::ModelViewMaker(mat4 Model, Camera MainCamera) {
 
 	// Model view Parameter
-	View = Camera.GetViewMatrix();
-
-	Projection = perspective(radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+	View = MainCamera.GetViewMatrix();
+	Projection = MainCamera.GetProjectionMatrix();
 
 	// Our ModelViewProjection : multiplication of our 3 matrices
 	mvp = Projection * View * Model;

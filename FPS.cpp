@@ -11,7 +11,7 @@ void FPS::Display(SDL_Window* Win)
     if (clock() - T > CLOCKS_PER_SEC)
     {
         char Str[50] = "";
-        sprintf(Str, "Moteur / Groupe 1 - FPS : %u", Fps);
+        sprintf(Str, "Moteur / Groupe BRUHAHAN - FPS : %u", Fps);
         SDL_SetWindowTitle(Win, Str);
         T = clock();
         Fps = 0;

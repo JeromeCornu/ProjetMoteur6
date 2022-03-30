@@ -12,6 +12,7 @@ namespace GC_3D
         GLuint GetTexId() const { return m_Id; }
 
         void applyTexture(int width, int height, int bpp, char* path);
+        GLuint applySkybox(int width, int height, int bpp, char* path);
     };
 
 }

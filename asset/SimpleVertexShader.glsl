@@ -24,6 +24,7 @@ uniform vec3 LightPosition_worldspace;
 
 void main()
 {
+
   gl_Position =  MVP * vec4(VertexPosition_modelspace,1);
   UV = VertexUV;
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "gc_3d_defs.hpp"
 #include <GL/glew.h>
 #include <SDL_video.h>
@@ -47,8 +49,6 @@ namespace GC_3D
 
 		bool QPressed = false;
 
-
-
 		void ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win);
 
 		glm::mat4 GetProjectionMatrix();
@@ -56,5 +56,7 @@ namespace GC_3D
 		glm::mat4 GetViewMatrix();
 
 		void Move(GC_3D::Vector<GLboolean> PressedButtons);
+
+		void SetViewMatrix(vec3 NewPosition);
 	};
 }

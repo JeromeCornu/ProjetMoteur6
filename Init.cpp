@@ -1,18 +1,19 @@
 #include "Init.hpp"
 #include "loadShader.hpp"
+#include "ImGuiTool.hpp"
 
 using namespace std;
 using namespace glm;
 using namespace GC_3D;
 
 
-SDL_Window* Init::CreateTheWindow() {
+SDL_Window* Init::CreateTheWindow(ImguiTool& Imgui) {
 
     SDL_Init(SDL_INIT_VIDEO);
     uint32_t WindowsFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 
-    SDL_Window* Win = SDL_CreateWindow("Moteur - Groupe 1",
+    SDL_Window* Win = SDL_CreateWindow("Moteur - Groupe BRUHAHAN",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1024,
@@ -30,6 +31,8 @@ SDL_Window* Init::CreateTheWindow() {
     glewInit();
 
     glViewport(0, 0, 1024, 768);
+
+    Imgui.Setup(Win, Context);
 
     return Win;
 }
@@ -60,10 +63,8 @@ void Init::Vertex() {
     glDepthFunc(GL_LESS);
 }
 
-GLuint Init::LinkShader() {
-
-
-    GLuint ProgramID = loadShader::LoadShaders("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/SimpleVertexShader.vertexshader", "C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/common/SimpleFragmentShader.fragmentshader");
+GLuint Init::LinkShader(filesystem::path Vertex, filesystem::path Fragment) {
+    GLuint ProgramID = loadShader::LoadShaders(Vertex, Fragment);
     glUseProgram(ProgramID);
 
     return ProgramID;

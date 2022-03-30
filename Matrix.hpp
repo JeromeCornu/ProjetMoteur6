@@ -2,13 +2,14 @@
 
 namespace GC_3D
 {
-    class Texture;
+    class Camera;
 
     class Matrix
     {
 
     public:
-        mat4 ModelViewMaker(mat4 Model);
+        mat4 ModelViewMaker(mat4 Model, Camera MainCamera);
+
         void ModelViewSetter(GLuint Program, GLuint &TextureLocId, mat4 Model);
     };
 
