@@ -136,13 +136,8 @@ void Mesh::SetTransform(mat3 MTransform, mat4& Model) {
     Model = Translation * Rotation * Scaling * mat4(1.0f);
 }
 
-void Mesh::DrawMesh(mat4 Model, Matrix matrix, GLuint ProgramID, GLuint TextureLocId, Texture TextureModel, Vector <unsigned int> indices, Camera camera)
+void Mesh::DrawMesh(mat4 Model, Matrix matrix, GLuint ProgramID, GLuint TextureLocId, Texture TextureModel, Vector <unsigned int> indices, Camera camera, mat3 TransformModel)
 {
-    mat3 TransformModel = mat3(
-        { 1, 1, 1 },              // position
-        { 1, 1, 1 },              // rotation
-        { 1, 1, 1 }               // scale
-    );
     SetTransform(TransformModel, Model);
 
     // Create matrix

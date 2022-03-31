@@ -304,7 +304,13 @@ int main(int argc, char* argv[])
 
         Cube.MakeGiantCube(Camera, ProgramID, TextureCube, PrevTime, NumberCubes, NumberGiantCubes);
 
-        MeshEarth.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureEarth, indicesEarth, Camera);
+        mat3 TransformEarth = {
+            { 0, 0, 0 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+
+        MeshEarth.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureEarth, indicesEarth, Camera, TransformEarth);
         //MeshSpitfire.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureSpitfire, indicesSpitfire, Camera);
         //MeshBob.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureBob, indicesBob, Camera);
         //MeshChallenger.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureChallenger, indicesChallenger, Camera);

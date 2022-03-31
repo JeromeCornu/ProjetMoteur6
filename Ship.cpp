@@ -14,5 +14,11 @@ void Vessel::InitShip(string Name, string Color)
 
 void Vessel::DrawShip(mat4 Model, Matrix matrix, GLuint ProgramID, GLuint TextureLocId, Camera Camera)
 {
-	ShipMesh.DrawMesh(Model, matrix, ProgramID, TextureLocId, ShipTexture, indices, Camera);
+	mat3 TransformShip = {
+		{ 5, 5, 5},
+		{ 1, 1, 1},
+		{ 1, 1, 1}
+	};
+
+	ShipMesh.DrawMesh(Model, matrix, ProgramID, TextureLocId, ShipTexture, indices, Camera, TransformShip);
 }
