@@ -6,8 +6,6 @@ using namespace std;
 using namespace glm;
 using namespace GC_3D;
 
-
-
 float MPosX, MPosY, MPosZ;
 float MRotX, MRotY, MRotZ;
 float MScaX, MScaY, MScaZ;
@@ -17,6 +15,7 @@ vec3 MvRotate = vec3(MRotX, MRotY, MRotZ);
 vec3 MvScale = vec3(MScaX, MScaY, MScaZ);
 
 mat3 MTransform = mat3(MvPosition, MvRotate, MvScale);
+
 
 void Mesh::InitBuffers(Vector<vec3> vertices, Vector<vec2> uvs, Vector<vec3> normals, Vector<unsigned int> indices)
 {
@@ -42,7 +41,6 @@ void Mesh::InitBuffers(Vector<vec3> vertices, Vector<vec2> uvs, Vector<vec3> nor
 
 void Mesh::initializeMesh(Vector<unsigned int> indices)
 {
-    
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(G_vertex_buffer_data), G_vertex_buffer_data, GL_STATIC_DRAW);
 

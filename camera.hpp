@@ -14,7 +14,7 @@ namespace GC_3D
 	class Camera
 	{
 	public:
-		glm::vec3 position = glm::vec3(0, 0, 10);
+		glm::vec3 position;
 
 		glm::vec3 direction;
 
@@ -27,19 +27,19 @@ namespace GC_3D
 		std::chrono::duration<float> deltaTime;
 
 		// horizontal angle : toward -Z
-		float horizontalAngle = 3.14f;
+		float horizontalAngle;
 
-		float mouseSpeed = 0.05f;
+		float mouseSpeed;
 
 		// vertical angle : 0, look at the horizon
-		float verticalAngle = 0.0f;
+		float verticalAngle;
 
 		float FoV;
 
 		// Initial Field of View
-		float initialFoV = 45.0f;
+		float initialFoV;
 
-		float speed = 50.0f;
+		float speed;
 
 		bool ZPressed = false;
 
@@ -48,6 +48,10 @@ namespace GC_3D
 		bool DPressed = false;
 
 		bool QPressed = false;
+
+
+		
+		Camera();
 
 		void ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win);
 

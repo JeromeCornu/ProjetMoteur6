@@ -1,4 +1,4 @@
-﻿#include "Camera.hpp"
+﻿#include "camera.hpp"
 #include <glm/ext.hpp>
 #include <iostream>
 
@@ -7,6 +7,15 @@ using namespace GC_3D;
 using namespace std;
 using namespace chrono;
 
+Camera::Camera() {
+
+	position = vec3(0, 0, 0);
+	horizontalAngle = 3.14f;
+	verticalAngle = 0.0f;
+	initialFoV = 45.0f;
+	mouseSpeed = 0.05f;
+	speed = 50.0f;
+}
 
 void Camera::ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window* Win)
 {
@@ -57,7 +66,7 @@ void Camera::ComputeMatricesFromInputs(GLfloat Width, GLfloat Height, SDL_Window
 
 mat4 Camera::GetProjectionMatrix()
 {
-	return mat4(perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 5002.0f));
+	return mat4(perspective(radians(FoV), 4.0f / 3.0f, 0.1f, 6000.0f));
 }
 
 mat4 Camera::GetViewMatrix()

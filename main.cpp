@@ -10,7 +10,6 @@
 
 #include "gc_3d_defs.hpp"
 #include "Init.hpp"
-#include "CubeTuto.hpp"
 #include "Texture.hpp"
 #include "Camera.hpp"
 #include "FPS.hpp"
@@ -36,19 +35,16 @@ int main(int argc, char* argv[])
     ImguiTool Imgui;
     Skybox Sky;
 
-    CubeTuto Cube = CubeTuto();
-    CubeTuto SkyCube = CubeTuto();
-    vector<CubeTuto> CubesArray;
-
     GLuint TextureLocId;
 
-    Texture TextureCube;
     Texture TextureSky;
     Texture TextureModel;
 
     Matrix matrix;
     mat4 Model;
     mat4 ModelSky;
+
+    Mesh SkyMesh;
 
 
     // Imgui parameters
@@ -66,6 +62,8 @@ int main(int argc, char* argv[])
 
     /* ------------------------------------------ INITIALIZATION PATHFINDER ------------------------------------------------------------- */
 
+    glEnable(GL_DEPTH_TEST);
+
     filesystem::path appPath(GetAppPath());
     auto appDir = appPath.parent_path();
     auto shaderPath = appDir / "asset";
@@ -73,6 +71,56 @@ int main(int argc, char* argv[])
     auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
     auto vSkyboxPath = shaderPath / "SkyboxVertexShader.glsl";
     auto fSkyboxPath = shaderPath / "SkyboxFragmentShader.glsl";
+
+
+
+    /* ------------------------------------------ SKYBOX VERTICES ------------------------------------------------------------- */
+
+    float skyboxVertices[] = {
+        // positions          
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f, -1.0f,
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f, -1.0f,
+         1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f
+    };
+
 
     /* --------------------------------------------- LANCEMENT PROJECT ------------------------------------------------------------- */
 
@@ -84,38 +132,50 @@ int main(int argc, char* argv[])
 
     glUseProgram(ProgramDrawID);
 
-    /* --------------------------------------------- INITIALIZATION BUFFERS --------------------------------------------------------- */
+    /* ----------------------------------------------- SKYBOX VAO ------------------------------------------------------------------ */
 
-    // Initialize cube
-    Cube.initializeCube();
+    // skybox VAO
+    unsigned int skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-    // Initialize sphere
-    /*
-    Geometry Sphere;
-    Sphere.MakeSphere(5);
-    Sphere.Bind();
-    */
+    /* ------------------------------------------------ LOAD TEXTURE --------------------------------------------------------- */
 
-    /* ------------------------------------------------ ASSIMP LOADING --------------------------------------------------------- */
-
-    Mesh Mesh;
-    Vector<vec3> vertices;
-    Vector<vec3> normals;
-    Vector<vec2> uvs;
-    Vector<unsigned int> indices;
-
-
-    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
-    if (ModelLoaded)
+    vector<string> faces
     {
-        Mesh.InitBuffers(vertices, uvs, normals, indices);
-        // Mesh.initializeMesh();
+        "asset/skybox/right.png",
+        "asset/skybox/left.png",
+        "asset/skybox/up.png",
+        "asset/skybox/down.png",
+        "asset/skybox/front.png",
+        "asset/skybox/back.png"
+    };
+
+    for (auto& path : faces)
+    {
+        path = (appDir / path).string();
     }
+    unsigned int cubemapTexture = Sky.loadCubemap(faces);
+
+
+
+
+    // shader configuration
+    // --------------------
+    string sSky = "skybox";
+    glUseProgram(ProgramSkyID);
+    glUniform1i(glGetUniformLocation(ProgramSkyID, sSky.c_str()), 0);
+    
 
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
 
-	Camera Camera;
-    Camera.direction = -Camera.position;
+	Camera TheCamera;
+    TheCamera.direction = -TheCamera.position;
 
     int ScreenWidth = 1024;
     int ScreenHeight = 768;
@@ -132,7 +192,6 @@ int main(int argc, char* argv[])
     bool DPressed = false;
     bool QPressed = false;
     bool ControlMouse = false;
-
     
 /* --------------------------------------------------- LIGHT ---------------------------------------------------------------- */
 
@@ -144,28 +203,6 @@ int main(int argc, char* argv[])
 
     int LightColorID;
     LightColorID = glGetUniformLocation(ProgramDrawID, "LightColor");
-
-    /* ---------------------------------------------------- TEXTURES --------------------------------------------------------- */
-
-    // Sky
-    Sky.SkyBox_CreateTexture();
-
-    vector<std::string> faces;
-    {
-        "right.jpg",
-        "left.jpg",
-        "top.jpg",
-        "bottom.jpg",
-        "front.jpg",
-        "back.jpg";
-    };
-
-    unsigned int cubemapTexture = Sky.loadCubemap(faces);
-
-
-    // Cube
-    TextureCube.applyTexture(500, 500, 1, "asset/uwu.jpg");
-
 
     /* --------------------------------------------------- START LOOP ----------------------------------------------------------- */
 
@@ -243,99 +280,64 @@ int main(int argc, char* argv[])
 		/* --------------------------------------------------- CAMERA ------------------------------------------------------------ */
        
         if (!ControlMouse) {
-            Camera.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, Win);
+            TheCamera.ComputeMatricesFromInputs(ScreenWidth, ScreenHeight, Win);
         }
 
         Vector<GLboolean> PressedButtons = {ZPressed, SPressed, QPressed, DPressed};
 
-        Camera.Move(PressedButtons);
+        TheCamera.Move(PressedButtons);
 
         /* ---------------------------------------------------- FPS ------------------------------------------------------------- */
 
         FPS Fps;
         Fps.Display(Win);
 
-        /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
-
-
-        /*if (ModelLoaded)
-        {
-            mat3 TransformModel = mat3(
-                { 1, 1, 1 },    // position
-                { 1, 1, 1 },              // rotation
-                { 1, 1, 1 }               // scale
-            );
-            Mesh.SetTransform(TransformModel, Model);
-
-            // Create matrix
-            matrix.ModelViewMaker(Model, Camera);
-            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
-
-            // Draw the Mesh
-            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
-        }*/
-
-        int PositionY = 0;
-
-        for (int i = 0; i < NumberCubes; i++)
-        {
-
-            /* ------------------------------------------------- SKYBOX ------------------------------------------------------------- */
+        /* ------------------------------------------------- SKYBOX ------------------------------------------------------------- */
             
-            glUseProgram(ProgramSkyID);
+        glUseProgram(ProgramSkyID);
 
-            glDepthMask(GL_FALSE);
-            //skyboxShader.use();
+        // Contruction de la Transform
+        mat3 TransformSky = mat3(
+            { 1, 1, 1 },                    // position
+            { 1, 1, 1 },                    // rotation
+            { 1, 1, 1 }                     // scale
+        );
 
-            // Contruction de la Transform
-            mat3 TransformSky = mat3(
-                { 1, 1, 1 },                    // position
-                { 1, 1, 1 },                    // rotation
-                { 1, 1, 1 }                     // scale
-            );
-
-            Cube.SetTransform(TransformSky, ModelSky);
+        SkyMesh.SetTransform(TransformSky, ModelSky);
             
-            matrix.ModelViewMaker(ModelSky, Camera); // View
-            matrix.ModelViewSetter(ProgramSkyID, cubemapTexture, ModelSky);
+
+        // draw skybox as last
+        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
             
-            //glBindVertexArray(skyboxVAO);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glDepthMask(GL_TRUE);
+        matrix.ModelViewMaker(ModelSky, TheCamera); // View
+        matrix.ModelViewSetter(ProgramSkyID, ModelSky);
 
+        
+        mat4 View = glm::mat4(glm::mat3(TheCamera.GetViewMatrix())); // remove translation from the view matrix
+        mat4 Projection = glm::mat4(glm::mat3(TheCamera.GetProjectionMatrix())); // remove translation from the view matrix
 
-            Cube.makeCube(cubemapTexture, &TextureSky); // Draw
+        string sView("view");
+        int viewLoc = glGetUniformLocation(ProgramSkyID, sView.c_str());
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(View));
 
+        string sProj("projection");
+        int projLoc = glGetUniformLocation(ProgramSkyID, sProj.c_str());
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(Projection));
+        
 
-            /* -------------------------------------------------- CUBE ------------------------------------------------------------- */
-            
-            glUseProgram(ProgramDrawID);
+        // skybox
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
 
-            // Contruction du cube
-            mat3 TransformCube = mat3(
-                { 0, PositionY, 0 },            // position
-                { RotateX, RotateY, RotateZ },  // rotation
-                { 1, 1, 1 }                     // scale
-            );
-
-            Cube.SetTransform(TransformCube, Model);
-            
-            matrix.ModelViewMaker(Model, Camera); // View
-            matrix.ModelViewSetter(ProgramDrawID, TextureLocId, Model);
-            
-            Cube.makeCube(TextureLocId, &TextureCube); // Draw
-
-            // Put in the array of cube
-            CubesArray.push_back(Cube);
-
-            PositionY -= 4;
-        }
+        glDepthFunc(GL_LESS); // set depth function back to default
 
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
-        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
+        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &TheCamera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
 
         /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
 
