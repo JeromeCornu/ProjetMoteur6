@@ -1,12 +1,19 @@
 #include "Texture.hpp"
 #include "stb_image.h"
+#include <string>
+#include <iostream>
 
 
 using namespace GC_3D;
 
-void Texture::applyTexture(int width, int height, int bpp, char* path)
+void Texture::applyTexture(int width, int height, int bpp, string path)
 {
-	stbi_uc* Image = stbi_load(path, &width, &height, &bpp, 3);
+
+	const char* char_array;
+	char_array = path.c_str();
+
+	stbi_set_flip_vertically_on_load(1);
+	stbi_uc* Image = stbi_load(char_array, &width, &height, &bpp, 3);
 
 	glGenTextures(1, &m_Id);
 

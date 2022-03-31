@@ -9,7 +9,6 @@
 
 #include "Init.hpp"
 #include "CubeTuto.hpp"
-#include "Texture.hpp"
 #include "Camera.hpp"
 #include "FPS.hpp"
 #include "Matrix.hpp"
@@ -19,9 +18,15 @@
 #include <iostream>
 #include <filesystem>
 #include "PathFinder.hpp"
+#include "Ship.hpp"
 #include "objLoader.hpp"
 #include "Mesh.h"
 
+#define SHIP_COLOR_BLUE "Blue"
+#define SHIP_COLOR_GREEN "Green"
+#define SHIP_COLOR_ORANGE "Orange"
+#define SHIP_COLOR_PURPLE "Purple"
+#define SHIP_COLOR_RED "Red"
 
 using namespace glm;
 using namespace std;
@@ -41,7 +46,6 @@ int main(int argc, char* argv[])
     ImguiTool Imgui;
     CubeTuto Cube = CubeTuto();
     Texture TextureCube;
-    Texture TextureModel;
     Skybox Sky;
 
 
@@ -127,20 +131,35 @@ int main(int argc, char* argv[])
 
     /* --------------------------------------------- ASSIMP LOADING --------------------------------------------------------- */
 
-    Mesh Mesh;
+    Mesh MeshEarth;
+    /*Mesh MeshSpitfire;
+    Mesh MeshBob;
+    Mesh MeshChallenger;
+    */
+
+    Texture TextureEarth;
+    /*Texture TextureSpitfire;
+    Texture TextureBob;
+    Texture TextureChallenger;
+    */
     Vector<vec3> vertices;
     Vector<vec2> uvs;
     Vector<vec3> normals;
-    Vector<unsigned int> indices;
 
+    Vector<unsigned int> indicesEarth;
+    /*
+    Vector<unsigned int> indicesSpitfire;
+    Vector<unsigned int> indicesBob;
+    Vector<unsigned int> indicesChallenger;
+    */
 
+    Vessel Bob;
+    Bob.InitShip("Bob", SHIP_COLOR_ORANGE);
 
-    bool ModelLoaded = loadAssImp("C:/Users/bapti/source/repos/JeromeCornu/ProjetMoteur6/asset/OldCabin/Old Cabin 3D Model.fbx", indices, vertices, uvs, normals);
-    if (ModelLoaded)
-    {
-        Mesh.InitBuffers(vertices, uvs, normals, indices);
-        //Mesh.initializeMesh();
-    }
+    TextureEarth.applyTexture(4096, 4096, 1, "asset/Earth/textures/earth albedo.jpg");
+    
+    bool EarthModelLoaded = loadAssImp("asset/Earth/earth 2.blend", indicesEarth, vertices, uvs, normals);
+    MeshEarth.InitBuffers(vertices, uvs, normals, indicesEarth);
 
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
 
@@ -282,29 +301,18 @@ int main(int argc, char* argv[])
         /* ------------------------------------------------- BOUCLE ------------------------------------------------------------- */
 
 
-        /*if (ModelLoaded)
-        {
-            mat3 TransformModel = mat3(
-                { 1, 1, 1 },    // position
-                { 1, 1, 1 },              // rotation
-                { 1, 1, 1 }               // scale
-            );
-            Mesh.SetTransform(TransformModel, Model);
-
-            // Create matrix
-            matrix.ModelViewMaker(Model, Camera);
-            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
-
-            // Draw the Mesh
-            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
-        }*/
 
         Cube.MakeGiantCube(Camera, ProgramID, TextureCube, PrevTime, NumberCubes, NumberGiantCubes);
 
+        MeshEarth.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureEarth, indicesEarth, Camera);
+        //MeshSpitfire.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureSpitfire, indicesSpitfire, Camera);
+        //MeshBob.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureBob, indicesBob, Camera);
+        //MeshChallenger.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureChallenger, indicesChallenger, Camera);
+        Bob.DrawShip(Model, matrix, ProgramID, TextureLocId, Camera);
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
-        Imgui.Window(&NumberCubes, &NumberGiantCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
+        Imgui.Window(&NumberCubes, &NumberGiantCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight, &Camera.speed);
 
         /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
 

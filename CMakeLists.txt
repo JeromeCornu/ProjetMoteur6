@@ -45,7 +45,8 @@ add_executable(
 	common/SimpleFragmentShader.fragmentshader
 	Skybox.hpp
 	Skybox.cpp
-
+	Ship.hpp
+	Ship.cpp
 )
 
 

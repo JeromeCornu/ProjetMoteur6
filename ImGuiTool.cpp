@@ -29,7 +29,7 @@ namespace GC_3D
         ImGui::NewFrame();
     }
 
-    void ImguiTool::Window(int* NumberCubes, int* NumberGiantCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower)
+    void ImguiTool::Window(int* NumberCubes, int* NumberGiantCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, float* Speed)
     {
         ImGui::Begin("BRUHAHAN");
 
@@ -44,12 +44,14 @@ namespace GC_3D
 
 
         ImGui::Text("\n\n----------------- Light -----------------");
-        ImGui::SliderFloat("Power", LightPower, 0.0f, 100.0f);
+        ImGui::SliderFloat("Power", LightPower, 0.0f, 1000.0f);
         ImGui::Text("\nColor : ");
         ImGui::SliderFloat("Red", LightColorX, 0.0f, 1.0f);
         ImGui::SliderFloat("Green", LightColorY, 0.0f, 1.0f);
         ImGui::SliderFloat("Blue", LightColorZ, 0.0f, 1.0f);
 
+        ImGui::Text("\n\n----------------- Camera ----------------");
+        ImGui::SliderFloat("Speed", Speed, 0.0f, 1000.0f);
 
         ImGui::Text("\n\n----------------- Reset -----------------");
         if (ImGui::Button("Origin")) {
@@ -63,6 +65,8 @@ namespace GC_3D
             *LightColorZ = 1.0f;
             *LightPower = 20.0f;
         }
+
+
 
 
         ImGui::End();
