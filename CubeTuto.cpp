@@ -271,27 +271,41 @@ void CubeTuto::SetTransform(mat3 Transform, mat4 &Model) {
     Model = Translation * RotationX * RotationY * RotationZ * Scaling * mat4(1.0f);
 }
 
-void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureCube, steady_clock::time_point PrevTime)
+void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureCube, steady_clock::time_point PrevTime, int NumberCubes, int NumberGiantCubes)
 {
     Matrix Matrix;
     GLuint TextureLocId;
     mat4 Model;
+    Vector<float> CenterOrbit = { 0, 0, 0 };
+    float DecalageX = 2.5;
+    float DecalageY = 2.5;
+    float DecalageZ = 2.5;
 
     auto CurTime = steady_clock::now();
     duration<float> FTime = CurTime - PrevTime;
 
-    for (size_t i = 0; i < 1; i++)
+    size_t i = 0;
+    int TotalCubesDrawn = 0;
+    float NumberCubesPerGroup = static_cast<float>(NumberCubes) / static_cast<float>(NumberGiantCubes);
+
+    float Limit = powf(NumberCubesPerGroup, 1.0f / 3.0f) + 1.0f;
+
+    while (i < NumberGiantCubes && TotalCubesDrawn < NumberCubes)
     {
-        for (size_t j = 0; j < 2; j++)
+        int CubesDrawnPerGroup = 0;
+        size_t j = 1;
+        while (j <= Limit && CubesDrawnPerGroup < NumberCubesPerGroup && TotalCubesDrawn < NumberCubes)
         {
-            for (size_t k = 0; k < 1; k++)
+            size_t k = 1;
+            while (k <= Limit && CubesDrawnPerGroup < NumberCubesPerGroup && TotalCubesDrawn < NumberCubes)
             {
-                for (size_t l = 0; l < 1; l++)
+                size_t l = 1;
+                while (l <= Limit && CubesDrawnPerGroup < NumberCubesPerGroup && TotalCubesDrawn < NumberCubes)
                 {
                     float TurnSin = sin(FTime.count());
                     float TurnCos = cos(FTime.count());
                     mat3 TransformCube = mat3(
-                        { 0 + (j * 2 + i * 2 * 5) + TurnCos * 5, 0 + (k * 2), 0 + l * 2 + TurnSin * 5 },                      // position
+                        { CenterOrbit[0] + (j * DecalageX + i * DecalageX * Limit) * TurnCos + TurnCos * 3, CenterOrbit[1] + k * DecalageY * TurnCos + TurnCos * 3, CenterOrbit[2] + l * DecalageZ * TurnSin + TurnSin * 3 },                      // position
                         { 0, 0, 0 },                   // rotation
                         { 1, 1, 1 }                       // scale
                     );
@@ -302,9 +316,15 @@ void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureC
                     Matrix.ModelViewSetter(Program, TextureLocId, Model);
 
                     MakeCube(TextureLocId, &TextureCube);
+                    CubesDrawnPerGroup++;
+                    TotalCubesDrawn++;
+                    l++;
                 }
+                k++;
             }
+            j++;
         }
+        i++;
     }
 }
 

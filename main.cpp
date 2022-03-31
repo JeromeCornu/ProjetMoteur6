@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
 
     // Imgui parameters
     int NumberCubes = 5;
+    int NumberGiantCubes = 2;
     float RotateX = 1.0f;
     float RotateY = 1.0f;
     float RotateZ = 1.0f;
@@ -298,36 +299,12 @@ int main(int argc, char* argv[])
             Mesh.makeMesh(TextureLocId, &TextureModel, indices);
         }*/
 
-        Cube.MakeGiantCube(Camera, ProgramID, TextureCube, PrevTime);
-
-        for (int i = 0; i < NumberCubes; i++)
-        {
-            // Contruction du cube
-            mat3 TransformCube = mat3(
-                {0, PositionY, 0},              // position
-                {RotateX, RotateY, RotateZ},    // rotation
-                {1, 1, 1}                       // scale
-            );
-
-            Cube.SetTransform(TransformCube, Model);
-
-            // Create matrix
-            matrix.ModelViewMaker(Model, Camera);
-            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
-
-            // Draw the cube
-            Cube.MakeCube(TextureLocId, &TextureCube);
-			
-            // Put in the array of cube
-            CubesArray.push_back(Cube);
-
-            PositionY -= 4;
-        }
+        Cube.MakeGiantCube(Camera, ProgramID, TextureCube, PrevTime, NumberCubes, NumberGiantCubes);
 
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
-        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
+        Imgui.Window(&NumberCubes, &NumberGiantCubes, &RotateX, &RotateY, &RotateZ, &Camera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
 
         /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
 

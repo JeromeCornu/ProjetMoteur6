@@ -19,7 +19,7 @@ namespace GC_3D
         void initializeCube() const;
         void MakeCube(GLuint iTexLoc, Texture* iTex) const;
         void SetTransform(mat3 Transform, mat4& Model);
-        void MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureCube, std::chrono::steady_clock::time_point PrevTime);
+        void MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureCube, std::chrono::steady_clock::time_point PrevTime, int NumberCubes, int NumberGiantCubes);
         mat3 GetTransform();
     };
 

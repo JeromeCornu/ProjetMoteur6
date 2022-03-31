@@ -29,12 +29,13 @@ namespace GC_3D
         ImGui::NewFrame();
     }
 
-    void ImguiTool::Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower)
+    void ImguiTool::Window(int* NumberCubes, int* NumberGiantCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower)
     {
         ImGui::Begin("BRUHAHAN");
 
         ImGui::Text("\n\n----------------- Cubes -----------------");
         ImGui::SliderInt("Number of Cubes", NumberCubes, 0, 10000);
+        ImGui::SliderInt("Number of Group of Cubes", NumberGiantCubes, 1, 10000);
             
         ImGui::Text("\nRotation of all the Cubes : ");
         ImGui::SliderFloat("Rotation X", RotateX, 1.0f, 6.0f);
