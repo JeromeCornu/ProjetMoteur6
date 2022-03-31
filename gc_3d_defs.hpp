@@ -5,11 +5,11 @@
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
-#include <SDL.h>
+#include <vector>
 #include <GL/glew.h>
+#include <SDL.h>
 #include <gl/GL.h>
 
-#include <vector>
 #include <string>
 #include <memory>
 

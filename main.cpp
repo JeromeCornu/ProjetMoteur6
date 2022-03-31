@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -11,19 +10,29 @@
 #include "gc_3d_defs.hpp"
 #include "Init.hpp"
 #include "Texture.hpp"
+#include "CubeTuto.hpp"
 #include "Camera.hpp"
 #include "FPS.hpp"
 #include "Matrix.hpp"
 #include "ImGuiTool.hpp"
 #include "Skybox.hpp"
 #include "PathFinder.hpp"
+#include "Ship.hpp"
 #include "objLoader.hpp"
 #include "Mesh.h"
+
+#define SHIP_COLOR_BLUE "Blue"
+#define SHIP_COLOR_GREEN "Green"
+#define SHIP_COLOR_ORANGE "Orange"
+#define SHIP_COLOR_PURPLE "Purple"
+#define SHIP_COLOR_RED "Red"
 
 using namespace glm;
 using namespace std;
 using namespace chrono;
 using namespace GC_3D;
+
+
 
 extern "C" {
     _declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
@@ -35,10 +44,13 @@ int main(int argc, char* argv[])
     /* ----------------------------------------------- DEFINITION DES VARIABLES ------------------------------------------------------------- */
 
     ImguiTool Imgui;
+	
+    CubeTuto Cube = CubeTuto();
     Skybox Sky;
 
     GLuint TextureLocId;
 
+    Texture TextureCube;
     Texture TextureSky;
     Texture TextureModel;
 
@@ -48,10 +60,12 @@ int main(int argc, char* argv[])
 
     Mesh SkyMesh;
 
+	vector<CubeTuto> CubesArray;
 
     // Imgui parameters
         // - Cubes
     int NumberCubes = 5;
+    int NumberGiantCubes = 2;
     float RotateX = 1.0f;
     float RotateY = 1.0f;
     float RotateZ = 1.0f;
@@ -115,6 +129,7 @@ int main(int argc, char* argv[])
 
     glEnable(GL_DEPTH_TEST);
 
+
     filesystem::path appPath(GetAppPath());
     auto appDir = appPath.parent_path();
     auto shaderPath = appDir / "asset";
@@ -131,9 +146,34 @@ int main(int argc, char* argv[])
     GLuint ProgramDrawID = Init::LinkShader(vShaderPath, fShaderPath);
     GLuint ProgramSkyID = Init::LinkShader(vSkyboxPath, fSkyboxPath);
 
-    glUseProgram(ProgramDrawID);
 
-    /* ----------------------------------------------- SKYBOX VAO ------------------------------------------------------------------ */
+    /* --------------------------------------------- INITIALIZATION CREATIONS --------------------------------------------------------- */
+
+    // initialize cube
+    Cube.initializeCube();
+    // initialize texture
+    TextureCube.applyTexture(500, 500, 1, "asset/uwu.jpg");
+
+    // Skybox
+    Sky.SkyBox_CreateTexture();
+
+
+    vector<std::string> faces;
+    {
+            "right.jpg",
+            "left.jpg",
+            "top.jpg",
+            "bottom.jpg",
+            "front.jpg",
+            "back.jpg";
+    };
+    unsigned int cubemapTexture = Sky.loadCubemap(faces);
+
+
+    auto PrevTime = std::chrono::steady_clock::now();
+	
+
+    /* -------------------------------------------------- SKYBOX VAO ------------------------------------------------------------------ */
 
     unsigned int skyboxVAO, skyboxVBO;
 
@@ -155,7 +195,26 @@ int main(int argc, char* argv[])
     glUseProgram(ProgramSkyID);
     glUniform1i(glGetUniformLocation(ProgramSkyID, sSky.c_str()), 0);
     glUseProgram(ProgramDrawID);
+
+    /* --------------------------------------------- ASSIMP LOADING --------------------------------------------------------- */
+
+    Mesh MeshEarth;
+
+    Texture TextureEarth;
+	
+    Vector<vec3> vertices;
+    Vector<vec2> uvs;
+    Vector<vec3> normals;
+
+    Vector<unsigned int> indicesEarth;
+
+    Vessel Bob;
+    Bob.InitShip("Bob", SHIP_COLOR_ORANGE);
+
+    TextureEarth.applyTexture(4096, 4096, 1, "asset/Earth/textures/earth albedo.jpg");
     
+    bool EarthModelLoaded = loadAssImp("asset/Earth/earth 2.blend", indicesEarth, vertices, uvs, normals);
+    MeshEarth.InitBuffers(vertices, uvs, normals, indicesEarth);
 
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
 
@@ -167,10 +226,10 @@ int main(int argc, char* argv[])
     
     SDL_WarpMouseInWindow(Win, ScreenWidth / 2, ScreenHeight / 2);
 
-    bool appRunning = true;
-
     // Inputs 
     SDL_ShowCursor(SDL_DISABLE);
+	
+    bool appRunning = true;
 
     bool ZPressed = false;
     bool SPressed = false;
@@ -182,6 +241,7 @@ int main(int argc, char* argv[])
 
     int LightPositionID;
     LightPositionID = glGetUniformLocation(ProgramDrawID, "LightPosition_worldspace");
+
 
     int LightPowerID;
     LightPowerID = glGetUniformLocation(ProgramDrawID, "LightPower");
@@ -236,6 +296,7 @@ int main(int argc, char* argv[])
                     DPressed = false;
                     break;
 
+
                     // Quit application (escape)
                 case SDLK_ESCAPE:
                     AppRunning = false;
@@ -281,7 +342,7 @@ int main(int argc, char* argv[])
         if (ActivateSkybox) {
 
             glUseProgram(ProgramSkyID);
-
+			
             // Contruction de la Transform
             mat3 TransformSky = mat3(
                 { 1, 1, 1 },                    // position
@@ -324,8 +385,20 @@ int main(int argc, char* argv[])
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
-        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &TheCamera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight, &ActivateSkybox);
+        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &TheCamera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight, &Camera.speed, &ActivateSkybox);
 
+
+        Cube.MakeGiantCube(Camera, ProgramDrawID, TextureCube, PrevTime, NumberCubes, NumberGiantCubes);
+
+        mat3 TransformEarth = {
+            { 0, 0, 0 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        };
+
+        MeshEarth.DrawMesh(Model, matrix, ProgramDrawID, TextureLocId, TextureEarth, indicesEarth, Camera, TransformEarth);
+        Bob.DrawShip(Model, matrix, ProgramDrawID, TextureLocId, Camera);
+		
         /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
 
         glUniform3f(LightPositionID, 5, 5, 5);                                  // Mettre la position de la light
@@ -338,45 +411,6 @@ int main(int argc, char* argv[])
     }
 	
     Imgui.EndUi();
+
     return 0;
 }
-
-
-/* Sky
-    programme
-    geométrie
-    paramètre (View, proj, cubemap)
-    rendu
-
-    //Cubes
-    x programme   =  Init::LinkShader
-    ~ paramètre (light, view, proj, diffuseTexture)
-        x = matrix.ModelViewMaker + matrix.ModelViewSetter
-        ? light juste en dessous
-        x TextureCube.applyTexture
-
-    x geométrie   =  CubeTuto::SetTransform
-    x positions   =  CubeTuto::SetTransform
-    x rendu       =  CubeTuto::makeCube
-
-*/
-
-
-
-
-
-/* FRUSTUM CULLING
-    Utiliser les snippets "Math" et la suite du gc_3d_defs du prof (sur le drive)
-    produit scalaire = position * normal face cube =
-    regarder si c'est positif ou negatif
-    (on voit si c'est derriere ou devant leS faces des "cube") donc on l'affiche ou pas
-
-        on va pas tester tt les points : donner un centre et prendre la sphere englobante
-        si elle est dehors le frustum completement, alors le modele de la sphere est dehors
-        Si c'est plus de - du rayon de la sphere, pb pcq elle est encore dedans
-        Si c'est moins c'est nickel
-
-
-    Pour trouver normal = regle de la main droite
-
-*/

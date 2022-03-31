@@ -29,12 +29,13 @@ namespace GC_3D
         ImGui::NewFrame();
     }
 
-    void ImguiTool::Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, bool* ActivateSkybox)
+    void ImguiTool::Window(int* NumberCubes, int* NumberGiantCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, float* Speed, bool* ActivateSkybox)
     {
         ImGui::Begin("BRUHAHAN");
 
         ImGui::Text("\n\n----------------- Cubes -----------------");
         ImGui::SliderInt("Number of Cubes", NumberCubes, 0, 10000);
+        ImGui::SliderInt("Number of Group of Cubes", NumberGiantCubes, 1, 10000);
             
         ImGui::Text("\nRotation of all the Cubes : ");
         ImGui::SliderFloat("Rotation X", RotateX, 1.0f, 6.0f);
@@ -43,12 +44,14 @@ namespace GC_3D
 
 
         ImGui::Text("\n\n----------------- Light -----------------");
-        ImGui::SliderFloat("Power", LightPower, 0.0f, 100.0f);
+        ImGui::SliderFloat("Power", LightPower, 0.0f, 1000.0f);
         ImGui::Text("\nColor : ");
         ImGui::SliderFloat("Red", LightColorX, 0.0f, 1.0f);
         ImGui::SliderFloat("Green", LightColorY, 0.0f, 1.0f);
         ImGui::SliderFloat("Blue", LightColorZ, 0.0f, 1.0f);
 
+        ImGui::Text("\n\n----------------- Camera ----------------");
+        ImGui::SliderFloat("Speed", Speed, 0.0f, 1000.0f);
 
         ImGui::Text("\n\n----------------- Reset -----------------");
         if (ImGui::Button("Origin")) {

@@ -19,7 +19,7 @@ uniform float LightPower = 20.0f;
 vec3 PointLight;
 
 // Ambient Light 
-uniform float AmbientStrength = 0.1;
+uniform float AmbientStrength = 0.8;
 uniform vec3 AmbientColor = vec3 (1.0f, 1.0f, 1.0f);
 
 
@@ -37,7 +37,7 @@ void main()
   // Cosine of the angle between the normal and the light direction
   float CosTheta = clamp( dot( Normal_cameraspace, LightDirection_cameraspace ), 0, 1);	// dot( n,l ) = n.l -- clamp -> return the hightest number
 
-  PointLight = MaterialDiffuseColor * texture( MyTextureSampler, UV ).rgb*(max(CosTheta, 0.1)) * LightPower * LightColor / (DistanceLightVertex * DistanceLightVertex);
+  PointLight = MaterialDiffuseColor * texture( MyTextureSampler, UV ).rgb * (max(CosTheta, 0.1)) * LightPower * LightColor / (DistanceLightVertex * DistanceLightVertex);
   
   // -----------  Ambient Light  ----------------
   
