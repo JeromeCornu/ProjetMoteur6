@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.23)
 
 project(moteur)
 
+
 set(IMGUI_USE_OGL3 true)
 
 
@@ -39,14 +40,8 @@ add_executable(
 	PathFinder.cpp
 	Mesh.cpp
 	Mesh.h
-	FPSCounter.hpp
-	FPSCounter.cpp
-	common/SimpleVertexShader.vertexshader
-	common/SimpleFragmentShader.fragmentshader
 	Skybox.hpp
 	Skybox.cpp
-	Ship.hpp
-	Ship.cpp
 )
 
 

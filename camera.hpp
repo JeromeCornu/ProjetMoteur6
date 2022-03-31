@@ -59,8 +59,8 @@ namespace GC_3D
 
 		glm::mat4 GetViewMatrix();
 
-		void Move(GC_3D::Vector<GLboolean> PressedButtons);
-
 		void SetViewMatrix(vec3 NewPosition);
+
+		void Move(Vector<GLboolean> PressedButtons);
 	};
 }

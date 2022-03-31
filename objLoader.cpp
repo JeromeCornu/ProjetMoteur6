@@ -13,15 +13,13 @@
 #include <assimp/postprocess.h>     // Post processing flags
 
 bool loadAssImp(
-	string path,
+	const char* path,
 	std::vector<unsigned int>& indices,
 	std::vector<glm::vec3>& vertices,
 	std::vector<glm::vec2>& uvs,
 	std::vector<glm::vec3>& normals
 ) {
-	vertices.resize(0);
-	uvs.resize(0);
-	normals.resize(0);
+
 	Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate/*aiProcess_JoinIdenticalVertices | aiProcess_SortByPType*/);

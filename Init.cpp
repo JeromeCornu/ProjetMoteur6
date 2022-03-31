@@ -66,6 +66,7 @@ void Init::Vertex() {
 
 
 GLuint Init::LinkShader(filesystem::path Vertex, filesystem::path Fragment) {
+
     GLuint ProgramID = loadShader::LoadShaders(Vertex, Fragment);
     // glUseProgram(ProgramID);
 
