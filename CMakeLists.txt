@@ -42,6 +42,8 @@ add_executable(
 	Mesh.h
 	Skybox.hpp
 	Skybox.cpp
+	Ship.hpp
+	Ship.cpp
 )
 
 

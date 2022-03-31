@@ -10,7 +10,6 @@
 
 #include "Init.hpp"
 #include "CubeTuto.hpp"
-#include "Texture.hpp"
 #include "Camera.hpp"
 #include "FPS.hpp"
 #include "Matrix.hpp"
@@ -20,8 +19,15 @@
 #include <iostream>
 #include <filesystem>
 #include "PathFinder.hpp"
+#include "Ship.hpp"
 #include "objLoader.hpp"
 #include "Mesh.h"
+
+#define SHIP_COLOR_BLUE "Blue"
+#define SHIP_COLOR_GREEN "Green"
+#define SHIP_COLOR_ORANGE "Orange"
+#define SHIP_COLOR_PURPLE "Purple"
+#define SHIP_COLOR_RED "Red"
 
 using namespace glm;
 using namespace std;
@@ -40,7 +46,6 @@ int main(int argc, char* argv[])
     ImguiTool Imgui;
     CubeTuto Cube = CubeTuto();
     Texture TextureCube;
-    Texture TextureModel;
     Skybox Sky;
 
 
@@ -73,7 +78,6 @@ int main(int argc, char* argv[])
     Cube.initializeCube();
     // initialize texture
     TextureCube.applyTexture(500, 500, 1, "asset/uwu.jpg");
-    TextureModel.applyTexture(4096, 4096, 1, "asset/OldCabin/textures/cabin_BaseColor.png");
 
     // Skybox
     Sky.SkyBox_CreateTexture();
@@ -118,20 +122,48 @@ int main(int argc, char* argv[])
 
     /* --------------------------------------------- ASSIMP LOADING --------------------------------------------------------- */
 
-    Mesh Mesh;
+    Mesh MeshEarth;
+    /*Mesh MeshSpitfire;
+    Mesh MeshBob;
+    Mesh MeshChallenger;
+    */
+
+    Texture TextureEarth;
+    /*Texture TextureSpitfire;
+    Texture TextureBob;
+    Texture TextureChallenger;
+    */
     Vector<vec3> vertices;
     Vector<vec2> uvs;
     Vector<vec3> normals;
-    Vector<unsigned int> indices;
 
+    Vector<unsigned int> indicesEarth;
+    /*
+    Vector<unsigned int> indicesSpitfire;
+    Vector<unsigned int> indicesBob;
+    Vector<unsigned int> indicesChallenger;
+    */
 
-    bool ModelLoaded = loadAssImp("asset/OldCabin/Old Cabin 3D Model.obj", indices, vertices, uvs, normals);
-    if (ModelLoaded)
-    {
-        Mesh.InitBuffers(vertices, uvs, normals, indices);
-        //Mesh.initializeMesh();
-    }
+    Vessel Bob;
+    Bob.InitShip("Bob", SHIP_COLOR_ORANGE);
 
+    TextureEarth.applyTexture(4096, 4096, 1, "asset/Earth/textures/earth albedo.jpg");
+    /*TextureSpitfire.applyTexture(2048, 2048, 1, "asset/Ultimate Spaceships - May 2021/Spitfire/Textures/Spitfire_Red.png");
+    TextureBob.applyTexture(2048, 2048, 1, "asset/Ultimate Spaceships - May 2021/Bob/Textures/Bob_Purple.png");
+    TextureChallenger.applyTexture(2048, 2048, 1, "asset/Ultimate Spaceships - May 2021/Challenger/Textures/Challenger_Green.png");
+    */
+    bool EarthModelLoaded = loadAssImp("asset/Earth/earth 2.blend", indicesEarth, vertices, uvs, normals);
+    MeshEarth.InitBuffers(vertices, uvs, normals, indicesEarth);
+    /*
+    bool SpitfireModelLoaded = loadAssImp("asset/Ultimate Spaceships - May 2021/Spitfire/OBJ/Spitfire.obj", indicesSpitfire, vertices, uvs, normals);
+    MeshSpitfire.InitBuffers(vertices, uvs, normals, indicesSpitfire);
+
+    bool BobModelLoaded = loadAssImp("asset/Ultimate Spaceships - May 2021/Bob/OBJ/Bob.obj", indicesBob, vertices, uvs, normals);
+    MeshBob.InitBuffers(vertices, uvs, normals, indicesBob);
+
+    bool ChallengerModelLoaded = loadAssImp("asset/Ultimate Spaceships - May 2021/Challenger/OBJ/Challenger.obj", indicesChallenger, vertices, uvs, normals);
+    MeshChallenger.InitBuffers(vertices, uvs, normals, indicesChallenger);
+    */
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
 
 	Camera Camera;
@@ -295,24 +327,12 @@ int main(int argc, char* argv[])
 
             PositionY -= 4;
         }
-        
-        if (ModelLoaded)
-        {
-            mat3 TransformModel = mat3(
-                { 1, 1, 1 },    // position
-                { 1, 1, 1 },              // rotation
-                { 1, 1, 1 }               // scale
-            );
-            Mesh.SetTransform(TransformModel, Model);
 
-            // Create matrix
-            matrix.ModelViewMaker(Model, Camera);
-            matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
-
-            // Draw the Mesh
-            Mesh.makeMesh(TextureLocId, &TextureModel, indices);
-        }
-
+        MeshEarth.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureEarth, indicesEarth, Camera);
+        //MeshSpitfire.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureSpitfire, indicesSpitfire, Camera);
+        //MeshBob.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureBob, indicesBob, Camera);
+        //MeshChallenger.DrawMesh(Model, matrix, ProgramID, TextureLocId, TextureChallenger, indicesChallenger, Camera);
+        Bob.DrawShip(Model, matrix, ProgramID, TextureLocId, Camera);
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
