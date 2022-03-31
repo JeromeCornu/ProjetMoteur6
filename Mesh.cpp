@@ -142,7 +142,7 @@ void Mesh::DrawMesh(mat4 Model, Matrix matrix, GLuint ProgramID, GLuint TextureL
 
     // Create matrix
     matrix.ModelViewMaker(Model, camera);
-    matrix.ModelViewSetter(ProgramID, TextureLocId, Model);
+    matrix.ModelViewSetter(ProgramID, Model);
 
     // Draw the Mesh
     makeMesh(TextureLocId, &TextureModel, indices);

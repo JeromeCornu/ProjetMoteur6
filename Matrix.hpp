@@ -11,7 +11,7 @@ namespace GC_3D
     public:
         mat4 ModelViewMaker(mat4 Model, Camera MainCamera);
 
-        void ModelViewSetter(GLuint Program, GLuint &TextureLocId, mat4 Model);
+        void ModelViewSetter(GLuint Program, mat4 Model);
     };
 
 }

@@ -314,7 +314,7 @@ void CubeTuto::MakeGiantCube(Camera MainCamera, GLuint Program, Texture TextureC
 
                     // Create matrix
                     Matrix.ModelViewMaker(Model, MainCamera);
-                    Matrix.ModelViewSetter(Program, TextureLocId, Model);
+                    Matrix.ModelViewSetter(Program, Model);
 
                     MakeCube(TextureLocId, &TextureCube);
                     CubesDrawnPerGroup++;

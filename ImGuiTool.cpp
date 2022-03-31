@@ -29,7 +29,7 @@ namespace GC_3D
         ImGui::NewFrame();
     }
 
-    void ImguiTool::Window(int* NumberCubes, int* NumberGiantCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, float* Speed)
+    void ImguiTool::Window(int* NumberCubes, int* NumberGiantCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, float* Speed, bool* ActivateSkybox)
     {
         ImGui::Begin("BRUHAHAN");
 
@@ -52,6 +52,9 @@ namespace GC_3D
 
         ImGui::Text("\n\n----------------- Camera ----------------");
         ImGui::SliderFloat("Speed", Speed, 0.0f, 1000.0f);
+
+        ImGui::Text("\n\n----------- DontClickHere -----------");
+        ImGui::Checkbox(("Skybox"), ActivateSkybox);
 
         ImGui::Text("\n\n----------------- Reset -----------------");
         if (ImGui::Button("Origin")) {
