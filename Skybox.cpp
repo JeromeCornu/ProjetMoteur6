@@ -8,10 +8,26 @@ using namespace glm;
 using namespace GC_3D;
 
 
-unsigned int textureID;
-Vector <string> textures_faces;
+unsigned int Skybox::LoadingTexture(std::filesystem::path appDir)
+{
+    vector<string> faces
+    {
+        "asset/skybox/right.png",
+        "asset/skybox/left.png",
+        "asset/skybox/up.png",
+        "asset/skybox/down.png",
+        "asset/skybox/front.png",
+        "asset/skybox/back.png"
+    };
 
+    for (auto& path : faces)
+    {
+        path = (appDir / path).string();
+    }
+    unsigned int cubemapTexture = loadCubemap(faces);
 
+    return cubemapTexture;
+}
 
 void Skybox::SkyBox_CreateTexture()
 {

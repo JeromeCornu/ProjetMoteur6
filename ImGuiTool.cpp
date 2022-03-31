@@ -29,7 +29,7 @@ namespace GC_3D
         ImGui::NewFrame();
     }
 
-    void ImguiTool::Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower)
+    void ImguiTool::Window(int* NumberCubes, float* RotateX, float* RotateY, float* RotateZ, Camera* MainCamera, float* LightColorX, float* LightColorY, float* LightColorZ, float* LightPower, bool* ActivateSkybox)
     {
         ImGui::Begin("BRUHAHAN");
 
@@ -62,6 +62,9 @@ namespace GC_3D
             *LightColorZ = 1.0f;
             *LightPower = 20.0f;
         }
+
+        ImGui::Text("\n\n----------- DontClickHere -----------");
+        ImGui::Checkbox(("Skybox"), ActivateSkybox);
 
 
         ImGui::End();

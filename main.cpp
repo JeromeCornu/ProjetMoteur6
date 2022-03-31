@@ -32,6 +32,8 @@ extern "C" {
 
 int main(int argc, char* argv[])
 {
+    /* ----------------------------------------------- DEFINITION DES VARIABLES ------------------------------------------------------------- */
+
     ImguiTool Imgui;
     Skybox Sky;
 
@@ -58,23 +60,11 @@ int main(int argc, char* argv[])
     float ColorLightY = 1.0f;
     float ColorLightZ = 1.0f;
     float PowerLight = 20.0f;
+    // - Skybox
+    bool ActivateSkybox = false;
 
 
-    /* ------------------------------------------ INITIALIZATION PATHFINDER ------------------------------------------------------------- */
-
-    glEnable(GL_DEPTH_TEST);
-
-    filesystem::path appPath(GetAppPath());
-    auto appDir = appPath.parent_path();
-    auto shaderPath = appDir / "asset";
-    auto vShaderPath = shaderPath / "SimpleVertexShader.glsl";
-    auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
-    auto vSkyboxPath = shaderPath / "SkyboxVertexShader.glsl";
-    auto fSkyboxPath = shaderPath / "SkyboxFragmentShader.glsl";
-
-
-
-    /* ------------------------------------------ SKYBOX VERTICES ------------------------------------------------------------- */
+    /* --------------------------------------------------- SKYBOX VERTICES -------------------------------------------------------- */
 
     float skyboxVertices[] = {
         // positions          
@@ -121,6 +111,17 @@ int main(int argc, char* argv[])
          1.0f, -1.0f,  1.0f
     };
 
+    /* --------------------------------------------- INITIALIZATION PATHFINDER -------------------------------------------------------- */
+
+    glEnable(GL_DEPTH_TEST);
+
+    filesystem::path appPath(GetAppPath());
+    auto appDir = appPath.parent_path();
+    auto shaderPath = appDir / "asset";
+    auto vShaderPath = shaderPath / "SimpleVertexShader.glsl";
+    auto fShaderPath = shaderPath / "SimpleFragmentShader.glsl";
+    auto vSkyboxPath = shaderPath / "SkyboxVertexShader.glsl";
+    auto fSkyboxPath = shaderPath / "SkyboxFragmentShader.glsl";
 
     /* --------------------------------------------- LANCEMENT PROJECT ------------------------------------------------------------- */
 
@@ -134,42 +135,26 @@ int main(int argc, char* argv[])
 
     /* ----------------------------------------------- SKYBOX VAO ------------------------------------------------------------------ */
 
-    // skybox VAO
     unsigned int skyboxVAO, skyboxVBO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+        glGenVertexArrays(1, &skyboxVAO);
+        glGenBuffers(1, &skyboxVBO);
+        glBindVertexArray(skyboxVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    
 
     /* ------------------------------------------------ LOAD TEXTURE --------------------------------------------------------- */
-
-    vector<string> faces
-    {
-        "asset/skybox/right.png",
-        "asset/skybox/left.png",
-        "asset/skybox/up.png",
-        "asset/skybox/down.png",
-        "asset/skybox/front.png",
-        "asset/skybox/back.png"
-    };
-
-    for (auto& path : faces)
-    {
-        path = (appDir / path).string();
-    }
-    unsigned int cubemapTexture = Sky.loadCubemap(faces);
-
-
-
+    unsigned int cubemapTexture = Sky.LoadingTexture(appDir);
 
     // shader configuration
     // --------------------
     string sSky = "skybox";
     glUseProgram(ProgramSkyID);
     glUniform1i(glGetUniformLocation(ProgramSkyID, sSky.c_str()), 0);
+    glUseProgram(ProgramDrawID);
     
 
     /* --------------------------------------------------- INPUT CAMERA ----------------------------------------------------------- */
@@ -293,51 +278,53 @@ int main(int argc, char* argv[])
         Fps.Display(Win);
 
         /* ------------------------------------------------- SKYBOX ------------------------------------------------------------- */
-            
-        glUseProgram(ProgramSkyID);
+        if (ActivateSkybox) {
 
-        // Contruction de la Transform
-        mat3 TransformSky = mat3(
-            { 1, 1, 1 },                    // position
-            { 1, 1, 1 },                    // rotation
-            { 1, 1, 1 }                     // scale
-        );
+            glUseProgram(ProgramSkyID);
 
-        SkyMesh.SetTransform(TransformSky, ModelSky);
-            
+            // Contruction de la Transform
+            mat3 TransformSky = mat3(
+                { 1, 1, 1 },                    // position
+                { 1, 1, 1 },                    // rotation
+                { 1, 1, 1 }                     // scale
+            );
 
-        // draw skybox as last
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-            
-        matrix.ModelViewMaker(ModelSky, TheCamera); // View
-        matrix.ModelViewSetter(ProgramSkyID, ModelSky);
+            SkyMesh.SetTransform(TransformSky, ModelSky);
 
-        
-        mat4 View = glm::mat4(glm::mat3(TheCamera.GetViewMatrix())); // remove translation from the view matrix
-        mat4 Projection = glm::mat4(glm::mat3(TheCamera.GetProjectionMatrix())); // remove translation from the view matrix
 
-        string sView("view");
-        int viewLoc = glGetUniformLocation(ProgramSkyID, sView.c_str());
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(View));
+            // draw skybox as last
+            glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 
-        string sProj("projection");
-        int projLoc = glGetUniformLocation(ProgramSkyID, sProj.c_str());
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(Projection));
-        
+            matrix.ModelViewMaker(ModelSky, TheCamera); // View
+            matrix.ModelViewSetter(ProgramSkyID, ModelSky);
 
-        // skybox
-        glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
 
-        glDepthFunc(GL_LESS); // set depth function back to default
+            mat4 View = glm::mat4(glm::mat3(TheCamera.GetViewMatrix())); // remove translation from the view matrix
+            mat4 Projection = glm::mat4(glm::mat3(TheCamera.GetProjectionMatrix())); // remove translation from the view matrix
+
+            string sView("view");
+            int viewLoc = glGetUniformLocation(ProgramSkyID, sView.c_str());
+            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(View));
+
+            string sProj("projection");
+            int projLoc = glGetUniformLocation(ProgramSkyID, sProj.c_str());
+            glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(Projection));
+
+
+            // skybox
+            glBindVertexArray(skyboxVAO);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+
+            glDepthFunc(GL_LESS); // set depth function back to default
+        }
 
         /* --------------------------------------------------- IMGUI ------------------------------------------------------------ */
 
         Imgui.NewFrame(Win);
-        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &TheCamera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight);
+        Imgui.Window(&NumberCubes, &RotateX, &RotateY, &RotateZ, &TheCamera, &ColorLightX, &ColorLightY, &ColorLightZ, &PowerLight, &ActivateSkybox);
 
         /* ------------------------------------------------ LIGHT SETUP --------------------------------------------------------- */
 

@@ -120,23 +120,6 @@ GLfloat Normals[] = {
                         0, -1, 0,   0, -1, 0,   0, -1, 0
 };
 
-
-
-GLfloat Indices[] =
-{ 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-
-    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-
-    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-    0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-
-    0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-
-    1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f };
-
-
-
 float PosX, PosY, PosZ;
 float RotX, RotY, RotZ;
 float ScaX, ScaY, ScaZ;
